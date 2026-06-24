@@ -11,7 +11,6 @@
   <meta name="description" content="Familien sitt smarte dashbord">
   <title>Smarthjem Dashboard</title>
   
-  <!-- PWA Manifest som data-URI -->
   <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlNtYXJ0aGplbSBEYXNoYm9hcmQiLAogICJzaG9ydF9uYW1lIjogIlNtYXJ0aGplbSIsCiAgInN0YXJ0X3VybCI6ICIuLyIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzBhMGYxZSIsCiAgInRoZW1lX2NvbG9yIjogIiMwYTBmMWUiLAogICJvcmllbnRhdGlvbiI6ICJsYW5kc2NhcGUiLAogICJpY29ucyI6IFtdCn0=">
   
   <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%230a0f1e' width='100' height='100' rx='20'/><text x='50' y='65' text-anchor='middle' fill='%2360a5fa' font-size='45' font-family='sans-serif'>🏠</text></svg>">
@@ -60,7 +59,6 @@
       overscroll-behavior: none;
       touch-action: manipulation;
       
-      /* Unsplash bakgrunn med mørkt glass-slør */
       background: linear-gradient(rgba(15, 23, 42, 0.85), rgba(3, 7, 18, 0.95)), 
                   url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1920&q=80');
       background-size: cover;
@@ -284,8 +282,6 @@
   <!-- HOVEDGRID -->
   <main style="display: grid; grid-template-columns: repeat(12, 1fr); grid-template-rows: 1fr 1fr; gap: clamp(0.3rem, 0.8vw, 0.5rem); flex: 1; min-height: 0;">
 
-    <!-- RAD 1 -->
-    
     <!-- 1. NESTE HENDELSER (3 kol) -->
     <section class="glass-card" style="grid-column: span 3; grid-row: span 1; padding: clamp(0.4rem, 0.8vw, 0.6rem); gap: 0.3rem;">
       <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -352,8 +348,6 @@
       </div>
     </section>
 
-    <!-- RAD 2 -->
-    
     <!-- 5. KALENDER (6 kol) -->
     <section class="glass-card" style="grid-column: span 6; grid-row: span 1; padding: clamp(0.4rem, 0.8vw, 0.6rem); gap: 0.25rem;">
       <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -500,10 +494,32 @@
   </div>
 
   <script>
+    // ==================== CORS-PROXY HJELPER ====================
+    const CORS_PROXY = 'https://corsproxy.io/?';
+    
+    async function fetchMedProxy(url, options = {}) {
+      try {
+        // Prøv direkte først
+        const direkteResp = await fetch(url, options);
+        if (direkteResp.ok) return direkteResp;
+        throw new Error('Direkte kall feilet med status ' + direkteResp.status);
+      } catch (direkteFeil) {
+        console.warn('Direkte fetch feilet, prøver CORS-proxy:', direkteFeil.message);
+        try {
+          const proxyUrl = CORS_PROXY + encodeURIComponent(url);
+          const proxyResp = await fetch(proxyUrl, options);
+          if (!proxyResp.ok) throw new Error('Proxy-status ' + proxyResp.status);
+          return proxyResp;
+        } catch (proxyFeil) {
+          console.error('CORS-proxy feilet også:', proxyFeil.message);
+          throw new Error('Både direkte og proxy-kall feilet: ' + proxyFeil.message);
+        }
+      }
+    }
+
     // ==================== PWA REGISTRERING ====================
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        // Minimal service worker for offline-støtte
         if (!navigator.serviceWorker.controller) {
           navigator.serviceWorker.register('data:application/javascript,self.addEventListener("fetch",e=>{e.respondWith(fetch(e.request).catch(()=>new Response("Offline")))})')
             .catch(() => console.log('SW registration optional'));
@@ -525,13 +541,16 @@
       { id: 'glassmetall', navn: 'Glass/metall', emoji: '🟣', farge: '#c084fc' }
     ];
 
+    // ==================== GLOBAL DB-PROMISE (løser database-krasj) ====================
+    let dbPromise = null;
+    let handlelisteDb = null;
+    
     let valgtDato = null;
     let kalenderHendelser = [];
     let egneHendelser = [];
     let icalUrl = 'https://www.officeholidays.com/ics/ics_country.php?tbl_country=Norway';
     let visAar = new Date().getFullYear();
     let visManed = new Date().getMonth();
-    let handlelisteDb = null;
     let pendingHendelseDato = null;
 
     // ==================== FEILHJELPER ====================
@@ -546,7 +565,7 @@
     }
 
     // ==================== KLOKKE OG DATO ====================
-    async function oppdaterKlokke() {
+    function oppdaterKlokke() {
       const naa = new Date();
       document.getElementById('liveKlokke').innerText = naa.toLocaleTimeString('no-NO', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
       const alt = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
@@ -556,18 +575,23 @@
       const idag = naa.toISOString().split('T')[0];
       if (window.sisteDato !== idag) {
         window.sisteDato = idag;
-        await byggKalender();
-        visNesteHendelser();
-        renderViktigIDag();
-        renderSoppelListe();
+        // Sjekk om db er klar før vi kaller database-funksjoner
+        if (handlelisteDb) {
+          byggKalender().catch(e => console.warn('Kalender-oppdatering feilet:', e));
+          visNesteHendelser();
+          renderViktigIDag().catch(e => console.warn('Viktig-i-dag feilet:', e));
+          renderSoppelListe().catch(e => console.warn('Søppel-rendring feilet:', e));
+        }
       }
     }
     setInterval(oppdaterKlokke, 1000);
     oppdaterKlokke();
 
-    // ==================== INDEXEDDB ====================
-    async function apneHandlelisteDb() {
-      return new Promise((resolve, reject) => {
+    // ==================== INDEXEDDB (returnerer promise) ====================
+    function apneHandlelisteDb() {
+      if (dbPromise) return dbPromise;
+      
+      dbPromise = new Promise((resolve, reject) => {
         const req = indexedDB.open('SmarthjemDashboard', 4);
         req.onupgradeneeded = (e) => {
           const db = e.target.result;
@@ -578,40 +602,62 @@
           if (!db.objectStoreNames.contains('soppeltomming')) db.createObjectStore('soppeltomming', { keyPath: 'id' });
           if (!db.objectStoreNames.contains('egneHendelser')) db.createObjectStore('egneHendelser', { keyPath: 'id', autoIncrement: true });
         };
-        req.onsuccess = (e) => { handlelisteDb = e.target.result; resolve(); };
+        req.onsuccess = (e) => {
+          handlelisteDb = e.target.result;
+          resolve(handlelisteDb);
+        };
         req.onerror = (e) => reject(e.target.error);
       });
+      
+      return dbPromise;
+    }
+
+    function sikreDb() {
+      if (!handlelisteDb) throw new Error('Database ikke initialisert enda');
+      return handlelisteDb;
     }
 
     function dbGet(storeName, id) {
-      return new Promise((resolve) => {
-        const tx = handlelisteDb.transaction(storeName, 'readonly');
-        tx.objectStore(storeName).get(id).onsuccess = (e) => resolve(e.target.result);
+      return new Promise((resolve, reject) => {
+        try {
+          const db = sikreDb();
+          const tx = db.transaction(storeName, 'readonly');
+          tx.objectStore(storeName).get(id).onsuccess = (e) => resolve(e.target.result);
+        } catch (e) { reject(e); }
       });
     }
     function dbGetAll(storeName) {
-      return new Promise((resolve) => {
-        const tx = handlelisteDb.transaction(storeName, 'readonly');
-        tx.objectStore(storeName).getAll().onsuccess = (e) => resolve(e.target.result);
+      return new Promise((resolve, reject) => {
+        try {
+          const db = sikreDb();
+          const tx = db.transaction(storeName, 'readonly');
+          tx.objectStore(storeName).getAll().onsuccess = (e) => resolve(e.target.result);
+        } catch (e) { reject(e); }
       });
     }
     function dbPut(storeName, data) {
-      return new Promise((resolve) => {
-        const tx = handlelisteDb.transaction(storeName, 'readwrite');
-        tx.objectStore(storeName).put(data).onsuccess = resolve;
+      return new Promise((resolve, reject) => {
+        try {
+          const db = sikreDb();
+          const tx = db.transaction(storeName, 'readwrite');
+          tx.objectStore(storeName).put(data).onsuccess = resolve;
+        } catch (e) { reject(e); }
       });
     }
     function dbDelete(storeName, id) {
-      return new Promise((resolve) => {
-        const tx = handlelisteDb.transaction(storeName, 'readwrite');
-        tx.objectStore(storeName).delete(id).onsuccess = resolve;
+      return new Promise((resolve, reject) => {
+        try {
+          const db = sikreDb();
+          const tx = db.transaction(storeName, 'readwrite');
+          tx.objectStore(storeName).delete(id).onsuccess = resolve;
+        } catch (e) { reject(e); }
       });
     }
 
     // ==================== HANDLELISTE MED ROBUST ERROR-HANDLING ====================
     async function syncHandlelisteFraKvdb() {
       try {
-        const resp = await fetch(KVDB_URL);
+        const resp = await fetchMedProxy(KVDB_URL);
         if (!resp.ok) throw new Error('Status ' + resp.status);
         const skyData = await resp.json();
         if (Array.isArray(skyData) && skyData.length > 0) {
@@ -624,7 +670,6 @@
       } catch (e) {
         console.warn('KVDB-lesing feilet, bruker lokal IndexedDB:', e.message);
         document.getElementById('listCount').style.color = '#fb923c';
-        // Varsle bruker om at sky-synk er utilgjengelig
         const countEl = document.getElementById('listCount');
         if (countEl) countEl.title = 'Jobber lokalt – sky-synk utilgjengelig';
       }
@@ -633,136 +678,153 @@
     async function syncHandlelisteTilKvdb() {
       try {
         const varer = await dbGetAll('handleliste');
-        await fetch(KVDB_URL, { method: 'POST', body: JSON.stringify(varer) });
+        await fetchMedProxy(KVDB_URL, { method: 'POST', body: JSON.stringify(varer) });
       } catch (e) { console.warn('KVDB-skriving feilet:', e.message); }
     }
 
     async function leggTilVare() {
-      const tekst = document.getElementById('tingInput').value.trim();
-      if (!tekst) return;
-      const tx = handlelisteDb.transaction('handleliste', 'readwrite');
-      tx.objectStore('handleliste').add({ tekst, checked: false, opprettet: new Date().toISOString() });
-      tx.oncomplete = async () => {
-        document.getElementById('tingInput').value = '';
-        await visHandleliste();
-        await syncHandlelisteTilKvdb();
-        renderViktigIDag();
-      };
+      try {
+        const tekst = document.getElementById('tingInput').value.trim();
+        if (!tekst) return;
+        const tx = handlelisteDb.transaction('handleliste', 'readwrite');
+        tx.objectStore('handleliste').add({ tekst, checked: false, opprettet: new Date().toISOString() });
+        tx.oncomplete = async () => {
+          document.getElementById('tingInput').value = '';
+          await visHandleliste();
+          syncHandlelisteTilKvdb().catch(e => console.warn('Synk feilet:', e));
+          renderViktigIDag().catch(e => console.warn('Viktig-i-dag feilet:', e));
+        };
+      } catch (e) { console.warn('Legg til vare feilet:', e); }
     }
 
     async function veksleVare(id, checked) {
-      const tx = handlelisteDb.transaction('handleliste', 'readwrite');
-      const store = tx.objectStore('handleliste');
-      const req = store.get(id);
-      req.onsuccess = () => {
-        const v = req.result;
-        v.checked = checked;
-        v.completedAt = checked ? new Date().toISOString() : null;
-        store.put(v);
-      };
-      tx.oncomplete = async () => {
-        await visHandleliste();
-        await syncHandlelisteTilKvdb();
-        renderViktigIDag();
-      };
+      try {
+        const tx = handlelisteDb.transaction('handleliste', 'readwrite');
+        const store = tx.objectStore('handleliste');
+        const req = store.get(id);
+        req.onsuccess = () => {
+          const v = req.result;
+          v.checked = checked;
+          v.completedAt = checked ? new Date().toISOString() : null;
+          store.put(v);
+        };
+        tx.oncomplete = async () => {
+          await visHandleliste();
+          syncHandlelisteTilKvdb().catch(e => console.warn('Synk feilet:', e));
+          renderViktigIDag().catch(e => console.warn('Viktig-i-dag feilet:', e));
+        };
+      } catch (e) { console.warn('Veksle vare feilet:', e); }
     }
 
     async function slettVare(id) {
-      const tx = handlelisteDb.transaction('handleliste', 'readwrite');
-      tx.objectStore('handleliste').delete(id);
-      tx.oncomplete = async () => {
-        await visHandleliste();
-        await syncHandlelisteTilKvdb();
-        renderViktigIDag();
-      };
+      try {
+        const tx = handlelisteDb.transaction('handleliste', 'readwrite');
+        tx.objectStore('handleliste').delete(id);
+        tx.oncomplete = async () => {
+          await visHandleliste();
+          syncHandlelisteTilKvdb().catch(e => console.warn('Synk feilet:', e));
+          renderViktigIDag().catch(e => console.warn('Viktig-i-dag feilet:', e));
+        };
+      } catch (e) { console.warn('Slett vare feilet:', e); }
     }
 
     async function visHandleliste() {
-      const varer = await dbGetAll('handleliste');
-      const aktive = varer.filter(v => !v.checked);
-      const fullforte = varer.filter(v => v.checked);
-      document.getElementById('listCount').textContent = aktive.length;
+      try {
+        const varer = await dbGetAll('handleliste');
+        const aktive = varer.filter(v => !v.checked);
+        const fullforte = varer.filter(v => v.checked);
+        document.getElementById('listCount').textContent = aktive.length;
 
-      const lagVare = (v) => `
-        <li style="display: flex; align-items: center; gap: 0.35rem; padding: 0.2rem 0.35rem; border-radius: 0.4rem; background: rgba(255,255,255,0.02); transition: all 0.15s; font-size: 0.6rem;">
-          <span class="chk ${v.checked ? 'checked' : ''}" onclick="veksleVare(${v.id}, ${!v.checked})"></span>
-          <span style="flex: 1; ${v.checked ? 'color: #a1a1aa; text-decoration: line-through; opacity: 0.5;' : 'color: #e4e4e7;'}">${v.tekst}</span>
-          <button onclick="slettVare(${v.id})" style="color: #71717a; background: none; border: none; font-size: 0.55rem; cursor: pointer;">
-            <i class="fa-solid fa-xmark"></i>
-          </button>
-        </li>`;
+        const lagVare = (v) => `
+          <li style="display: flex; align-items: center; gap: 0.35rem; padding: 0.2rem 0.35rem; border-radius: 0.4rem; background: rgba(255,255,255,0.02); transition: all 0.15s; font-size: 0.6rem;">
+            <span class="chk ${v.checked ? 'checked' : ''}" onclick="veksleVare(${v.id}, ${!v.checked})"></span>
+            <span style="flex: 1; ${v.checked ? 'color: #a1a1aa; text-decoration: line-through; opacity: 0.5;' : 'color: #e4e4e7;'}">${v.tekst}</span>
+            <button onclick="slettVare(${v.id})" style="color: #71717a; background: none; border: none; font-size: 0.55rem; cursor: pointer;">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </li>`;
 
-      document.getElementById('handleListe').innerHTML = aktive.map(lagVare).join('') + fullforte.map(lagVare).join('');
+        document.getElementById('handleListe').innerHTML = aktive.map(lagVare).join('') + fullforte.map(lagVare).join('');
+      } catch (e) { console.warn('Vis handleliste feilet:', e); }
     }
 
     // ==================== SØPPELTØMMING ====================
     async function initSoppel() {
-      for (const type of SOPPEL_TYPER) {
-        const eks = await dbGet('soppeltomming', type.id);
-        if (!eks) {
-          const dato = new Date();
-          dato.setDate(dato.getDate() + 3);
-          await dbPut('soppeltomming', { id: type.id, dato: dato.toISOString().split('T')[0] });
+      try {
+        for (const type of SOPPEL_TYPER) {
+          const eks = await dbGet('soppeltomming', type.id);
+          if (!eks) {
+            const dato = new Date();
+            dato.setDate(dato.getDate() + 3);
+            await dbPut('soppeltomming', { id: type.id, dato: dato.toISOString().split('T')[0] });
+          }
         }
-      }
-      renderSoppelListe();
+        renderSoppelListe().catch(e => console.warn('Søppel-rendring feilet:', e));
+      } catch (e) { console.warn('Init søppel feilet:', e); }
     }
 
     async function renderSoppelListe() {
-      const cont = document.getElementById('soppelListe');
-      const naa = new Date(); naa.setHours(0,0,0,0);
-      let html = '';
-      for (const type of SOPPEL_TYPER) {
-        const rad = await dbGet('soppeltomming', type.id);
-        if (!rad) continue;
-        const dato = new Date(rad.dato);
-        const dager = Math.round((dato - naa) / 86400000);
-        const innen24t = dager <= 1;
-        let tekst;
-        if (dager < 0) tekst = `${Math.abs(dager)}dg siden`;
-        else if (dager === 0) tekst = 'I dag';
-        else if (dager === 1) tekst = 'I morgen';
-        else tekst = `${dager}d`;
+      try {
+        const cont = document.getElementById('soppelListe');
+        const naa = new Date(); naa.setHours(0,0,0,0);
+        let html = '';
+        for (const type of SOPPEL_TYPER) {
+          const rad = await dbGet('soppeltomming', type.id);
+          if (!rad) continue;
+          const dato = new Date(rad.dato);
+          const dager = Math.round((dato - naa) / 86400000);
+          const innen24t = dager <= 1;
+          let tekst;
+          if (dager < 0) tekst = `${Math.abs(dager)}dg siden`;
+          else if (dager === 0) tekst = 'I dag';
+          else if (dager === 1) tekst = 'I morgen';
+          else tekst = `${dager}d`;
 
-        html += `<div style="display: flex; justify-content: space-between; align-items: center; padding: 0.2rem 0.35rem; border-radius: 0.4rem; background: rgba(255,255,255,0.02); ${innen24t ? 'animation: glow-pulse 2s infinite; border: 1px solid rgba(251,113,133,0.3);' : ''}">
-          <span style="font-size: 0.6rem;">${type.emoji} ${type.navn}</span>
-          <span style="font-size: 0.55rem; font-weight: 600; ${innen24t ? 'color: #fb7185;' : 'color: #d4d4d8;'}">${tekst}</span>
-        </div>`;
-      }
-      cont.innerHTML = html;
+          html += `<div style="display: flex; justify-content: space-between; align-items: center; padding: 0.2rem 0.35rem; border-radius: 0.4rem; background: rgba(255,255,255,0.02); ${innen24t ? 'animation: glow-pulse 2s infinite; border: 1px solid rgba(251,113,133,0.3);' : ''}">
+            <span style="font-size: 0.6rem;">${type.emoji} ${type.navn}</span>
+            <span style="font-size: 0.55rem; font-weight: 600; ${innen24t ? 'color: #fb7185;' : 'color: #d4d4d8;'}">${tekst}</span>
+          </div>`;
+        }
+        cont.innerHTML = html;
+      } catch (e) { console.warn('Render søppel feilet:', e); }
     }
 
     async function apneSoppelModal() {
-      const form = document.getElementById('soppelAdminForm');
-      let html = '';
-      for (const type of SOPPEL_TYPER) {
-        const rad = await dbGet('soppeltomming', type.id);
-        html += `<div>
-          <label style="display: block; font-size: 0.7rem; color: #a1a1aa; margin-bottom: 0.2rem;">${type.emoji} ${type.navn}</label>
-          <input type="date" id="soppel-${type.id}" value="${rad ? rad.dato : ''}" 
-                 style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.4rem; padding: 0.4rem; font-size: 0.7rem; color: #e4e4e7; outline: none;">
-        </div>`;
-      }
-      form.innerHTML = html;
-      document.getElementById('soppelModal').classList.add('active');
+      try {
+        const form = document.getElementById('soppelAdminForm');
+        let html = '';
+        for (const type of SOPPEL_TYPER) {
+          const rad = await dbGet('soppeltomming', type.id);
+          html += `<div>
+            <label style="display: block; font-size: 0.7rem; color: #a1a1aa; margin-bottom: 0.2rem;">${type.emoji} ${type.navn}</label>
+            <input type="date" id="soppel-${type.id}" value="${rad ? rad.dato : ''}" 
+                   style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.4rem; padding: 0.4rem; font-size: 0.7rem; color: #e4e4e7; outline: none;">
+          </div>`;
+        }
+        form.innerHTML = html;
+        document.getElementById('soppelModal').classList.add('active');
+      } catch (e) { console.warn('Åpne søppel-modal feilet:', e); }
     }
 
     async function lukkSoppelModal() {
-      for (const type of SOPPEL_TYPER) {
-        const el = document.getElementById(`soppel-${type.id}`);
-        if (el && el.value) await dbPut('soppeltomming', { id: type.id, dato: el.value });
-      }
-      document.getElementById('soppelModal').classList.remove('active');
-      renderSoppelListe();
-      renderViktigIDag();
+      try {
+        for (const type of SOPPEL_TYPER) {
+          const el = document.getElementById(`soppel-${type.id}`);
+          if (el && el.value) await dbPut('soppeltomming', { id: type.id, dato: el.value });
+        }
+        document.getElementById('soppelModal').classList.remove('active');
+        renderSoppelListe().catch(e => console.warn('Søppel-rendring feilet:', e));
+        renderViktigIDag().catch(e => console.warn('Viktig-i-dag feilet:', e));
+      } catch (e) { console.warn('Lukk søppel-modal feilet:', e); }
     }
 
     // ==================== EGNE HENDELSER ====================
     async function lastEgneHendelser() {
-      egneHendelser = await dbGetAll('egneHendelser');
+      try { egneHendelser = await dbGetAll('egneHendelser'); } 
+      catch (e) { console.warn('Last egne hendelser feilet:', e); }
     }
 
-    async function apneNyHendelseModal(dato) {
+    function apneNyHendelseModal(dato) {
       pendingHendelseDato = dato || new Date().toISOString().split('T')[0];
       document.getElementById('nyHendelseDato').value = pendingHendelseDato;
       document.getElementById('nyHendelseTittel').value = '';
@@ -783,103 +845,109 @@
     }
 
     async function lagreNyHendelse() {
-      const tittel = document.getElementById('nyHendelseTittel').value.trim();
-      const dato = document.getElementById('nyHendelseDato').value;
-      const tid = document.getElementById('nyHendelseTid').value || '12:00';
+      try {
+        const tittel = document.getElementById('nyHendelseTittel').value.trim();
+        const dato = document.getElementById('nyHendelseDato').value;
+        const tid = document.getElementById('nyHendelseTid').value || '12:00';
 
-      if (!tittel || !dato) {
-        alert('Fyll ut tittel og dato.');
-        return;
-      }
+        if (!tittel || !dato) {
+          alert('Fyll ut tittel og dato.');
+          return;
+        }
 
-      await dbPut('egneHendelser', {
-        title: tittel,
-        startDate: `${dato}T${tid}:00`,
-        allDay: false,
-        location: '',
-        opprettet: new Date().toISOString()
-      });
+        await dbPut('egneHendelser', {
+          title: tittel,
+          startDate: `${dato}T${tid}:00`,
+          allDay: false,
+          location: '',
+          opprettet: new Date().toISOString()
+        });
 
-      await lastEgneHendelser();
-      await byggKalender();
-      visNesteHendelser();
-      renderViktigIDag();
-      lukkNyHendelseModal();
+        await lastEgneHendelser();
+        await byggKalender();
+        visNesteHendelser();
+        renderViktigIDag().catch(e => console.warn('Viktig-i-dag feilet:', e));
+        lukkNyHendelseModal();
+      } catch (e) { console.warn('Lagre hendelse feilet:', e); }
     }
 
     async function slettEgenHendelse(id) {
-      await dbDelete('egneHendelser', id);
-      await lastEgneHendelser();
-      await byggKalender();
-      visNesteHendelser();
-      renderViktigIDag();
-      if (valgtDato) await apneDatoModal(valgtDato);
+      try {
+        await dbDelete('egneHendelser', id);
+        await lastEgneHendelser();
+        await byggKalender();
+        visNesteHendelser();
+        renderViktigIDag().catch(e => console.warn('Viktig-i-dag feilet:', e));
+        if (valgtDato) await apneDatoModal(valgtDato);
+      } catch (e) { console.warn('Slett hendelse feilet:', e); }
     }
 
     // ==================== KALENDER ====================
     async function byggKalender() {
-      const aar = visAar, maaned = visManed;
-      const naa = new Date();
-      const erDenneManeden = (aar === naa.getFullYear() && maaned === naa.getMonth());
-      const iDag = naa.getDate();
+      try {
+        const aar = visAar, maaned = visManed;
+        const naa = new Date();
+        const erDenneManeden = (aar === naa.getFullYear() && maaned === naa.getMonth());
+        const iDag = naa.getDate();
 
-      document.getElementById('manedTittel').textContent = `${MAANEDSNAVN[maaned]} ${aar}`;
+        document.getElementById('manedTittel').textContent = `${MAANEDSNAVN[maaned]} ${aar}`;
 
-      const forsteDag = (new Date(aar, maaned, 1).getDay() || 7);
-      const sisteDato = new Date(aar, maaned + 1, 0).getDate();
+        const forsteDag = (new Date(aar, maaned, 1).getDay() || 7);
+        const sisteDato = new Date(aar, maaned + 1, 0).getDate();
 
-      const alleNotater = await dbGetAll('datonotater');
-      await lastEgneHendelser();
-      
-      const notatDatoer = new Set();
-      alleNotater.forEach(n => {
-        const nd = new Date(n.id);
-        if (nd.getFullYear() === aar && nd.getMonth() === maaned) notatDatoer.add(n.id);
-      });
-
-      const icalDatoer = new Set();
-      kalenderHendelser.forEach(e => {
-        if (e.startDate) {
-          const ed = new Date(e.startDate);
-          if (ed.getFullYear() === aar && ed.getMonth() === maaned) icalDatoer.add(e.startDate.split('T')[0]);
-        }
-      });
-
-      const egneDatoer = new Set();
-      egneHendelser.forEach(e => {
-        if (e.startDate) {
-          const ed = new Date(e.startDate);
-          if (ed.getFullYear() === aar && ed.getMonth() === maaned) egneDatoer.add(e.startDate.split('T')[0]);
-        }
-      });
-
-      let html = `<div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.15rem; margin-bottom: 0.15rem;">`;
-      DAGER_KORT.forEach(d => html += `<div style="color: #a1a1aa; text-align: center; font-weight: 500; padding: 0.15rem 0;">${d}</div>`);
-      html += `</div><div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.15rem;">`;
-
-      for (let i = 1; i < forsteDag; i++) html += '<div></div>';
-
-      for (let dag = 1; dag <= sisteDato; dag++) {
-        const erIdag = (erDenneManeden && dag === iDag);
-        const datoStr = `${aar}-${String(maaned+1).padStart(2,'0')}-${String(dag).padStart(2,'0')}`;
+        const alleNotater = await dbGetAll('datonotater');
+        await lastEgneHendelser();
         
-        let dots = '';
-        if (notatDatoer.has(datoStr)) dots += '<span style="position:absolute; bottom:1px; left:25%; transform:translateX(-50%); width:3px; height:3px; border-radius:50%; background:#4ade80;"></span>';
-        if (icalDatoer.has(datoStr)) dots += '<span style="position:absolute; bottom:1px; left:50%; transform:translateX(-50%); width:3px; height:3px; border-radius:50%; background:#fbbf24;"></span>';
-        if (egneDatoer.has(datoStr)) dots += '<span style="position:absolute; bottom:1px; left:75%; transform:translateX(-50%); width:3px; height:3px; border-radius:50%; background:#60a5fa;"></span>';
+        const notatDatoer = new Set();
+        alleNotater.forEach(n => {
+          const nd = new Date(n.id);
+          if (nd.getFullYear() === aar && nd.getMonth() === maaned) notatDatoer.add(n.id);
+        });
 
-        const bg = erIdag ? 'background:#3b82f6; color:white; font-weight:700; box-shadow:0 0 8px rgba(59,130,246,0.3);' : '';
-        html += `<div style="position:relative; text-align:center; padding:0.2rem 0; border-radius:0.25rem; cursor:pointer; transition:all 0.15s; font-size:0.55rem; ${bg}" data-dato="${datoStr}" onclick="apneDatoModal('${datoStr}')">${dag}${dots}</div>`;
-      }
-      html += '</div>';
-      document.getElementById('calendarWidget').innerHTML = html;
+        const icalDatoer = new Set();
+        kalenderHendelser.forEach(e => {
+          if (e.startDate) {
+            const ed = new Date(e.startDate);
+            if (ed.getFullYear() === aar && ed.getMonth() === maaned) icalDatoer.add(e.startDate.split('T')[0]);
+          }
+        });
+
+        const egneDatoer = new Set();
+        egneHendelser.forEach(e => {
+          if (e.startDate) {
+            const ed = new Date(e.startDate);
+            if (ed.getFullYear() === aar && ed.getMonth() === maaned) egneDatoer.add(e.startDate.split('T')[0]);
+          }
+        });
+
+        let html = `<div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.15rem; margin-bottom: 0.15rem;">`;
+        DAGER_KORT.forEach(d => html += `<div style="color: #a1a1aa; text-align: center; font-weight: 500; padding: 0.15rem 0;">${d}</div>`);
+        html += `</div><div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.15rem;">`;
+
+        for (let i = 1; i < forsteDag; i++) html += '<div></div>';
+
+        for (let dag = 1; dag <= sisteDato; dag++) {
+          const erIdag = (erDenneManeden && dag === iDag);
+          const datoStr = `${aar}-${String(maaned+1).padStart(2,'0')}-${String(dag).padStart(2,'0')}`;
+          
+          let dots = '';
+          if (notatDatoer.has(datoStr)) dots += '<span style="position:absolute; bottom:1px; left:25%; transform:translateX(-50%); width:3px; height:3px; border-radius:50%; background:#4ade80;"></span>';
+          if (icalDatoer.has(datoStr)) dots += '<span style="position:absolute; bottom:1px; left:50%; transform:translateX(-50%); width:3px; height:3px; border-radius:50%; background:#fbbf24;"></span>';
+          if (egneDatoer.has(datoStr)) dots += '<span style="position:absolute; bottom:1px; left:75%; transform:translateX(-50%); width:3px; height:3px; border-radius:50%; background:#60a5fa;"></span>';
+
+          const bg = erIdag ? 'background:#3b82f6; color:white; font-weight:700; box-shadow:0 0 8px rgba(59,130,246,0.3);' : '';
+          html += `<div style="position:relative; text-align:center; padding:0.2rem 0; border-radius:0.25rem; cursor:pointer; transition:all 0.15s; font-size:0.55rem; ${bg}" data-dato="${datoStr}" onclick="apneDatoModal('${datoStr}')">${dag}${dots}</div>`;
+        }
+        html += '</div>';
+        document.getElementById('calendarWidget').innerHTML = html;
+      } catch (e) { console.warn('Bygg kalender feilet:', e); }
     }
 
     function navigerManed(delta) {
       visManed += delta;
       if (visManed < 0) { visManed = 11; visAar--; }
       if (visManed > 11) { visManed = 0; visAar++; }
-      byggKalender();
+      byggKalender().catch(e => console.warn('Naviger måned feilet:', e));
     }
 
     function apneManedVelger() {
@@ -896,43 +964,45 @@
     function bekreftManed() {
       visManed = parseInt(document.getElementById('manedSelect').value);
       visAar = parseInt(document.getElementById('aarSelect').value);
-      byggKalender();
+      byggKalender().catch(e => console.warn('Bekreft måned feilet:', e));
       lukkManedModal();
     }
 
     function visNesteHendelser() {
-      const naa = new Date();
-      const startAvDag = new Date(naa.getFullYear(), naa.getMonth(), naa.getDate(), 0, 0, 0, 0);
-      
-      const alle = [
-        ...kalenderHendelser.map(e => ({ ...e, type: 'ical' })),
-        ...egneHendelser.map(e => ({ ...e, type: 'egen' }))
-      ];
+      try {
+        const naa = new Date();
+        const startAvDag = new Date(naa.getFullYear(), naa.getMonth(), naa.getDate(), 0, 0, 0, 0);
+        
+        const alle = [
+          ...kalenderHendelser.map(e => ({ ...e, type: 'ical' })),
+          ...egneHendelser.map(e => ({ ...e, type: 'egen' }))
+        ];
 
-      const sorterte = alle
-        .filter(e => new Date(e.startDate) >= startAvDag)
-        .sort((a,b) => new Date(a.startDate) - new Date(b.startDate))
-        .slice(0, 4);
+        const sorterte = alle
+          .filter(e => new Date(e.startDate) >= startAvDag)
+          .sort((a,b) => new Date(a.startDate) - new Date(b.startDate))
+          .slice(0, 4);
 
-      const container = document.getElementById('nesteHendelser');
-      if (!sorterte.length) {
-        container.innerHTML = '<p style="font-size:0.55rem; color:#a1a1aa; font-style:italic;">Ingen hendelser</p>';
-        return;
-      }
+        const container = document.getElementById('nesteHendelser');
+        if (!sorterte.length) {
+          container.innerHTML = '<p style="font-size:0.55rem; color:#a1a1aa; font-style:italic;">Ingen hendelser</p>';
+          return;
+        }
 
-      container.innerHTML = sorterte.map(e => {
-        const d = new Date(e.startDate);
-        const dagLabel = formaterRelativDag(d);
-        const tid = e.allDay ? 'Hele dagen' : d.toLocaleTimeString('no-NO', { hour:'2-digit', minute:'2-digit' });
-        const ikon = e.type === 'egen' ? '<i class="fa-solid fa-star" style="color:#60a5fa; font-size:0.45rem;"></i>' : '';
-        return `<div style="display:flex; align-items:center; gap:0.3rem; padding:0.2rem 0.35rem; border-radius:0.4rem; background:rgba(255,255,255,0.02); cursor:pointer; transition:all 0.15s;" onclick="apneDatoModal('${e.startDate.split('T')[0]}')">
-          <div style="text-align:center; min-width:34px; flex-shrink:0;">
-            <p style="font-size:0.45rem; color:#fbbf24; font-weight:500; text-transform:uppercase;">${dagLabel}</p>
-            <p style="font-size:0.5rem; color:#d4d4d8; font-weight:600;">${tid}</p>
-          </div>
-          <p style="font-size:0.6rem; color:#e4e4e7; flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${ikon} ${e.title}</p>
-        </div>`;
-      }).join('');
+        container.innerHTML = sorterte.map(e => {
+          const d = new Date(e.startDate);
+          const dagLabel = formaterRelativDag(d);
+          const tid = e.allDay ? 'Hele dagen' : d.toLocaleTimeString('no-NO', { hour:'2-digit', minute:'2-digit' });
+          const ikon = e.type === 'egen' ? '<i class="fa-solid fa-star" style="color:#60a5fa; font-size:0.45rem;"></i>' : '';
+          return `<div style="display:flex; align-items:center; gap:0.3rem; padding:0.2rem 0.35rem; border-radius:0.4rem; background:rgba(255,255,255,0.02); cursor:pointer; transition:all 0.15s;" onclick="apneDatoModal('${e.startDate.split('T')[0]}')">
+            <div style="text-align:center; min-width:34px; flex-shrink:0;">
+              <p style="font-size:0.45rem; color:#fbbf24; font-weight:500; text-transform:uppercase;">${dagLabel}</p>
+              <p style="font-size:0.5rem; color:#d4d4d8; font-weight:600;">${tid}</p>
+            </div>
+            <p style="font-size:0.6rem; color:#e4e4e7; flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${ikon} ${e.title}</p>
+          </div>`;
+        }).join('');
+      } catch (e) { console.warn('Vis neste hendelser feilet:', e); }
     }
 
     function formaterRelativDag(d) {
@@ -948,58 +1018,64 @@
 
     // ==================== DATO MODAL ====================
     async function apneDatoModal(datoStr) {
-      valgtDato = datoStr;
-      const dato = new Date(datoStr);
-      const alt = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-      document.getElementById('modalTitle').textContent = '📅 ' + dato.toLocaleDateString('no-NO', alt).charAt(0).toUpperCase() + dato.toLocaleDateString('no-NO', alt).slice(1);
+      try {
+        valgtDato = datoStr;
+        const dato = new Date(datoStr);
+        const alt = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('modalTitle').textContent = '📅 ' + dato.toLocaleDateString('no-NO', alt).charAt(0).toUpperCase() + dato.toLocaleDateString('no-NO', alt).slice(1);
 
-      const notat = await dbGet('datonotater', datoStr);
-      document.getElementById('dateNoteInput').value = notat ? notat.tekst : '';
+        const notat = await dbGet('datonotater', datoStr);
+        document.getElementById('dateNoteInput').value = notat ? notat.tekst : '';
 
-      const icalEvents = kalenderHendelser.filter(e => e.startDate && e.startDate.split('T')[0] === datoStr);
-      document.getElementById('iCalEventsInModal').innerHTML = icalEvents.length ? icalEvents.map(e => {
-        const tid = e.allDay ? 'Hele dagen' : new Date(e.startDate).toLocaleTimeString('no-NO', { hour:'2-digit', minute:'2-digit' });
-        return `<div style="background:rgba(255,255,255,0.02); border-radius:0.4rem; padding:0.35rem; border:1px solid rgba(255,255,255,0.05);">
-          <p style="font-size:0.65rem; font-weight:500;">${e.title}</p>
-          <p style="font-size:0.55rem; color:#a1a1aa;"><i class="fa-regular fa-clock"></i> ${tid}</p>
-        </div>`;
-      }).join('') : '<p style="font-size:0.6rem; color:#a1a1aa;">Ingen iCal-hendelser</p>';
-
-      const egneEvents = egneHendelser.filter(e => e.startDate && e.startDate.split('T')[0] === datoStr);
-      document.getElementById('egneHendelserIModal').innerHTML = egneEvents.length ? egneEvents.map(e => {
-        const tid = e.allDay ? 'Hele dagen' : new Date(e.startDate).toLocaleTimeString('no-NO', { hour:'2-digit', minute:'2-digit' });
-        return `<div style="background:rgba(255,255,255,0.02); border-radius:0.4rem; padding:0.35rem; border:1px solid rgba(255,255,255,0.05); display:flex; justify-content:space-between; align-items:center;">
-          <div>
+        const icalEvents = kalenderHendelser.filter(e => e.startDate && e.startDate.split('T')[0] === datoStr);
+        document.getElementById('iCalEventsInModal').innerHTML = icalEvents.length ? icalEvents.map(e => {
+          const tid = e.allDay ? 'Hele dagen' : new Date(e.startDate).toLocaleTimeString('no-NO', { hour:'2-digit', minute:'2-digit' });
+          return `<div style="background:rgba(255,255,255,0.02); border-radius:0.4rem; padding:0.35rem; border:1px solid rgba(255,255,255,0.05);">
             <p style="font-size:0.65rem; font-weight:500;">${e.title}</p>
             <p style="font-size:0.55rem; color:#a1a1aa;"><i class="fa-regular fa-clock"></i> ${tid}</p>
-          </div>
-          <button onclick="slettEgenHendelse(${e.id})" style="color:#fb7185; background:none; border:none; font-size:0.55rem; cursor:pointer;">
-            <i class="fa-solid fa-trash-can"></i>
-          </button>
-        </div>`;
-      }).join('') : '<p style="font-size:0.6rem; color:#a1a1aa;">Ingen egne hendelser</p>';
+          </div>`;
+        }).join('') : '<p style="font-size:0.6rem; color:#a1a1aa;">Ingen iCal-hendelser</p>';
 
-      document.getElementById('dateModal').classList.add('active');
+        const egneEvents = egneHendelser.filter(e => e.startDate && e.startDate.split('T')[0] === datoStr);
+        document.getElementById('egneHendelserIModal').innerHTML = egneEvents.length ? egneEvents.map(e => {
+          const tid = e.allDay ? 'Hele dagen' : new Date(e.startDate).toLocaleTimeString('no-NO', { hour:'2-digit', minute:'2-digit' });
+          return `<div style="background:rgba(255,255,255,0.02); border-radius:0.4rem; padding:0.35rem; border:1px solid rgba(255,255,255,0.05); display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <p style="font-size:0.65rem; font-weight:500;">${e.title}</p>
+              <p style="font-size:0.55rem; color:#a1a1aa;"><i class="fa-regular fa-clock"></i> ${tid}</p>
+            </div>
+            <button onclick="slettEgenHendelse(${e.id})" style="color:#fb7185; background:none; border:none; font-size:0.55rem; cursor:pointer;">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </div>`;
+        }).join('') : '<p style="font-size:0.6rem; color:#a1a1aa;">Ingen egne hendelser</p>';
+
+        document.getElementById('dateModal').classList.add('active');
+      } catch (e) { console.warn('Åpne dato-modal feilet:', e); }
     }
 
     function lukkDateModal() { document.getElementById('dateModal').classList.remove('active'); valgtDato = null; }
 
     async function lagreDatoNotat() {
-      if (!valgtDato) return;
-      const tekst = document.getElementById('dateNoteInput').value.trim();
-      if (tekst) await dbPut('datonotater', { id: valgtDato, tekst, oppdatert: new Date().toISOString() });
-      else await dbDelete('datonotater', valgtDato);
-      await byggKalender();
+      try {
+        if (!valgtDato) return;
+        const tekst = document.getElementById('dateNoteInput').value.trim();
+        if (tekst) await dbPut('datonotater', { id: valgtDato, tekst, oppdatert: new Date().toISOString() });
+        else await dbDelete('datonotater', valgtDato);
+        await byggKalender();
+      } catch (e) { console.warn('Lagre dato-notat feilet:', e); }
     }
 
     async function slettDatoNotat() {
-      if (!valgtDato) return;
-      await dbDelete('datonotater', valgtDato);
-      document.getElementById('dateNoteInput').value = '';
-      await byggKalender();
+      try {
+        if (!valgtDato) return;
+        await dbDelete('datonotater', valgtDato);
+        document.getElementById('dateNoteInput').value = '';
+        await byggKalender();
+      } catch (e) { console.warn('Slett dato-notat feilet:', e); }
     }
 
-    // ==================== iCal MED ROBUST ERROR-HANDLING ====================
+    // ==================== iCal MED PROXY ====================
     function apneICloudModal() {
       document.getElementById('icalUrlInput').value = icalUrl;
       document.getElementById('iCloudModal').classList.add('active');
@@ -1007,20 +1083,22 @@
     function lukkICloudModal() { document.getElementById('iCloudModal').classList.remove('active'); }
 
     async function lagreICalUrl() {
-      const ny = document.getElementById('icalUrlInput').value.trim();
-      if (ny) {
-        icalUrl = ny;
-        await dbPut('innstillinger', { id: 'icalUrl', value: icalUrl });
-        document.getElementById('iCloudStatus').textContent = '🟡';
-        await hentICalManuelt();
-      }
+      try {
+        const ny = document.getElementById('icalUrlInput').value.trim();
+        if (ny) {
+          icalUrl = ny;
+          await dbPut('innstillinger', { id: 'icalUrl', value: icalUrl });
+          document.getElementById('iCloudStatus').textContent = '🟡';
+          await hentICalManuelt();
+        }
+      } catch (e) { console.warn('Lagre iCal-URL feilet:', e); }
     }
 
     async function hentICalManuelt() {
       document.getElementById('iCloudStatus').textContent = '🔄';
       document.getElementById('iCloudDebug').textContent = 'Henter...';
       try {
-        const resp = await fetch(icalUrl);
+        const resp = await fetchMedProxy(icalUrl);
         if (!resp.ok) throw new Error('Status ' + resp.status);
         kalenderHendelser = parseICal(await resp.text());
         if (kalenderHendelser.length === 0) throw new Error('Tom kalender');
@@ -1035,7 +1113,7 @@
       }
       await byggKalender();
       visNesteHendelser();
-      renderViktigIDag();
+      renderViktigIDag().catch(e => console.warn('Viktig-i-dag feilet:', e));
       lukkICloudModal();
     }
 
@@ -1072,7 +1150,7 @@
       return `${y}-${m}-${d}T00:00:00`;
     }
 
-    // ==================== VÆRDATA MED ROBUST ERROR-HANDLING ====================
+    // ==================== VÆRDATA MED PROXY ====================
     const VEER_IKONER = { 0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',48:'🌫️',51:'🌧️',53:'🌧️',55:'🌧️',61:'🌧️',63:'🌧️',65:'🌧️',71:'❄️',73:'❄️',75:'❄️',77:'❄️',80:'🌧️',81:'🌧️',82:'🌧️',85:'🌨️',86:'🌨️',95:'⛈️',96:'⛈️',99:'⛈️' };
     const VEER_TEKST = { 0:'Klart',1:'Delvis skyet',2:'Skyet',3:'Overskyet',45:'Tåke',48:'Rimtåke',51:'Lett yr',53:'Yr',55:'Kraftig yr',61:'Lett regn',63:'Regn',65:'Kraftig regn',71:'Lett snø',73:'Snø',75:'Kraftig snø',77:'Snøkorn',80:'Regnbyger',81:'Kraftige byger',82:'Voldsomme byger',85:'Snøbyger',86:'Kraftige snøbyger',95:'Torden',96:'Torden m/hagl',99:'Kraftig torden' };
 
@@ -1086,7 +1164,8 @@
       } catch { document.getElementById('weatherLocation').textContent = 'Skien'; }
 
       try {
-        const resp = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code&hourly=temperature_2m,weather_code&forecast_days=2&timezone=auto`);
+        const veerUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code&hourly=temperature_2m,weather_code&forecast_days=2&timezone=auto`;
+        const resp = await fetchMedProxy(veerUrl);
         if (!resp.ok) throw new Error('Status ' + resp.status);
         visVeerdata(await resp.json());
       } catch (feil) {
@@ -1126,39 +1205,41 @@
 
     // ==================== VIKTIG I DAG ====================
     async function renderViktigIDag() {
-      const cont = document.getElementById('viktigIDagListe');
-      const naa = new Date();
-      const idag = naa.toISOString().split('T')[0];
-      const items = [];
+      try {
+        const cont = document.getElementById('viktigIDagListe');
+        const naa = new Date();
+        const idag = naa.toISOString().split('T')[0];
+        const items = [];
 
-      const alle = [...kalenderHendelser.filter(e => e.startDate && e.startDate.split('T')[0] === idag), ...egneHendelser.filter(e => e.startDate && e.startDate.split('T')[0] === idag)];
-      alle.forEach(e => {
-        const tid = e.allDay ? '' : new Date(e.startDate).toLocaleTimeString('no-NO',{hour:'2-digit',minute:'2-digit'}) + ' ';
-        const erSnart = !e.allDay && (new Date(e.startDate) - naa) < 2*3600000 && (new Date(e.startDate) - naa) > -1800000;
-        items.push({ tekst: `${tid}${e.title}`, urgent: erSnart });
-      });
+        const alle = [...kalenderHendelser.filter(e => e.startDate && e.startDate.split('T')[0] === idag), ...egneHendelser.filter(e => e.startDate && e.startDate.split('T')[0] === idag)];
+        alle.forEach(e => {
+          const tid = e.allDay ? '' : new Date(e.startDate).toLocaleTimeString('no-NO',{hour:'2-digit',minute:'2-digit'}) + ' ';
+          const erSnart = !e.allDay && (new Date(e.startDate) - naa) < 2*3600000 && (new Date(e.startDate) - naa) > -1800000;
+          items.push({ tekst: `${tid}${e.title}`, urgent: erSnart });
+        });
 
-      const varer = await dbGetAll('handleliste');
-      const aktive = varer.filter(v => !v.checked);
-      if (aktive.length) items.push({ tekst: `🛒 ${aktive.length} varer`, urgent: false });
+        const varer = await dbGetAll('handleliste');
+        const aktive = varer.filter(v => !v.checked);
+        if (aktive.length) items.push({ tekst: `🛒 ${aktive.length} varer`, urgent: false });
 
-      const naaStart = new Date(); naaStart.setHours(0,0,0,0);
-      for (const type of SOPPEL_TYPER) {
-        const rad = await dbGet('soppeltomming', type.id);
-        if (!rad) continue;
-        const dager = Math.round((new Date(rad.dato) - naaStart) / 86400000);
-        if (dager >= 0 && dager <= 2) {
-          const label = dager === 0 ? 'i dag' : (dager === 1 ? 'i morgen' : `om ${dager}d`);
-          items.push({ tekst: `♻️ ${type.navn} ${label}`, urgent: dager <= 1 });
+        const naaStart = new Date(); naaStart.setHours(0,0,0,0);
+        for (const type of SOPPEL_TYPER) {
+          const rad = await dbGet('soppeltomming', type.id);
+          if (!rad) continue;
+          const dager = Math.round((new Date(rad.dato) - naaStart) / 86400000);
+          if (dager >= 0 && dager <= 2) {
+            const label = dager === 0 ? 'i dag' : (dager === 1 ? 'i morgen' : `om ${dager}d`);
+            items.push({ tekst: `♻️ ${type.navn} ${label}`, urgent: dager <= 1 });
+          }
         }
-      }
 
-      if (!items.length) {
-        cont.innerHTML = '<span style="font-size:0.6rem; color:#a1a1aa;">Ingenting spesielt i dag 🎉</span>';
-        return;
-      }
-      items.sort((a,b) => (b.urgent - a.urgent));
-      cont.innerHTML = items.map(i => `<span class="pill ${i.urgent ? 'pill-urgent' : 'pill-normal'}">${i.tekst}</span>`).join('');
+        if (!items.length) {
+          cont.innerHTML = '<span style="font-size:0.6rem; color:#a1a1aa;">Ingenting spesielt i dag 🎉</span>';
+          return;
+        }
+        items.sort((a,b) => (b.urgent - a.urgent));
+        cont.innerHTML = items.map(i => `<span class="pill ${i.urgent ? 'pill-urgent' : 'pill-normal'}">${i.tekst}</span>`).join('');
+      } catch (e) { console.warn('Render viktig-i-dag feilet:', e); }
     }
 
     // ==================== HURTIGNOTATER ====================
@@ -1171,23 +1252,30 @@
     });
 
     function lagreNotat() {
-      dbPut('notater', { id: 'quickNote', tekst: document.getElementById('quickNote').value, oppdatert: new Date().toISOString() });
-      document.getElementById('saveStatus').textContent = 'Lagret ✓';
-      setTimeout(() => document.getElementById('saveStatus').textContent = 'Lagres automatisk', 2000);
+      dbPut('notater', { id: 'quickNote', tekst: document.getElementById('quickNote').value, oppdatert: new Date().toISOString() })
+        .then(() => {
+          document.getElementById('saveStatus').textContent = 'Lagret ✓';
+          setTimeout(() => document.getElementById('saveStatus').textContent = 'Lagres automatisk', 2000);
+        })
+        .catch(e => console.warn('Lagre notat feilet:', e));
     }
 
     async function lastNotat() {
-      const notat = await dbGet('notater', 'quickNote');
-      if (notat) {
-        document.getElementById('quickNote').value = notat.tekst;
-        document.getElementById('charCount').textContent = `${notat.tekst.length} tegn`;
-      }
+      try {
+        const notat = await dbGet('notater', 'quickNote');
+        if (notat) {
+          document.getElementById('quickNote').value = notat.tekst;
+          document.getElementById('charCount').textContent = `${notat.tekst.length} tegn`;
+        }
+      } catch (e) { console.warn('Last notat feilet:', e); }
     }
 
     async function slettNotat() {
-      await dbDelete('notater', 'quickNote');
-      document.getElementById('quickNote').value = '';
-      document.getElementById('charCount').textContent = '0 tegn';
+      try {
+        await dbDelete('notater', 'quickNote');
+        document.getElementById('quickNote').value = '';
+        document.getElementById('charCount').textContent = '0 tegn';
+      } catch (e) { console.warn('Slett notat feilet:', e); }
     }
 
     // ==================== EVENT LISTENERS ====================
@@ -1201,41 +1289,49 @@
       }
     });
 
-    // Forhindre dobbelttrykk-zoom på knapper
     document.addEventListener('dblclick', (e) => {
       if (e.target.tagName === 'BUTTON' || e.target.closest('button')) {
         e.preventDefault();
       }
     }, { passive: false });
 
-    // ==================== INIT ====================
+    // ==================== INIT (VENTER PÅ DATABASEN FØRST) ====================
     async function init() {
       try {
+        // 1. FØRST: Åpne databasen og vent på at den er klar
         await apneHandlelisteDb();
+        console.log('✅ IndexedDB er klar');
       } catch (e) {
-        console.error('IndexedDB utilgjengelig:', e);
+        console.error('❌ IndexedDB utilgjengelig:', e);
         document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;color:#fafafa;font-family:Inter,sans-serif;text-align:center;padding:2rem;"><div><h1 style="font-size:1.5rem;margin-bottom:0.5rem;">⚠️ Database utilgjengelig</h1><p style="color:#a1a1aa;">Dashbordet krever IndexedDB for å fungere.</p></div></div>';
         return;
       }
 
-      const storedIcal = await dbGet('innstillinger', 'icalUrl');
-      if (storedIcal) icalUrl = storedIcal.value;
+      // 2. SÅ: Last inn lagrede data og start API-kall (alle med try-catch)
+      try {
+        const storedIcal = await dbGet('innstillinger', 'icalUrl');
+        if (storedIcal) icalUrl = storedIcal.value;
+      } catch (e) { console.warn('Kunne ikke laste iCal-innstillinger:', e); }
 
-      await syncHandlelisteFraKvdb();
-      await visHandleliste();
-      await initSoppel();
-      await lastNotat();
-      await lastEgneHendelser();
-      await hentICalManuelt();
-      await hentVeerdata();
+      // Start alle async-operasjoner – ingen stopper hverandre
+      syncHandlelisteFraKvdb().then(() => visHandleliste()).catch(e => console.warn('Handleliste-synk feilet:', e));
+      initSoppel().catch(e => console.warn('Søppel-init feilet:', e));
+      lastNotat().catch(e => console.warn('Notat-lasting feilet:', e));
+      lastEgneHendelser().catch(e => console.warn('Hendelse-lasting feilet:', e));
+      hentICalManuelt().catch(e => console.warn('iCal-henting feilet:', e));
+      hentVeerdata().catch(e => console.warn('Vær-henting feilet:', e));
 
-      setInterval(async () => { await syncHandlelisteFraKvdb(); await visHandleliste(); }, 30000);
-      setInterval(hentVeerdata, 900000);
-      setInterval(hentICalManuelt, 1800000);
-      setInterval(renderViktigIDag, 60000);
-      setInterval(renderSoppelListe, 60000);
+      // Periodiske oppdateringer
+      setInterval(() => {
+        syncHandlelisteFraKvdb().then(() => visHandleliste()).catch(e => console.warn('Periodisk handleliste-synk feilet:', e));
+      }, 30000);
+      setInterval(() => hentVeerdata().catch(e => console.warn('Periodisk vær feilet:', e)), 900000);
+      setInterval(() => hentICalManuelt().catch(e => console.warn('Periodisk iCal feilet:', e)), 1800000);
+      setInterval(() => renderViktigIDag().catch(e => console.warn('Periodisk viktig-i-dag feilet:', e)), 60000);
+      setInterval(() => renderSoppelListe().catch(e => console.warn('Periodisk søppel feilet:', e)), 60000);
 
       window.sisteDato = new Date().toISOString().split('T')[0];
+      console.log('✅ Dashboard initialisert');
     }
 
     init();
