@@ -51,18 +51,6 @@
       background-attachment: fixed;
     }
 
-    .bg-overlay::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.55);
-      backdrop-filter: blur(2px);
-      -webkit-backdrop-filter: blur(2px);
-    }
-
     .glass-card {
       background: var(--bg-card);
       backdrop-filter: blur(20px);
@@ -209,8 +197,6 @@
 </head>
 <body>
 
-  <div class="bg-overlay"></div>
-
   <!-- TOPPBAR -->
   <header class="glass-card flex-shrink-0" style="padding: clamp(0.3rem, 0.8vw, 0.6rem) clamp(0.6rem, 1.5vw, 1rem);">
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
@@ -355,7 +341,7 @@
 
   </main>
 
-  <!-- MODALER (uendret logikk, kun komprimert styling) -->
+  <!-- MODALER -->
   <div id="dateModal" class="modal">
     <div class="modal-content">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
