@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Smarthjem Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    
+    :root {
+      --bg-primary: #0a0f1e;
+      --bg-secondary: #111827;
+      --bg-card: #1a2332;
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --accent-blue: #60a5fa;
+      --accent-cyan: #22d3ee;
+      --accent-green: #4ade80;
+      --accent-orange: #fb923c;
+      --accent-red: #f87171;
+      --border-color: rgba(148, 163, 184, 0.1);
+      --glass-bg: rgba(26, 35, 50, 0.7);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(135deg, #0a0f1e 0%, #131b2c 50%, #0f1729 100%);
+      color: var(--text-primary);
+      font-family: 'Inter', system-ui, sans-serif;
+      height: 100vh;
+      overflow: hidden;
+      padding: 1.5rem;
+    }
+
+    .glass-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border-color);
+      border-radius: 1.5rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .weather-icon {
+      font-size: 3rem;
+      filter: drop-shadow(0 0 10px rgba(96, 165, 250, 0.3));
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--accent-green);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+      box-shadow: 0 0 10px var(--accent-green);
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.2); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.3);
+      border-radius: 10px;
+    }
+
+    /* Kalender-stil */
+    .calendar-day {
+      transition: all 0.2s ease;
+    }
+    .calendar-day:hover {
+      background: rgba(96, 165, 250, 0.2);
+      transform: scale(1.05);
+    }
+    .calendar-day.today {
+      background: var(--accent-blue);
+      color: white;
+      font-weight: bold;
+      box-shadow: 0 0 15px rgba(96, 165, 250, 0.3);
+    }
+  </style>
+</head>
+<body class="flex flex-col gap-4">
+  
+  <!-- TOPPBAR -->
+  <header class="glass-card p-6 flex justify-between items-center">
+    <div class="flex items-center gap-6">
+      <div>
+        <h1 id="liveKlokke" class="text-5xl font-bold gradient-text tracking-tight">00:00:00</h1>
+        <p id="liveDato" class="text-sm text-slate-400 mt-1 font-medium">Laster dato...</p>
+      </div>
+      <div class="hidden md:block w-px h-12 bg-slate-700"></div>
+      <div class="hidden md:flex items-center gap-3">
+        <span class="text-2xl">🏠</span>
+        <div>
+          <p class="text-sm font-medium">Innetemperatur</p>
+          <p class="text-lg font-bold text-slate-300">22.4°C</p>
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-4">
+      <div class="flex items-center gap-2">
+        <span class="pulse-dot"></span>
+        <span class="text-sm text-slate-400">System Online</span>
+      </div>
+      <div class="bg-slate-800/50 px-4 py-2 rounded-full">
+        <span class="text-xs text-slate-500">📱 Samsung Tablet</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- HOVEDGRID -->
+  <main class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 flex-1" style="min-height: 0;">
+    
+    <!-- VÆRMELDING -->
+    <section class="glass-card p-6 flex flex-col gap-4">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg font-semibold text-slate-300">🌤️ Været</h3>
+        <span id="weatherLocation" class="text-xs text-slate-500">Henter posisjon...</span>
+      </div>
+      
+      <div class="flex-1 flex flex-col items-center justify-center gap-3">
+        <div id="weatherIcon" class="weather-icon">☀️</div>
+        <div class="text-center">
+          <p id="weatherTemp" class="text-4xl font-bold">--°C</p>
+          <p id="weatherDesc" class="text-sm text-slate-400 mt-1">Laster værdata...</p>
+        </div>
+      </div>
+      
+      <div class="grid grid-cols-2 gap-3 mt-2">
+        <div class="bg-slate-800/30 rounded-xl p-3 text-center">
+          <p class="text-xs text-slate-500">Luftfuktighet</p>
+          <p id="weatherHumidity" class="text-lg font-semibold">--%</p>
+        </div>
+        <div class="bg-slate-800/30 rounded-xl p-3 text-center">
+          <p class="text-xs text-slate-500">Vind</p>
+          <p id="weatherWind" class="text-lg font-semibold">-- m/s</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- KALENDER (EGEN BYGGET) -->
+    <section class="glass-card p-6 flex flex-col gap-4">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg font-semibold text-slate-300">📅 Kalender</h3>
+        <button onclick="visDagensNotater()" class="text-xs text-blue-400 hover:text-blue-300 transition-colors">
+          Dagens notater
+        </button>
+      </div>
+      
+      <div id="calendarWidget" class="flex-1">
+        <!-- Kalender bygges her med JS -->
+      </div>
+    </section>
+
+    <!-- HURTIGNOTATER -->
+    <section class="glass-card p-6 flex flex-col gap-4" style="min-height: 0;">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg font-semibold text-slate-300">📝 Hurtignotater</h3>
+        <span class="text-xs text-slate-500">Trykk for å redigere</span>
+      </div>
+      
+      <div class="flex-1 flex flex-col gap-2" style="min-height: 0;">
+        <textarea id="quickNote" 
+                  class="flex-1 bg-slate-800/30 border border-slate-700/50 rounded-xl p-4 text-sm text-slate-200 resize-none focus:outline-none focus:border-blue-500/50 custom-scrollbar"
+                  placeholder="Skriv en rask notat her...&#10;&#10;F.eks:&#10;• Husk å kjøpe melk&#10;• Ring tannlegen&#10;• Møte kl 14"></textarea>
+        <div class="flex justify-between items-center text-xs text-slate-500">
+          <span id="saveStatus">Lagres automatisk</span>
+          <button onclick="slettNotat()" class="text-red-400 hover:text-red-300 transition-colors">Slett</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- HANDLELISTE -->
+    <section class="glass-card p-6 flex flex-col gap-4" style="min-height: 0;">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg font-semibold text-slate-300">🛒 Handleliste</h3>
+        <span id="listCount" class="text-xs text-slate-500">0 ting</span>
+      </div>
+      
+      <div class="flex gap-2">
+        <input type="text" id="tingInput" placeholder="Legg til i listen..." 
+               class="flex-1 bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-all">
+        <button onclick="leggTilTing()" class="bg-blue-500 hover:bg-blue-400 text-white font-semibold px-4 py-2.5 rounded-xl text-sm transition-all active:scale-95">
+          +
+        </button>
+      </div>
+
+      <div class="flex-1 overflow-y-auto custom-scrollbar pr-1" style="min-height: 0;">
+        <ul id="handleListe" class="flex flex-col gap-2">
+          <!-- Elementer via JS -->
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // ==================== KLOKKE & DATO ====================
+    function oppdaterKlokke() {
+      const naa = new Date();
+      document.getElementById('liveKlokke').innerText = naa.toLocaleTimeString('no-NO');
+      
+      const alternativer = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      const datoStreng = naa.toLocaleDateString('no-NO', alternativer);
+      document.getElementById('liveDato').innerText = datoStreng.charAt(0).toUpperCase() + datoStreng.slice(1);
+      
+      // Oppdater også kalenderen hver dag
+      const datoNokkel = naa.toISOString().split('T')[0];
+      if (window.sisteDato !== datoNokkel) {
+        window.sisteDato = datoNokkel;
+        byggKalender();
+      }
+    }
+    setInterval(oppdaterKlokke, 1000);
+    oppdaterKlokke();
+
+    // ==================== EGEN KALENDER ====================
+    function byggKalender() {
+      const naa = new Date();
+      const aar = naa.getFullYear();
+      const maaned = naa.getMonth();
+      const iDag = naa.getDate();
+      
+      const maanedsNavn = [
+        'Januar', 'Februar', 'Mars', 'April', 'Mai', 'Juni',
+        'Juli', 'August', 'September', 'Oktober', 'November', 'Desember'
+      ];
+      
+      const dager = ['Man', 'Tir', 'Ons', 'Tor', 'Fre', 'Lør', 'Søn'];
+      
+      const forsteDag = new Date(aar, maaned, 1).getDay() || 7; // 1=mandag, 7=søndag
+      const sisteDato = new Date(aar, maaned + 1, 0).getDate();
+      
+      let kalenderHTML = `
+        <div class="text-center mb-3">
+          <h4 class="text-lg font-semibold">${maanedsNavn[maaned]} ${aar}</h4>
+        </div>
+        <div class="grid grid-cols-7 gap-1 mb-2">
+          ${dager.map(dag => `<div class="text-xs text-slate-500 text-center font-medium py-1">${dag}</div>`).join('')}
+        </div>
+        <div class="grid grid-cols-7 gap-1">
+      `;
+      
+      // Tomme celler før første dag
+      for (let i = 1; i < forsteDag; i++) {
+        kalenderHTML += '<div class="text-center py-2"></div>';
+      }
+      
+      // Dager i måneden
+      for (let dag = 1; dag <= sisteDato; dag++) {
+        const erIdag = dag === iDag ? 'today' : '';
+        kalenderHTML += `
+          <div class="calendar-day ${erIdag} text-center py-2 text-sm rounded-lg cursor-pointer transition-all">
+            ${dag}
+          </div>
+        `;
+      }
+      
+      kalenderHTML += '</div>';
+      
+      document.getElementById('calendarWidget').innerHTML = kalenderHTML;
+      
+      // Legg til klikk-event for å vise dato
+      document.querySelectorAll('.calendar-day').forEach(day => {
+        day.addEventListener('click', function() {
+          const valgtDag = this.textContent.trim();
+          const valgtDato = `${valgtDag}. ${maanedsNavn[maaned]} ${aar}`;
+          
+          // Vis en liten popup eller alert med datoen
+          this.style.transform = 'scale(0.95)';
+          setTimeout(() => {
+            this.style.transform = 'scale(1)';
+          }, 100);
+          
+          // Her kunne du åpnet en modal eller gjort noe annet
+          alert(`Valgt dato: ${valgtDato}\n\nTips: Koble til Google Calendar via nettleseren for full kalenderfunksjonalitet!`);
+        });
+      });
+    }
+    
+    function visDagensNotater() {
+      const naa = new Date();
+      const datoStreng = naa.toLocaleDateString('no-NO', { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      });
+      
+      const notatFelt = document.getElementById('quickNote');
+      if (notatFelt.value.trim() === '') {
+        notatFelt.value = `Notater for ${datoStreng}:\n\n• `;
+        notatFelt.focus();
+        lagreNotat(); // Lagre med en gang
+      } else {
+        alert(`Dagens notater er allerede påbegynt! 📝`);
+      }
+    }
+
+    // ==================== VÆRDATA (Open-Meteo) ====================
+    async function fetchWeather() {
+      try {
+        let lat = 59.9139, lon = 10.7522;
+        
+        try {
+          const position = await new Promise((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(resolve, reject, {
+              timeout: 5000,
+              maximumAge: 600000
+            });
+          });
+          lat = position.coords.latitude;
+          lon = position.coords.longitude;
+          document.getElementById('weatherLocation').textContent = 'Din posisjon';
+        } catch (geoError) {
+          document.getElementById('weatherLocation').textContent = 'Oslo';
+        }
+
+        const response = await fetch(
+          `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code`
+        );
+        const data = await response.json();
+        const current = data.current;
+
+        const weatherIcons = {
+          0: '☀️', 1: '🌤️', 2: '⛅', 3: '☁️',
+          45: '🌫️', 48: '🌫️', 51: '🌧️', 53: '🌧️', 55: '🌧️',
+          61: '🌧️', 63: '🌧️', 65: '🌧️', 71: '❄️', 73: '❄️', 75: '❄️',
+          77: '❄️', 80: '🌧️', 81: '🌧️', 82: '🌧️', 85: '🌨️', 86: '🌨️',
+          95: '⛈️', 96: '⛈️', 99: '⛈️'
+        };
+
+        document.getElementById('weatherIcon').textContent = weatherIcons[current.weather_code] || '🌡️';
+        document.getElementById('weatherTemp').textContent = `${Math.round(current.temperature_2m)}°C`;
+        document.getElementById('weatherHumidity').textContent = `${current.relative_humidity_2m}%`;
+        document.getElementById('weatherWind').textContent = `${current.wind_speed_10m} m/s`;
+
+        const weatherDescriptions = {
+          0: 'Klart', 1: 'Delvis skyet', 2: 'Skyet', 3: 'Overskyet',
+          45: 'Tåke', 48: 'Rimtåke', 51: 'Lett yr', 53: 'Yr', 55: 'Kraftig yr',
+          61: 'Lett regn', 63: 'Regn', 65: 'Kraftig regn', 71: 'Lett snø', 73: 'Snø', 75: 'Kraftig snø',
+          77: 'Snøkorn', 80: 'Regnbyger', 81: 'Kraftige regnbyger', 82: 'Voldsomme regnbyger',
+          85: 'Snøbyger', 86: 'Kraftige snøbyger', 95: 'Torden', 96: 'Torden med hagl', 99: 'Kraftig torden med hagl'
+        };
+        document.getElementById('weatherDesc').textContent = weatherDescriptions[current.weather_code] || 'Ukjent';
+
+      } catch (error) {
+        console.error('Værdata feilet:', error);
+        document.getElementById('weatherDesc').textContent = 'Kunne ikke hente værdata';
+      }
+    }
+
+    // ==================== INDEXEDDB FOR HANDLELISTE OG NOTATER ====================
+    let db;
+    const request = indexedDB.open("SmarthjemDB", 2); // Versjon 2 for å støtte notater
+
+    request.onupgradeneeded = function(e) {
+      db = e.target.result;
+      if (!db.objectStoreNames.contains("handleliste")) {
+        db.createObjectStore("handleliste", { keyPath: "id", autoIncrement: true });
+      }
+      if (!db.objectStoreNames.contains("notater")) {
+        db.createObjectStore("notater", { keyPath: "id" });
+      }
+    };
+
+    request.onsuccess = function(e) {
+      db = e.target.result;
+      visListe();
+      lastNotat();
+      byggKalender();
+    };
+
+    // ==================== HANDLELISTE FUNKSJONER ====================
+    function leggTilTing() {
+      const input = document.getElementById("tingInput");
+      const tekst = input.value.trim();
+      if (!tekst) return;
+
+      const tx = db.transaction("handleliste", "readwrite");
+      const store = tx.objectStore("handleliste");
+      store.add({ tekst: tekst, opprettet: new Date() });
+
+      tx.oncomplete = function() {
+        input.value = "";
+        visListe();
+      };
+    }
+
+    function slettTing(id) {
+      const tx = db.transaction("handleliste", "readwrite");
+      const store = tx.objectStore("handleliste");
+      store.delete(id);
+      tx.oncomplete = function() {
+        visListe();
+      };
+    }
+
+    function visListe() {
+      const ul = document.getElementById("handleListe");
+      ul.innerHTML = "";
+
+      const tx = db.transaction("handleliste", "readonly");
+      const store = tx.objectStore("handleliste");
+      
+      let antall = 0;
+      store.openCursor().onsuccess = function(e) {
+        const cursor = e.target.result;
+        if (cursor) {
+          antall++;
+          const li = document.createElement("li");
+          li.className = "flex justify-between items-center bg-slate-800/30 hover:bg-slate-800/50 p-3 rounded-xl border border-slate-700/30 text-sm transition-all group";
+          li.innerHTML = `
+            <span class="text-slate-200">${cursor.value.tekst}</span>
+            <button onclick="slettTing(${cursor.value.id})" class="opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-300 px-2 font-bold transition-all">✓</button>
+          `;
+          ul.appendChild(li);
+          cursor.continue();
+        } else {
+          document.getElementById('listCount').textContent = `${antall} ting`;
+        }
+      };
+    }
+
+    // ==================== NOTAT FUNKSJONER ====================
+    let saveTimeout;
+    document.getElementById('quickNote').addEventListener('input', function() {
+      document.getElementById('saveStatus').textContent = 'Lagrer...';
+      clearTimeout(saveTimeout);
+      saveTimeout = setTimeout(lagreNotat, 500);
+    });
+
+    function lagreNotat() {
+      const notatTekst = document.getElementById('quickNote').value;
+      const tx = db.transaction("notater", "readwrite");
+      const store = tx.objectStore("notater");
+      store.put({ id: 'quickNote', tekst: notatTekst, sistOppdatert: new Date() });
+      
+      tx.oncomplete = function() {
+        document.getElementById('saveStatus').textContent = 'Lagret ✓';
+        setTimeout(() => {
+          document.getElementById('saveStatus').textContent = 'Lagres automatisk';
+        }, 2000);
+      };
+    }
+
+    function lastNotat() {
+      const tx = db.transaction("notater", "readonly");
+      const store = tx.objectStore("notater");
+      const getRequest = store.get('quickNote');
+      
+      getRequest.onsuccess = function() {
+        if (getRequest.result) {
+          document.getElementById('quickNote').value = getRequest.result.tekst;
+        }
+      };
+    }
+
+    function slettNotat() {
+      if (confirm('Vil du slette notatet?')) {
+        const tx = db.transaction("notater", "readwrite");
+        const store = tx.objectStore("notater");
+        store.delete('quickNote');
+        tx.oncomplete = function() {
+          document.getElementById('quickNote').value = '';
+          document.getElementById('saveStatus').textContent = 'Notat slettet';
+        };
+      }
+    }
+
+    // ==================== EVENT LISTENERS ====================
+    document.getElementById("tingInput").addEventListener("keypress", function(e) {
+      if (e.key === "Enter") leggTilTing();
+    });
+
+    // ==================== INITIELL HENTING AV DATA ====================
+    fetchWeather();
+    window.sisteDato = new Date().toISOString().split('T')[0];
+    
+    // Oppdater værdata hver 30. minutt
+    setInterval(fetchWeather, 1800000);
+  </script>
+</body>
+</html>
