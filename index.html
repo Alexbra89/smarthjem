@@ -2,10 +2,23 @@
 <html lang="no">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Smarthjem">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#0a0f1e">
+  <meta name="description" content="Familien sitt smarte dashbord">
   <title>Smarthjem Dashboard</title>
+  
+  <!-- PWA Manifest som data-URI -->
+  <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlNtYXJ0aGplbSBEYXNoYm9hcmQiLAogICJzaG9ydF9uYW1lIjogIlNtYXJ0aGplbSIsCiAgInN0YXJ0X3VybCI6ICIuLyIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzBhMGYxZSIsCiAgInRoZW1lX2NvbG9yIjogIiMwYTBmMWUiLAogICJvcmllbnRhdGlvbiI6ICJsYW5kc2NhcGUiLAogICJpY29ucyI6IFtdCn0=">
+  
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%230a0f1e' width='100' height='100' rx='20'/><text x='50' y='65' text-anchor='middle' fill='%2360a5fa' font-size='45' font-family='sans-serif'>🏠</text></svg>">
+  
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
@@ -27,6 +40,8 @@
     html {
       height: 100vh;
       overflow: hidden;
+      -webkit-overflow-scrolling: none;
+      overscroll-behavior: none;
     }
 
     body {
@@ -41,6 +56,9 @@
       flex-direction: column;
       gap: clamp(0.3rem, 0.8vw, 0.5rem);
       position: relative;
+      -webkit-overflow-scrolling: none;
+      overscroll-behavior: none;
+      touch-action: manipulation;
       
       /* Unsplash bakgrunn med mørkt glass-slør */
       background: linear-gradient(rgba(15, 23, 42, 0.85), rgba(3, 7, 18, 0.95)), 
@@ -50,8 +68,6 @@
       background-repeat: no-repeat;
       background-attachment: fixed;
     }
-
-    /* FJERNET: .bg-overlay og dens ::after - disse var tomme og blokkerende */
 
     .glass-card {
       background: var(--bg-card);
@@ -184,6 +200,42 @@
     .scroll-thin::-webkit-scrollbar-track { background: transparent; }
     .scroll-thin::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
 
+    .error-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      padding: 0.75rem;
+      text-align: center;
+      flex: 1;
+      min-height: 0;
+    }
+    .error-state i {
+      font-size: 1.5rem;
+      opacity: 0.5;
+    }
+    .error-state p {
+      font-size: 0.6rem;
+      color: var(--text-secondary);
+      max-width: 180px;
+    }
+    .error-state button {
+      margin-top: 0.3rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: 0.5rem;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--text-secondary);
+      font-size: 0.6rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .error-state button:hover {
+      background: rgba(255,255,255,0.14);
+      color: var(--text-primary);
+    }
+
     @keyframes fadeInUp {
       from { opacity: 0; transform: translateY(6px); }
       to { opacity: 1; transform: translateY(0); }
@@ -229,10 +281,10 @@
     <div id="viktigIDagListe" style="display: flex; align-items: center; gap: 0.35rem; flex-wrap: wrap;"></div>
   </section>
 
-  <!-- HOVEDGRID – RIKTIG HØYDEFORDELING MED grid-template-rows -->
+  <!-- HOVEDGRID -->
   <main style="display: grid; grid-template-columns: repeat(12, 1fr); grid-template-rows: 1fr 1fr; gap: clamp(0.3rem, 0.8vw, 0.5rem); flex: 1; min-height: 0;">
 
-    <!-- RAD 1: Hendelser(3) + Handleliste(4) + Tømming(2) + Vær(3) -->
+    <!-- RAD 1 -->
     
     <!-- 1. NESTE HENDELSER (3 kol) -->
     <section class="glass-card" style="grid-column: span 3; grid-row: span 1; padding: clamp(0.4rem, 0.8vw, 0.6rem); gap: 0.3rem;">
@@ -283,22 +335,24 @@
       <h2 style="font-size: clamp(0.7rem, 1.1vw, 0.85rem); font-weight: 600; color: #e4e4e7; display: flex; align-items: center; gap: 0.3rem;">
         <i class="fa-solid fa-cloud-sun text-cyan-400" style="font-size: 0.65rem;"></i> Været
       </h2>
-      <div style="display: flex; align-items: center; gap: 0.5rem;">
-        <span id="weatherIcon" style="font-size: clamp(1.8rem, 2.5vw, 2.2rem);">☀️</span>
-        <div style="flex: 1;">
-          <p id="weatherTemp" style="font-size: clamp(1.2rem, 1.8vw, 1.6rem); font-weight: 700; line-height: 1;">--°</p>
-          <p id="weatherDesc" style="font-size: 0.55rem; color: #a1a1aa;">Laster...</p>
+      <div id="weatherContent">
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span id="weatherIcon" style="font-size: clamp(1.8rem, 2.5vw, 2.2rem);">☀️</span>
+          <div style="flex: 1;">
+            <p id="weatherTemp" style="font-size: clamp(1.2rem, 1.8vw, 1.6rem); font-weight: 700; line-height: 1;">--°</p>
+            <p id="weatherDesc" style="font-size: 0.55rem; color: #a1a1aa;">Laster...</p>
+          </div>
+          <div style="text-align: right; font-size: 0.55rem; color: #a1a1aa;">
+            <p id="weatherHumidity"><i class="fa-solid fa-droplet"></i> --%</p>
+            <p id="weatherWind"><i class="fa-solid fa-wind"></i> -- m/s</p>
+          </div>
         </div>
-        <div style="text-align: right; font-size: 0.55rem; color: #a1a1aa;">
-          <p id="weatherHumidity"><i class="fa-solid fa-droplet"></i> --%</p>
-          <p id="weatherWind"><i class="fa-solid fa-wind"></i> -- m/s</p>
-        </div>
+        <div id="hourlyForecast" class="weather-hourly" style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 0.25rem;"></div>
+        <p id="weatherLocation" style="font-size: 0.5rem; color: #a1a1aa; text-align: center; flex-shrink: 0;">Henter posisjon...</p>
       </div>
-      <div id="hourlyForecast" class="weather-hourly" style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 0.25rem;"></div>
-      <p id="weatherLocation" style="font-size: 0.5rem; color: #a1a1aa; text-align: center; flex-shrink: 0;">Henter posisjon...</p>
     </section>
 
-    <!-- RAD 2: Kalender(6) + Notater(6) -->
+    <!-- RAD 2 -->
     
     <!-- 5. KALENDER (6 kol) -->
     <section class="glass-card" style="grid-column: span 6; grid-row: span 1; padding: clamp(0.4rem, 0.8vw, 0.6rem); gap: 0.25rem;">
@@ -347,7 +401,7 @@
 
   </main>
 
-  <!-- MODALER (uendret) -->
+  <!-- MODALER -->
   <div id="dateModal" class="modal">
     <div class="modal-content">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
@@ -446,6 +500,17 @@
   </div>
 
   <script>
+    // ==================== PWA REGISTRERING ====================
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        // Minimal service worker for offline-støtte
+        if (!navigator.serviceWorker.controller) {
+          navigator.serviceWorker.register('data:application/javascript,self.addEventListener("fetch",e=>{e.respondWith(fetch(e.request).catch(()=>new Response("Offline")))})')
+            .catch(() => console.log('SW registration optional'));
+        }
+      });
+    }
+
     // ==================== KONFIGURASJON ====================
     const KVDB_BUCKET = 'familien-smarthjem-tavle-2026';
     const KVDB_URL = `https://kvdb.io/${KVDB_BUCKET}/handleliste`;
@@ -468,6 +533,17 @@
     let visManed = new Date().getMonth();
     let handlelisteDb = null;
     let pendingHendelseDato = null;
+
+    // ==================== FEILHJELPER ====================
+    function visFeil(elementId, melding, onRetry = null) {
+      const el = document.getElementById(elementId);
+      if (!el) return;
+      el.innerHTML = `<div class="error-state">
+        <i class="fa-solid fa-circle-exclamation" style="color: var(--accent-rose);"></i>
+        <p>${melding}</p>
+        ${onRetry ? `<button onclick="(${onRetry.toString()})()">Prøv igjen <i class="fa-solid fa-rotate-right"></i></button>` : ''}
+      </div>`;
+    }
 
     // ==================== KLOKKE OG DATO ====================
     async function oppdaterKlokke() {
@@ -532,7 +608,7 @@
       });
     }
 
-    // ==================== HANDLELISTE ====================
+    // ==================== HANDLELISTE MED ROBUST ERROR-HANDLING ====================
     async function syncHandlelisteFraKvdb() {
       try {
         const resp = await fetch(KVDB_URL);
@@ -544,7 +620,14 @@
           await new Promise((res) => { store.clear().onsuccess = res; });
           for (const v of skyData) await new Promise((res) => { store.add(v).onsuccess = res; });
         }
-      } catch (e) { console.warn('KVDB-lesing feilet:', e.message); }
+        document.getElementById('listCount').style.color = '#a1a1aa';
+      } catch (e) {
+        console.warn('KVDB-lesing feilet, bruker lokal IndexedDB:', e.message);
+        document.getElementById('listCount').style.color = '#fb923c';
+        // Varsle bruker om at sky-synk er utilgjengelig
+        const countEl = document.getElementById('listCount');
+        if (countEl) countEl.title = 'Jobber lokalt – sky-synk utilgjengelig';
+      }
     }
 
     async function syncHandlelisteTilKvdb() {
@@ -916,7 +999,7 @@
       await byggKalender();
     }
 
-    // ==================== iCal ====================
+    // ==================== iCal MED ROBUST ERROR-HANDLING ====================
     function apneICloudModal() {
       document.getElementById('icalUrlInput').value = icalUrl;
       document.getElementById('iCloudModal').classList.add('active');
@@ -940,13 +1023,15 @@
         const resp = await fetch(icalUrl);
         if (!resp.ok) throw new Error('Status ' + resp.status);
         kalenderHendelser = parseICal(await resp.text());
+        if (kalenderHendelser.length === 0) throw new Error('Tom kalender');
         document.getElementById('iCloudStatus').textContent = '🟢';
         document.getElementById('iCloudDebug').textContent = `${kalenderHendelser.length} hendelser`;
       } catch (feil) {
         console.warn('iCal feilet:', feil.message);
         kalenderHendelser = [];
-        document.getElementById('iCloudStatus').textContent = '🟡';
-        document.getElementById('iCloudDebug').textContent = 'Nettverksfeil';
+        document.getElementById('iCloudStatus').textContent = '🔴';
+        document.getElementById('iCloudDebug').textContent = 'Kunne ikke hente kalender – sjekk URL og nettverk';
+        visFeil('nesteHendelser', 'Kalender utilgjengelig. Sjekk iCal-innstillinger.', hentICalManuelt);
       }
       await byggKalender();
       visNesteHendelser();
@@ -987,7 +1072,7 @@
       return `${y}-${m}-${d}T00:00:00`;
     }
 
-    // ==================== VÆRDATA (SKIEN) ====================
+    // ==================== VÆRDATA MED ROBUST ERROR-HANDLING ====================
     const VEER_IKONER = { 0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',48:'🌫️',51:'🌧️',53:'🌧️',55:'🌧️',61:'🌧️',63:'🌧️',65:'🌧️',71:'❄️',73:'❄️',75:'❄️',77:'❄️',80:'🌧️',81:'🌧️',82:'🌧️',85:'🌨️',86:'🌨️',95:'⛈️',96:'⛈️',99:'⛈️' };
     const VEER_TEKST = { 0:'Klart',1:'Delvis skyet',2:'Skyet',3:'Overskyet',45:'Tåke',48:'Rimtåke',51:'Lett yr',53:'Yr',55:'Kraftig yr',61:'Lett regn',63:'Regn',65:'Kraftig regn',71:'Lett snø',73:'Snø',75:'Kraftig snø',77:'Snøkorn',80:'Regnbyger',81:'Kraftige byger',82:'Voldsomme byger',85:'Snøbyger',86:'Kraftige snøbyger',95:'Torden',96:'Torden m/hagl',99:'Kraftig torden' };
 
@@ -1004,7 +1089,10 @@
         const resp = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code&hourly=temperature_2m,weather_code&forecast_days=2&timezone=auto`);
         if (!resp.ok) throw new Error('Status ' + resp.status);
         visVeerdata(await resp.json());
-      } catch { visFallbackVeerdata(); }
+      } catch (feil) {
+        console.warn('Vær-API feilet:', feil.message);
+        visFeil('weatherContent', 'Værdata utilgjengelig – sjekk nettverk', hentVeerdata);
+      }
     }
 
     function visVeerdata(data) {
@@ -1034,29 +1122,6 @@
           <span style="font-size:0.55rem; font-weight:600;">${s.temp}°</span>
         </div>
       `).join('');
-    }
-
-    function visFallbackVeerdata() {
-      const m = new Date().getMonth();
-      const sommer = m >= 4 && m <= 8;
-      const time = new Date().getHours();
-      const dagtid = time >= 7 && time <= 19;
-      const temp = sommer ? (dagtid ? 22 : 16) : (dagtid ? 8 : 2);
-      const kode = sommer ? (dagtid ? 1 : 0) : (dagtid ? 2 : 3);
-
-      document.getElementById('weatherIcon').textContent = VEER_IKONER[kode];
-      document.getElementById('weatherTemp').textContent = `${temp}°C`;
-      document.getElementById('weatherDesc').textContent = VEER_TEKST[kode] + ' (est.)';
-      document.getElementById('weatherHumidity').innerHTML = `<i class="fa-solid fa-droplet"></i> ${sommer?50:78}%`;
-      document.getElementById('weatherWind').innerHTML = `<i class="fa-solid fa-wind"></i> ${sommer?3:6} m/s`;
-      document.getElementById('weatherLocation').textContent = 'Estimert';
-
-      const naa = new Date();
-      const slots = [];
-      for (let i = 0; i < 5; i++) {
-        slots.push({ time: new Date(naa.getTime() + i*3600000), temp: temp + Math.round(Math.sin(i*0.5)*3), code: kode });
-      }
-      tegnTimeprognose(slots);
     }
 
     // ==================== VIKTIG I DAG ====================
@@ -1136,9 +1201,23 @@
       }
     });
 
+    // Forhindre dobbelttrykk-zoom på knapper
+    document.addEventListener('dblclick', (e) => {
+      if (e.target.tagName === 'BUTTON' || e.target.closest('button')) {
+        e.preventDefault();
+      }
+    }, { passive: false });
+
     // ==================== INIT ====================
     async function init() {
-      await apneHandlelisteDb();
+      try {
+        await apneHandlelisteDb();
+      } catch (e) {
+        console.error('IndexedDB utilgjengelig:', e);
+        document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;color:#fafafa;font-family:Inter,sans-serif;text-align:center;padding:2rem;"><div><h1 style="font-size:1.5rem;margin-bottom:0.5rem;">⚠️ Database utilgjengelig</h1><p style="color:#a1a1aa;">Dashbordet krever IndexedDB for å fungere.</p></div></div>';
+        return;
+      }
+
       const storedIcal = await dbGet('innstillinger', 'icalUrl');
       if (storedIcal) icalUrl = storedIcal.value;
 
