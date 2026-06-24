@@ -42,8 +42,8 @@
       gap: clamp(0.3rem, 0.8vw, 0.5rem);
       position: relative;
       
-      /* Unsplash bakgrunn med mørkt glass-slør */
-      background: linear-gradient(rgba(15, 23, 42, 0.85), rgba(3, 7, 18, 0.95)), 
+      /* Korrekt og vakkert tonet bakgrunnsbilde som ikke blokkeres */
+      background: linear-gradient(rgba(15, 23, 42, 0.75), rgba(3, 7, 18, 0.88)), 
                   url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1920&q=80');
       background-size: cover;
       background-position: center;
@@ -159,7 +159,8 @@
 
     .pill {
       display: inline-flex; align-items: center; gap: 0.15rem;
-      padding: 0.2rem 0.5rem; border-radius: 9999px;
+      padding: 0.2rem 0.5rem;
+      border-radius: 9999px;
       font-size: 0.65rem; white-space: nowrap;
     }
     .pill-urgent {
@@ -197,7 +198,6 @@
 </head>
 <body>
 
-  <!-- TOPPBAR -->
   <header class="glass-card flex-shrink-0" style="padding: clamp(0.3rem, 0.8vw, 0.6rem) clamp(0.6rem, 1.5vw, 1rem);">
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
       <div style="display: flex; align-items: center; gap: 0.75rem;">
@@ -219,7 +219,6 @@
     </div>
   </header>
 
-  <!-- VIKTIG I DAG -->
   <section class="glass-card flex-shrink-0" style="padding: 0.35rem 0.8rem; flex-direction: row; align-items: center; gap: 0.6rem; overflow-x: auto;">
     <h3 style="font-size: 0.7rem; font-weight: 600; color: #fbbf24; display: flex; align-items: center; gap: 0.3rem; flex-shrink: 0;">
       <i class="fa-solid fa-triangle-exclamation" style="font-size: 0.6rem;"></i> Viktig i dag
@@ -227,11 +226,9 @@
     <div id="viktigIDagListe" style="display: flex; align-items: center; gap: 0.35rem; flex-wrap: wrap;"></div>
   </section>
 
-  <!-- HOVEDGRID – flex: 1 for å fylle resten av høyden -->
-  <main style="display: grid; grid-template-columns: repeat(12, 1fr); gap: clamp(0.3rem, 0.8vw, 0.5rem); flex: 1; min-height: 0;">
+  <main style="display: grid; grid-template-columns: repeat(12, 1fr); grid-template-rows: repeat(2, minmax(0, 1fr)); gap: clamp(0.3rem, 0.8vw, 0.5rem); flex: 1; min-height: 0;">
 
-    <!-- 1. NESTE HENDELSER (3 kol) -->
-    <section class="glass-card" style="grid-column: span 3; padding: clamp(0.4rem, 0.8vw, 0.6rem); gap: 0.3rem; order: 1;">
+    <section class="glass-card" style="grid-column: span 3; grid-row: 1; padding: clamp(0.4rem, 0.8vw, 0.6rem); gap: 0.3rem; order: 1;">
       <div style="display: flex; justify-content: space-between; align-items: center;">
         <h2 style="font-size: clamp(0.7rem, 1.1vw, 0.85rem); font-weight: 600; color: #e4e4e7; display: flex; align-items: center; gap: 0.3rem;">
           <i class="fa-solid fa-list-check text-amber-400" style="font-size: 0.65rem;"></i> Hendelser
@@ -243,8 +240,7 @@
       <div id="nesteHendelser" class="scroll-thin" style="display: flex; flex-direction: column; gap: 0.2rem;"></div>
     </section>
 
-    <!-- 2. HANDLELISTE (4 kol) -->
-    <section class="glass-card" style="grid-column: span 4; padding: clamp(0.4rem, 0.8vw, 0.6rem); gap: 0.3rem; order: 2;">
+    <section class="glass-card" style="grid-column: span 4; grid-row: span 2; padding: clamp(0.4rem, 0.8vw, 0.6rem); gap: 0.3rem; order: 2;">
       <div style="display: flex; justify-content: space-between; align-items: center;">
         <h2 style="font-size: clamp(0.7rem, 1.1vw, 0.85rem); font-weight: 600; color: #e4e4e7; display: flex; align-items: center; gap: 0.3rem;">
           <i class="fa-solid fa-cart-shopping text-emerald-400" style="font-size: 0.65rem;"></i> Handleliste
@@ -261,8 +257,7 @@
       <ul id="handleListe" class="scroll-thin" style="display: flex; flex-direction: column; gap: 0.15rem;"></ul>
     </section>
 
-    <!-- 3. SØPPELTØMMING (2 kol) -->
-    <section class="glass-card" style="grid-column: span 2; padding: clamp(0.4rem, 0.8vw, 0.6rem); gap: 0.3rem; order: 4;">
+    <section class="glass-card" style="grid-column: span 2; grid-row: 1; padding: clamp(0.4rem, 0.8vw, 0.6rem); gap: 0.3rem; order: 4;">
       <div style="display: flex; justify-content: space-between; align-items: center;">
         <h2 style="font-size: clamp(0.7rem, 1.1vw, 0.85rem); font-weight: 600; color: #e4e4e7; display: flex; align-items: center; gap: 0.3rem;">
           <i class="fa-solid fa-trash-can text-green-400" style="font-size: 0.65rem;"></i> Tømming
@@ -274,8 +269,7 @@
       <div id="soppelListe" class="scroll-thin" style="display: flex; flex-direction: column; gap: 0.15rem;"></div>
     </section>
 
-    <!-- 4. VÆRMELDING (3 kol) -->
-    <section class="glass-card" style="grid-column: span 3; padding: clamp(0.4rem, 0.8vw, 0.6rem); gap: 0.25rem; order: 3;">
+    <section class="glass-card" style="grid-column: span 3; grid-row: 1; padding: clamp(0.4rem, 0.8vw, 0.6rem); gap: 0.25rem; order: 3;">
       <h2 style="font-size: clamp(0.7rem, 1.1vw, 0.85rem); font-weight: 600; color: #e4e4e7; display: flex; align-items: center; gap: 0.3rem;">
         <i class="fa-solid fa-cloud-sun text-cyan-400" style="font-size: 0.65rem;"></i> Været
       </h2>
@@ -294,8 +288,7 @@
       <p id="weatherLocation" style="font-size: 0.5rem; color: #a1a1aa; text-align: center; flex-shrink: 0;">Henter posisjon...</p>
     </section>
 
-    <!-- 5. KALENDER (5 kol) -->
-    <section class="glass-card" style="grid-column: span 5; padding: clamp(0.4rem, 0.8vw, 0.6rem); gap: 0.25rem; order: 5;">
+    <section class="glass-card" style="grid-column: span 5; grid-row: 2; padding: clamp(0.4rem, 0.8vw, 0.6rem); gap: 0.25rem; order: 5;">
       <div style="display: flex; justify-content: space-between; align-items: center;">
         <h2 style="font-size: clamp(0.7rem, 1.1vw, 0.85rem); font-weight: 600; color: #e4e4e7; display: flex; align-items: center; gap: 0.3rem;">
           <i class="fa-regular fa-calendar text-blue-400" style="font-size: 0.65rem;"></i> Kalender
@@ -320,8 +313,7 @@
       </div>
     </section>
 
-    <!-- 6. HURTIGNOTATER (5 kol) -->
-    <section class="glass-card" style="grid-column: span 5; padding: clamp(0.4rem, 0.8vw, 0.6rem); gap: 0.25rem; order: 6;">
+    <section class="glass-card" style="grid-column: span 3; grid-row: 2; padding: clamp(0.4rem, 0.8vw, 0.6rem); gap: 0.25rem; order: 6;">
       <div style="display: flex; justify-content: space-between; align-items: center;">
         <h2 style="font-size: clamp(0.7rem, 1.1vw, 0.85rem); font-weight: 600; color: #e4e4e7; display: flex; align-items: center; gap: 0.3rem;">
           <i class="fa-solid fa-note-sticky text-yellow-400" style="font-size: 0.65rem;"></i> Notater
@@ -341,7 +333,6 @@
 
   </main>
 
-  <!-- MODALER -->
   <div id="dateModal" class="modal">
     <div class="modal-content">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
@@ -443,674 +434,199 @@
     // ==================== KONFIGURASJON ====================
     const KVDB_BUCKET = 'familien-smarthjem-tavle-2026';
     const KVDB_URL = `https://kvdb.io/${KVDB_BUCKET}/handleliste`;
-    
     const MAANEDSNAVN = ['Januar','Februar','Mars','April','Mai','Juni','Juli','August','September','Oktober','November','Desember'];
     const DAGER_KORT = ['Man','Tir','Ons','Tor','Fre','Lør','Søn'];
-    
     const SOPPEL_TYPER = [
-      { id: 'restavfall', navn: 'Restavfall', emoji: '🟢', farge: '#4ade80' },
-      { id: 'papir', navn: 'Papir', emoji: '🔵', farge: '#60a5fa' },
-      { id: 'matavfall', navn: 'Matavfall', emoji: '🟤', farge: '#b08968' },
-      { id: 'glassmetall', navn: 'Glass/metall', emoji: '🟣', farge: '#c084fc' }
+      { id: 'restavfall', navn: 'Restavfall', emoji: '🟢', farge: 'text-emerald-400' },
+      { id: 'papir', navn: 'Papir/Papp', emoji: '🔵', farge: 'text-blue-400' },
+      { id: 'plast', navn: 'Plastemballasje', emoji: '🟣', farge: 'text-purple-400' },
+      { id: 'matavfall', navn: 'Matavfall', emoji: '🟤', farge: 'text-amber-600' }
     ];
 
-    let valgtDato = null;
-    let kalenderHendelser = [];
-    let egneHendelser = [];
-    let icalUrl = 'https://www.officeholidays.com/ics/ics_country.php?tbl_country=Norway';
-    let visAar = new Date().getFullYear();
-    let visManed = new Date().getMonth();
-    let handlelisteDb = null;
-    let pendingHendelseDato = null;
+    let handleliste = [];
+    let egneHendelser = []; 
+    let icalHendelser = []; 
+    let icalUrl = '';
 
-    // ==================== KLOKKE OG DATO ====================
-    async function oppdaterKlokke() {
-      const naa = new Date();
-      document.getElementById('liveKlokke').innerText = naa.toLocaleTimeString('no-NO', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
-      const alt = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-      const datoStreng = naa.toLocaleDateString('no-NO', alt);
-      document.getElementById('liveDato').innerText = datoStreng.charAt(0).toUpperCase() + datoStreng.slice(1);
+    let valgtDato = new Date();
+    let gjeldendeAar = valgtDato.getFullYear();
+    let gjeldendeManed = valgtDato.getMonth();
 
-      const idag = naa.toISOString().split('T')[0];
-      if (window.sisteDato !== idag) {
-        window.sisteDato = idag;
-        await byggKalender();
-        visNesteHendelser();
-        renderViktigIDag();
-        renderSoppelListe();
-      }
-    }
-    setInterval(oppdaterKlokke, 1000);
-    oppdaterKlokke();
-
-    // ==================== INDEXEDDB ====================
-    async function apneHandlelisteDb() {
+    // ==================== INDEXEDDB FOR NOTATER & INNSTILLINGER ====================
+    function dbOpen() {
       return new Promise((resolve, reject) => {
-        const req = indexedDB.open('SmarthjemDashboard', 4);
+        const req = indexedDB.open('SmarthjemDashboardDB', 2);
         req.onupgradeneeded = (e) => {
           const db = e.target.result;
-          if (!db.objectStoreNames.contains('handleliste')) db.createObjectStore('handleliste', { keyPath: 'id', autoIncrement: true });
           if (!db.objectStoreNames.contains('notater')) db.createObjectStore('notater', { keyPath: 'id' });
-          if (!db.objectStoreNames.contains('datonotater')) db.createObjectStore('datonotater', { keyPath: 'id' });
           if (!db.objectStoreNames.contains('innstillinger')) db.createObjectStore('innstillinger', { keyPath: 'id' });
-          if (!db.objectStoreNames.contains('soppeltomming')) db.createObjectStore('soppeltomming', { keyPath: 'id' });
-          if (!db.objectStoreNames.contains('egneHendelser')) db.createObjectStore('egneHendelser', { keyPath: 'id', autoIncrement: true });
+          if (!db.objectStoreNames.contains('soppel')) db.createObjectStore('soppel', { keyPath: 'id' });
+          if (!db.objectStoreNames.contains('egneHendelser')) db.createObjectStore('egneHendelser', { keyPath: 'id' });
         };
-        req.onsuccess = (e) => { handlelisteDb = e.target.result; resolve(); };
+        req.onsuccess = (e) => resolve(e.target.result);
         req.onerror = (e) => reject(e.target.error);
       });
     }
 
-    function dbGet(storeName, id) {
+    async function dbGet(storeName, id) {
+      const db = await dbOpen();
       return new Promise((resolve) => {
-        const tx = handlelisteDb.transaction(storeName, 'readonly');
-        tx.objectStore(storeName).get(id).onsuccess = (e) => resolve(e.target.result);
-      });
-    }
-    function dbGetAll(storeName) {
-      return new Promise((resolve) => {
-        const tx = handlelisteDb.transaction(storeName, 'readonly');
-        tx.objectStore(storeName).getAll().onsuccess = (e) => resolve(e.target.result);
-      });
-    }
-    function dbPut(storeName, data) {
-      return new Promise((resolve) => {
-        const tx = handlelisteDb.transaction(storeName, 'readwrite');
-        tx.objectStore(storeName).put(data).onsuccess = resolve;
-      });
-    }
-    function dbDelete(storeName, id) {
-      return new Promise((resolve) => {
-        const tx = handlelisteDb.transaction(storeName, 'readwrite');
-        tx.objectStore(storeName).delete(id).onsuccess = resolve;
+        const tx = db.transaction(storeName, 'readonly');
+        const store = tx.objectStore(storeName);
+        const req = store.get(id);
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => resolve(null);
       });
     }
 
-    // ==================== HANDLELISTE ====================
+    async function dbPut(storeName, obj) {
+      const db = await dbOpen();
+      return new Promise((resolve) => {
+        const tx = db.transaction(storeName, 'readwrite');
+        const store = tx.objectStore(storeName);
+        store.put(obj);
+        tx.oncomplete = () => resolve(true);
+      });
+    }
+
+    async function dbDelete(storeName, id) {
+      const db = await dbOpen();
+      return new Promise((resolve) => {
+        const tx = db.transaction(storeName, 'readwrite');
+        const store = tx.objectStore(storeName);
+        store.delete(id);
+        tx.oncomplete = () => resolve(true);
+      });
+    }
+
+    async function dbGetAll(storeName) {
+      const db = await dbOpen();
+      return new Promise((resolve) => {
+        const tx = db.transaction(storeName, 'readonly');
+        const store = tx.objectStore(storeName);
+        const req = store.getAll();
+        req.onsuccess = () => resolve(req.result || []);
+        req.onerror = () => resolve([]);
+      });
+    }
+
+    // ==================== LIVE KLOKKE & DATO ====================
+    function oppdaterKlokke() {
+      const n = new Date();
+      document.getElementById('liveKlokke').textContent = n.toLocaleTimeString('no-NO', { hour12: false });
+      
+      const ugedag = n.toLocaleDateString('no-NO', { weekday: 'long' });
+      const dagMnd = n.toLocaleDateString('no-NO', { day: 'numeric', month: 'long' });
+      document.getElementById('liveDato').textContent = `${ugedag.charAt(0).toUpperCase() + ugedag.slice(1)}, ${dagMnd}`;
+    }
+    setInterval(oppdaterKlokke, 1000);
+
+    // ==================== KVDB SYNC (HANDLELISTE) ====================
     async function syncHandlelisteFraKvdb() {
       try {
-        const resp = await fetch(KVDB_URL);
-        if (!resp.ok) throw new Error('Status ' + resp.status);
-        const skyData = await resp.json();
-        if (Array.isArray(skyData) && skyData.length > 0) {
-          const tx = handlelisteDb.transaction('handleliste', 'readwrite');
-          const store = tx.objectStore('handleliste');
-          await new Promise((res) => { store.clear().onsuccess = res; });
-          for (const v of skyData) await new Promise((res) => { store.add(v).onsuccess = res; });
+        const res = await fetch(KVDB_URL);
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data)) {
+            handleliste = data;
+            return;
+          }
         }
-      } catch (e) { console.warn('KVDB-lesing feilet:', e.message); }
+      } catch (err) { console.log('KVDB henting feilet, bruker lokal.', err); }
     }
 
-    async function syncHandlelisteTilKvdb() {
+    async function lagreHandlelisteTilKvdb() {
       try {
-        const varer = await dbGetAll('handleliste');
-        await fetch(KVDB_URL, { method: 'POST', body: JSON.stringify(varer) });
-      } catch (e) { console.warn('KVDB-skriving feilet:', e.message); }
-    }
-
-    async function leggTilVare() {
-      const tekst = document.getElementById('tingInput').value.trim();
-      if (!tekst) return;
-      const tx = handlelisteDb.transaction('handleliste', 'readwrite');
-      tx.objectStore('handleliste').add({ tekst, checked: false, opprettet: new Date().toISOString() });
-      tx.oncomplete = async () => {
-        document.getElementById('tingInput').value = '';
-        await visHandleliste();
-        await syncHandlelisteTilKvdb();
-        renderViktigIDag();
-      };
-    }
-
-    async function veksleVare(id, checked) {
-      const tx = handlelisteDb.transaction('handleliste', 'readwrite');
-      const store = tx.objectStore('handleliste');
-      const req = store.get(id);
-      req.onsuccess = () => {
-        const v = req.result;
-        v.checked = checked;
-        v.completedAt = checked ? new Date().toISOString() : null;
-        store.put(v);
-      };
-      tx.oncomplete = async () => {
-        await visHandleliste();
-        await syncHandlelisteTilKvdb();
-        renderViktigIDag();
-      };
-    }
-
-    async function slettVare(id) {
-      const tx = handlelisteDb.transaction('handleliste', 'readwrite');
-      tx.objectStore('handleliste').delete(id);
-      tx.oncomplete = async () => {
-        await visHandleliste();
-        await syncHandlelisteTilKvdb();
-        renderViktigIDag();
-      };
+        await fetch(KVDB_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(handleliste)
+        });
+      } catch (err) { console.log('KVDB lagring feilet.', err); }
     }
 
     async function visHandleliste() {
-      const varer = await dbGetAll('handleliste');
-      const aktive = varer.filter(v => !v.checked);
-      const fullforte = varer.filter(v => v.checked);
-      document.getElementById('listCount').textContent = aktive.length;
+      const ul = document.getElementById('handleListe');
+      ul.innerHTML = '';
+      document.getElementById('listCount').textContent = handleliste.length;
 
-      const lagVare = (v) => `
-        <li style="display: flex; align-items: center; gap: 0.35rem; padding: 0.2rem 0.35rem; border-radius: 0.4rem; background: rgba(255,255,255,0.02); transition: all 0.15s; font-size: 0.6rem;">
-          <span class="chk ${v.checked ? 'checked' : ''}" onclick="veksleVare(${v.id}, ${!v.checked})"></span>
-          <span style="flex: 1; ${v.checked ? 'color: #a1a1aa; text-decoration: line-through; opacity: 0.5;' : 'color: #e4e4e7;'}">${v.tekst}</span>
-          <button onclick="slettVare(${v.id})" style="color: #71717a; background: none; border: none; font-size: 0.55rem; cursor: pointer;">
-            <i class="fa-solid fa-xmark"></i>
-          </button>
-        </li>`;
+      handleliste.forEach((item, index) => {
+        const li = document.createElement('li');
+        li.className = 'animate-fade-in flex items-center justify-between py-1 px-2 rounded-md hover:bg-white/5 transition-colors';
+        li.style.fontSize = '0.65rem';
 
-      document.getElementById('handleListe').innerHTML = aktive.map(lagVare).join('') + fullforte.map(lagVare).join('');
-    }
+        const left = document.createElement('div');
+        left.className = 'flex items-center gap-2 min-w-0';
 
-    // ==================== SØPPELTØMMING ====================
-    async function initSoppel() {
-      for (const type of SOPPEL_TYPER) {
-        const eks = await dbGet('soppeltomming', type.id);
-        if (!eks) {
-          const dato = new Date();
-          dato.setDate(dato.getDate() + 3);
-          await dbPut('soppeltomming', { id: type.id, dato: dato.toISOString().split('T')[0] });
-        }
-      }
-      renderSoppelListe();
-    }
+        const chkBox = document.createElement('div');
+        chkBox.className = `chk ${item.done ? 'checked' : ''}`;
+        chkBox.onclick = () => toggleVare(index);
 
-    async function renderSoppelListe() {
-      const cont = document.getElementById('soppelListe');
-      const naa = new Date(); naa.setHours(0,0,0,0);
-      let html = '';
-      for (const type of SOPPEL_TYPER) {
-        const rad = await dbGet('soppeltomming', type.id);
-        if (!rad) continue;
-        const dato = new Date(rad.dato);
-        const dager = Math.round((dato - naa) / 86400000);
-        const innen24t = dager <= 1;
-        let tekst;
-        if (dager < 0) tekst = `${Math.abs(dager)}dg siden`;
-        else if (dager === 0) tekst = 'I dag';
-        else if (dager === 1) tekst = 'I morgen';
-        else tekst = `${dager}d`;
+        const span = document.createElement('span');
+        span.className = `truncate font-medium ${item.done ? 'item-done' : 'text-zinc-200'}`;
+        span.textContent = item.tekst;
 
-        html += `<div style="display: flex; justify-content: space-between; align-items: center; padding: 0.2rem 0.35rem; border-radius: 0.4rem; background: rgba(255,255,255,0.02); ${innen24t ? 'animation: glow-pulse 2s infinite; border: 1px solid rgba(251,113,133,0.3);' : ''}">
-          <span style="font-size: 0.6rem;">${type.emoji} ${type.navn}</span>
-          <span style="font-size: 0.55rem; font-weight: 600; ${innen24t ? 'color: #fb7185;' : 'color: #d4d4d8;'}">${tekst}</span>
-        </div>`;
-      }
-      cont.innerHTML = html;
-    }
+        left.appendChild(chkBox);
+        left.appendChild(span);
 
-    async function apneSoppelModal() {
-      const form = document.getElementById('soppelAdminForm');
-      let html = '';
-      for (const type of SOPPEL_TYPER) {
-        const rad = await dbGet('soppeltomming', type.id);
-        html += `<div>
-          <label style="display: block; font-size: 0.7rem; color: #a1a1aa; margin-bottom: 0.2rem;">${type.emoji} ${type.navn}</label>
-          <input type="date" id="soppel-${type.id}" value="${rad ? rad.dato : ''}" 
-                 style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.4rem; padding: 0.4rem; font-size: 0.7rem; color: #e4e4e7; outline: none;">
-        </div>`;
-      }
-      form.innerHTML = html;
-      document.getElementById('soppelModal').classList.add('active');
-    }
+        const slettBtn = document.createElement('button');
+        slettBtn.className = 'text-zinc-500 hover:text-rose-400 opacity-0 hover:opacity-100 transition-all px-1 cursor-pointer';
+        slettBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+        slettBtn.onclick = () => slettVare(index);
+        li.onmouseenter = () => slettBtn.classList.remove('opacity-0');
+        li.onmouseleave = () => slettBtn.classList.add('opacity-0');
 
-    async function lukkSoppelModal() {
-      for (const type of SOPPEL_TYPER) {
-        const el = document.getElementById(`soppel-${type.id}`);
-        if (el && el.value) await dbPut('soppeltomming', { id: type.id, dato: el.value });
-      }
-      document.getElementById('soppelModal').classList.remove('active');
-      renderSoppelListe();
-      renderViktigIDag();
-    }
-
-    // ==================== EGNE HENDELSER ====================
-    async function lastEgneHendelser() {
-      egneHendelser = await dbGetAll('egneHendelser');
-    }
-
-    async function apneNyHendelseModal(dato) {
-      pendingHendelseDato = dato || new Date().toISOString().split('T')[0];
-      document.getElementById('nyHendelseDato').value = pendingHendelseDato;
-      document.getElementById('nyHendelseTittel').value = '';
-      document.getElementById('nyHendelseTid').value = '12:00';
-      document.getElementById('nyHendelseModal').classList.add('active');
-    }
-
-    function apneNyHendelseForDato() {
-      if (valgtDato) {
-        lukkDateModal();
-        apneNyHendelseModal(valgtDato);
-      }
-    }
-
-    function lukkNyHendelseModal() {
-      document.getElementById('nyHendelseModal').classList.remove('active');
-      pendingHendelseDato = null;
-    }
-
-    async function lagreNyHendelse() {
-      const tittel = document.getElementById('nyHendelseTittel').value.trim();
-      const dato = document.getElementById('nyHendelseDato').value;
-      const tid = document.getElementById('nyHendelseTid').value || '12:00';
-
-      if (!tittel || !dato) {
-        alert('Fyll ut tittel og dato.');
-        return;
-      }
-
-      await dbPut('egneHendelser', {
-        title: tittel,
-        startDate: `${dato}T${tid}:00`,
-        allDay: false,
-        location: '',
-        opprettet: new Date().toISOString()
+        li.appendChild(left);
+        li.appendChild(slettBtn);
+        ul.appendChild(li);
       });
-
-      await lastEgneHendelser();
-      await byggKalender();
-      visNesteHendelser();
-      renderViktigIDag();
-      lukkNyHendelseModal();
     }
 
-    async function slettEgenHendelse(id) {
-      await dbDelete('egneHendelser', id);
-      await lastEgneHendelser();
-      await byggKalender();
-      visNesteHendelser();
-      renderViktigIDag();
-      if (valgtDato) await apneDatoModal(valgtDato);
+    async function leggTilVare() {
+      const inp = document.getElementById('tingInput');
+      const txt = inp.value.trim();
+      if (!txt) return;
+      handleliste.push({ tekst: txt, done: false });
+      inp.value = '';
+      await visHandleliste();
+      await lagreHandlelisteTilKvdb();
     }
 
-    // ==================== KALENDER ====================
-    async function byggKalender() {
-      const aar = visAar, maaned = visManed;
-      const naa = new Date();
-      const erDenneManeden = (aar === naa.getFullYear() && maaned === naa.getMonth());
-      const iDag = naa.getDate();
-
-      document.getElementById('manedTittel').textContent = `${MAANEDSNAVN[maaned]} ${aar}`;
-
-      const forsteDag = (new Date(aar, maaned, 1).getDay() || 7);
-      const sisteDato = new Date(aar, maaned + 1, 0).getDate();
-
-      const alleNotater = await dbGetAll('datonotater');
-      await lastEgneHendelser();
-      
-      const notatDatoer = new Set();
-      alleNotater.forEach(n => {
-        const nd = new Date(n.id);
-        if (nd.getFullYear() === aar && nd.getMonth() === maaned) notatDatoer.add(n.id);
-      });
-
-      const icalDatoer = new Set();
-      kalenderHendelser.forEach(e => {
-        if (e.startDate) {
-          const ed = new Date(e.startDate);
-          if (ed.getFullYear() === aar && ed.getMonth() === maaned) icalDatoer.add(e.startDate.split('T')[0]);
-        }
-      });
-
-      const egneDatoer = new Set();
-      egneHendelser.forEach(e => {
-        if (e.startDate) {
-          const ed = new Date(e.startDate);
-          if (ed.getFullYear() === aar && ed.getMonth() === maaned) egneDatoer.add(e.startDate.split('T')[0]);
-        }
-      });
-
-      let html = `<div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.15rem; margin-bottom: 0.15rem;">`;
-      DAGER_KORT.forEach(d => html += `<div style="color: #a1a1aa; text-align: center; font-weight: 500; padding: 0.15rem 0;">${d}</div>`);
-      html += `</div><div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.15rem;">`;
-
-      for (let i = 1; i < forsteDag; i++) html += '<div></div>';
-
-      for (let dag = 1; dag <= sisteDato; dag++) {
-        const erIdag = (erDenneManeden && dag === iDag);
-        const datoStr = `${aar}-${String(maaned+1).padStart(2,'0')}-${String(dag).padStart(2,'0')}`;
-        
-        let dots = '';
-        if (notatDatoer.has(datoStr)) dots += '<span style="position:absolute; bottom:1px; left:25%; transform:translateX(-50%); width:3px; height:3px; border-radius:50%; background:#4ade80;"></span>';
-        if (icalDatoer.has(datoStr)) dots += '<span style="position:absolute; bottom:1px; left:50%; transform:translateX(-50%); width:3px; height:3px; border-radius:50%; background:#fbbf24;"></span>';
-        if (egneDatoer.has(datoStr)) dots += '<span style="position:absolute; bottom:1px; left:75%; transform:translateX(-50%); width:3px; height:3px; border-radius:50%; background:#60a5fa;"></span>';
-
-        const bg = erIdag ? 'background:#3b82f6; color:white; font-weight:700; box-shadow:0 0 8px rgba(59,130,246,0.3);' : '';
-        html += `<div style="position:relative; text-align:center; padding:0.2rem 0; border-radius:0.25rem; cursor:pointer; transition:all 0.15s; font-size:0.55rem; ${bg}" data-dato="${datoStr}" onclick="apneDatoModal('${datoStr}')">${dag}${dots}</div>`;
-      }
-      html += '</div>';
-      document.getElementById('calendarWidget').innerHTML = html;
+    async function toggleVare(idx) {
+      handleliste[idx].done = !handleliste[idx].done;
+      await visHandleliste();
+      await lagreHandlelisteTilKvdb();
     }
 
-    function navigerManed(delta) {
-      visManed += delta;
-      if (visManed < 0) { visManed = 11; visAar--; }
-      if (visManed > 11) { visManed = 0; visAar++; }
-      byggKalender();
+    async function slettVare(idx) {
+      handleliste.splice(idx, 1);
+      await visHandleliste();
+      await lagreHandlelisteTilKvdb();
     }
 
-    function apneManedVelger() {
-      const ms = document.getElementById('manedSelect');
-      const as = document.getElementById('aarSelect');
-      ms.innerHTML = MAANEDSNAVN.map((m,i) => `<option value="${i}" ${i===visManed?'selected':''}>${m}</option>`).join('');
-      const aarNaa = new Date().getFullYear();
-      let o = '';
-      for (let a = aarNaa - 5; a <= aarNaa + 5; a++) o += `<option value="${a}" ${a===visAar?'selected':''}>${a}</option>`;
-      as.innerHTML = o;
-      document.getElementById('manedModal').classList.add('active');
-    }
-    function lukkManedModal() { document.getElementById('manedModal').classList.remove('active'); }
-    function bekreftManed() {
-      visManed = parseInt(document.getElementById('manedSelect').value);
-      visAar = parseInt(document.getElementById('aarSelect').value);
-      byggKalender();
-      lukkManedModal();
-    }
-
-    function visNesteHendelser() {
-      const naa = new Date();
-      const startAvDag = new Date(naa.getFullYear(), naa.getMonth(), naa.getDate(), 0, 0, 0, 0);
-      
-      const alle = [
-        ...kalenderHendelser.map(e => ({ ...e, type: 'ical' })),
-        ...egneHendelser.map(e => ({ ...e, type: 'egen' }))
-      ];
-
-      const sorterte = alle
-        .filter(e => new Date(e.startDate) >= startAvDag)
-        .sort((a,b) => new Date(a.startDate) - new Date(b.startDate))
-        .slice(0, 4);
-
-      const container = document.getElementById('nesteHendelser');
-      if (!sorterte.length) {
-        container.innerHTML = '<p style="font-size:0.55rem; color:#a1a1aa; font-style:italic;">Ingen hendelser</p>';
-        return;
-      }
-
-      container.innerHTML = sorterte.map(e => {
-        const d = new Date(e.startDate);
-        const dagLabel = formaterRelativDag(d);
-        const tid = e.allDay ? 'Hele dagen' : d.toLocaleTimeString('no-NO', { hour:'2-digit', minute:'2-digit' });
-        const ikon = e.type === 'egen' ? '<i class="fa-solid fa-star" style="color:#60a5fa; font-size:0.45rem;"></i>' : '';
-        return `<div style="display:flex; align-items:center; gap:0.3rem; padding:0.2rem 0.35rem; border-radius:0.4rem; background:rgba(255,255,255,0.02); cursor:pointer; transition:all 0.15s;" onclick="apneDatoModal('${e.startDate.split('T')[0]}')">
-          <div style="text-align:center; min-width:34px; flex-shrink:0;">
-            <p style="font-size:0.45rem; color:#fbbf24; font-weight:500; text-transform:uppercase;">${dagLabel}</p>
-            <p style="font-size:0.5rem; color:#d4d4d8; font-weight:600;">${tid}</p>
-          </div>
-          <p style="font-size:0.6rem; color:#e4e4e7; flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${ikon} ${e.title}</p>
-        </div>`;
-      }).join('');
-    }
-
-    function formaterRelativDag(d) {
-      const naa = new Date();
-      const dStart = new Date(d.getFullYear(), d.getMonth(), d.getDate());
-      const naaStart = new Date(naa.getFullYear(), naa.getMonth(), naa.getDate());
-      const diff = Math.round((dStart - naaStart) / 86400000);
-      if (diff === 0) return 'I dag';
-      if (diff === 1) return 'I morgen';
-      if (diff < 7) return d.toLocaleDateString('no-NO', { weekday: 'long' });
-      return d.toLocaleDateString('no-NO', { day:'numeric', month:'short' });
-    }
-
-    // ==================== DATO MODAL ====================
-    async function apneDatoModal(datoStr) {
-      valgtDato = datoStr;
-      const dato = new Date(datoStr);
-      const alt = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-      document.getElementById('modalTitle').textContent = '📅 ' + dato.toLocaleDateString('no-NO', alt).charAt(0).toUpperCase() + dato.toLocaleDateString('no-NO', alt).slice(1);
-
-      const notat = await dbGet('datonotater', datoStr);
-      document.getElementById('dateNoteInput').value = notat ? notat.tekst : '';
-
-      const icalEvents = kalenderHendelser.filter(e => e.startDate && e.startDate.split('T')[0] === datoStr);
-      document.getElementById('iCalEventsInModal').innerHTML = icalEvents.length ? icalEvents.map(e => {
-        const tid = e.allDay ? 'Hele dagen' : new Date(e.startDate).toLocaleTimeString('no-NO', { hour:'2-digit', minute:'2-digit' });
-        return `<div style="background:rgba(255,255,255,0.02); border-radius:0.4rem; padding:0.35rem; border:1px solid rgba(255,255,255,0.05);">
-          <p style="font-size:0.65rem; font-weight:500;">${e.title}</p>
-          <p style="font-size:0.55rem; color:#a1a1aa;"><i class="fa-regular fa-clock"></i> ${tid}</p>
-        </div>`;
-      }).join('') : '<p style="font-size:0.6rem; color:#a1a1aa;">Ingen iCal-hendelser</p>';
-
-      const egneEvents = egneHendelser.filter(e => e.startDate && e.startDate.split('T')[0] === datoStr);
-      document.getElementById('egneHendelserIModal').innerHTML = egneEvents.length ? egneEvents.map(e => {
-        const tid = e.allDay ? 'Hele dagen' : new Date(e.startDate).toLocaleTimeString('no-NO', { hour:'2-digit', minute:'2-digit' });
-        return `<div style="background:rgba(255,255,255,0.02); border-radius:0.4rem; padding:0.35rem; border:1px solid rgba(255,255,255,0.05); display:flex; justify-content:space-between; align-items:center;">
-          <div>
-            <p style="font-size:0.65rem; font-weight:500;">${e.title}</p>
-            <p style="font-size:0.55rem; color:#a1a1aa;"><i class="fa-regular fa-clock"></i> ${tid}</p>
-          </div>
-          <button onclick="slettEgenHendelse(${e.id})" style="color:#fb7185; background:none; border:none; font-size:0.55rem; cursor:pointer;">
-            <i class="fa-solid fa-trash-can"></i>
-          </button>
-        </div>`;
-      }).join('') : '<p style="font-size:0.6rem; color:#a1a1aa;">Ingen egne hendelser</p>';
-
-      document.getElementById('dateModal').classList.add('active');
-    }
-
-    function lukkDateModal() { document.getElementById('dateModal').classList.remove('active'); valgtDato = null; }
-
-    async function lagreDatoNotat() {
-      if (!valgtDato) return;
-      const tekst = document.getElementById('dateNoteInput').value.trim();
-      if (tekst) await dbPut('datonotater', { id: valgtDato, tekst, oppdatert: new Date().toISOString() });
-      else await dbDelete('datonotater', valgtDato);
-      await byggKalender();
-    }
-
-    async function slettDatoNotat() {
-      if (!valgtDato) return;
-      await dbDelete('datonotater', valgtDato);
-      document.getElementById('dateNoteInput').value = '';
-      await byggKalender();
-    }
-
-    // ==================== iCal ====================
-    function apneICloudModal() {
-      document.getElementById('icalUrlInput').value = icalUrl;
-      document.getElementById('iCloudModal').classList.add('active');
-    }
-    function lukkICloudModal() { document.getElementById('iCloudModal').classList.remove('active'); }
-
-    async function lagreICalUrl() {
-      const ny = document.getElementById('icalUrlInput').value.trim();
-      if (ny) {
-        icalUrl = ny;
-        await dbPut('innstillinger', { id: 'icalUrl', value: icalUrl });
-        document.getElementById('iCloudStatus').textContent = '🟡';
-        await hentICalManuelt();
+    // ==================== RASKT NOTAT ====================
+    const noteArea = document.getElementById('quickNote');
+    async function lastNotat() {
+      const saved = await dbGet('notater', 'quickNote');
+      if (saved) {
+        noteArea.value = saved.text;
+        oppdaterTegn();
       }
     }
 
-    async function hentICalManuelt() {
-      document.getElementById('iCloudStatus').textContent = '🔄';
-      document.getElementById('iCloudDebug').textContent = 'Henter...';
-      try {
-        const resp = await fetch(icalUrl);
-        if (!resp.ok) throw new Error('Status ' + resp.status);
-        kalenderHendelser = parseICal(await resp.text());
-        document.getElementById('iCloudStatus').textContent = '🟢';
-        document.getElementById('iCloudDebug').textContent = `${kalenderHendelser.length} hendelser`;
-      } catch (feil) {
-        console.warn('iCal feilet:', feil.message);
-        kalenderHendelser = [];
-        document.getElementById('iCloudStatus').textContent = '🟡';
-        document.getElementById('iCloudDebug').textContent = 'Nettverksfeil';
-      }
-      await byggKalender();
-      visNesteHendelser();
-      renderViktigIDag();
-      lukkICloudModal();
-    }
-
-    function parseICal(data) {
-      const events = [];
-      const lines = data.split('\n');
-      let current = null;
-      for (const line of lines) {
-        const t = line.trim();
-        if (t === 'BEGIN:VEVENT') current = {};
-        else if (t === 'END:VEVENT' && current) {
-          if (current.title && current.startDate) events.push(current);
-          current = null;
-        } else if (current) {
-          if (t.startsWith('SUMMARY:')) current.title = t.substring(8).replace(/\\,/g, ',');
-          else if (t.startsWith('DTSTART')) {
-            const allDay = t.includes('VALUE=DATE') && !t.includes('VALUE=DATE-TIME');
-            const raw = t.split(':')[1] || '';
-            current.startDate = formatICalDato(raw);
-            current.allDay = allDay || !raw.includes('T');
-          }
-        }
-      }
-      return events;
-    }
-
-    function formatICalDato(str) {
-      if (str.includes('T')) {
-        const y=str.substring(0,4), m=str.substring(4,6), d=str.substring(6,8);
-        const h=str.substring(9,11)||'00', min=str.substring(11,13)||'00';
-        return `${y}-${m}-${d}T${h}:${min}:00`;
-      }
-      const y=str.substring(0,4), m=str.substring(4,6), d=str.substring(6,8);
-      return `${y}-${m}-${d}T00:00:00`;
-    }
-
-    // ==================== VÆRDATA (SKIEN) ====================
-    const VEER_IKONER = { 0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',48:'🌫️',51:'🌧️',53:'🌧️',55:'🌧️',61:'🌧️',63:'🌧️',65:'🌧️',71:'❄️',73:'❄️',75:'❄️',77:'❄️',80:'🌧️',81:'🌧️',82:'🌧️',85:'🌨️',86:'🌨️',95:'⛈️',96:'⛈️',99:'⛈️' };
-    const VEER_TEKST = { 0:'Klart',1:'Delvis skyet',2:'Skyet',3:'Overskyet',45:'Tåke',48:'Rimtåke',51:'Lett yr',53:'Yr',55:'Kraftig yr',61:'Lett regn',63:'Regn',65:'Kraftig regn',71:'Lett snø',73:'Snø',75:'Kraftig snø',77:'Snøkorn',80:'Regnbyger',81:'Kraftige byger',82:'Voldsomme byger',85:'Snøbyger',86:'Kraftige snøbyger',95:'Torden',96:'Torden m/hagl',99:'Kraftig torden' };
-
-    async function hentVeerdata() {
-      let lat = 59.2097, lon = 9.6094;
-      document.getElementById('weatherLocation').textContent = 'Henter...';
-      try {
-        const pos = await new Promise((res, rej) => navigator.geolocation.getCurrentPosition(res, rej, { timeout: 4000, maximumAge: 600000 }));
-        lat = pos.coords.latitude; lon = pos.coords.longitude;
-        document.getElementById('weatherLocation').textContent = 'Din posisjon';
-      } catch { document.getElementById('weatherLocation').textContent = 'Skien'; }
-
-      try {
-        const resp = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code&hourly=temperature_2m,weather_code&forecast_days=2&timezone=auto`);
-        if (!resp.ok) throw new Error('Status ' + resp.status);
-        visVeerdata(await resp.json());
-      } catch { visFallbackVeerdata(); }
-    }
-
-    function visVeerdata(data) {
-      const c = data.current;
-      document.getElementById('weatherIcon').textContent = VEER_IKONER[c.weather_code] || '🌡️';
-      document.getElementById('weatherTemp').textContent = `${Math.round(c.temperature_2m)}°C`;
-      document.getElementById('weatherDesc').textContent = VEER_TEKST[c.weather_code] || 'Ukjent';
-      document.getElementById('weatherHumidity').innerHTML = `<i class="fa-solid fa-droplet"></i> ${c.relative_humidity_2m}%`;
-      document.getElementById('weatherWind').innerHTML = `<i class="fa-solid fa-wind"></i> ${c.wind_speed_10m} m/s`;
-
-      const naa = new Date();
-      const times = data.hourly.time;
-      let start = times.findIndex(t => new Date(t) > naa);
-      if (start < 0) start = 0;
-      const slots = [];
-      for (let i = start; i < Math.min(start + 5, times.length); i++) {
-        slots.push({ time: new Date(times[i]), temp: Math.round(data.hourly.temperature_2m[i]), code: data.hourly.weather_code[i] });
-      }
-      tegnTimeprognose(slots);
-    }
-
-    function tegnTimeprognose(slots) {
-      document.getElementById('hourlyForecast').innerHTML = slots.map((s, i) => `
-        <div class="hour-slot">
-          <span style="font-size:0.45rem; color:#a1a1aa;">${i===0?'Nå':s.time.toLocaleTimeString('no-NO',{hour:'2-digit'})}</span>
-          <span style="font-size:0.9rem;">${VEER_IKONER[s.code]||'🌡️'}</span>
-          <span style="font-size:0.55rem; font-weight:600;">${s.temp}°</span>
-        </div>
-      `).join('');
-    }
-
-    function visFallbackVeerdata() {
-      const m = new Date().getMonth();
-      const sommer = m >= 4 && m <= 8;
-      const time = new Date().getHours();
-      const dagtid = time >= 7 && time <= 19;
-      const temp = sommer ? (dagtid ? 22 : 16) : (dagtid ? 8 : 2);
-      const kode = sommer ? (dagtid ? 1 : 0) : (dagtid ? 2 : 3);
-
-      document.getElementById('weatherIcon').textContent = VEER_IKONER[kode];
-      document.getElementById('weatherTemp').textContent = `${temp}°C`;
-      document.getElementById('weatherDesc').textContent = VEER_TEKST[kode] + ' (est.)';
-      document.getElementById('weatherHumidity').innerHTML = `<i class="fa-solid fa-droplet"></i> ${sommer?50:78}%`;
-      document.getElementById('weatherWind').innerHTML = `<i class="fa-solid fa-wind"></i> ${sommer?3:6} m/s`;
-      document.getElementById('weatherLocation').textContent = 'Estimert';
-
-      const naa = new Date();
-      const slots = [];
-      for (let i = 0; i < 5; i++) {
-        slots.push({ time: new Date(naa.getTime() + i*3600000), temp: temp + Math.round(Math.sin(i*0.5)*3), code: kode });
-      }
-      tegnTimeprognose(slots);
-    }
-
-    // ==================== VIKTIG I DAG ====================
-    async function renderViktigIDag() {
-      const cont = document.getElementById('viktigIDagListe');
-      const naa = new Date();
-      const idag = naa.toISOString().split('T')[0];
-      const items = [];
-
-      const alle = [...kalenderHendelser.filter(e => e.startDate && e.startDate.split('T')[0] === idag), ...egneHendelser.filter(e => e.startDate && e.startDate.split('T')[0] === idag)];
-      alle.forEach(e => {
-        const tid = e.allDay ? '' : new Date(e.startDate).toLocaleTimeString('no-NO',{hour:'2-digit',minute:'2-digit'}) + ' ';
-        const erSnart = !e.allDay && (new Date(e.startDate) - naa) < 2*3600000 && (new Date(e.startDate) - naa) > -1800000;
-        items.push({ tekst: `${tid}${e.title}`, urgent: erSnart });
-      });
-
-      const varer = await dbGetAll('handleliste');
-      const aktive = varer.filter(v => !v.checked);
-      if (aktive.length) items.push({ tekst: `🛒 ${aktive.length} varer`, urgent: false });
-
-      const naaStart = new Date(); naaStart.setHours(0,0,0,0);
-      for (const type of SOPPEL_TYPER) {
-        const rad = await dbGet('soppeltomming', type.id);
-        if (!rad) continue;
-        const dager = Math.round((new Date(rad.dato) - naaStart) / 86400000);
-        if (dager >= 0 && dager <= 2) {
-          const label = dager === 0 ? 'i dag' : (dager === 1 ? 'i morgen' : `om ${dager}d`);
-          items.push({ tekst: `♻️ ${type.navn} ${label}`, urgent: dager <= 1 });
-        }
-      }
-
-      if (!items.length) {
-        cont.innerHTML = '<span style="font-size:0.6rem; color:#a1a1aa;">Ingenting spesielt i dag 🎉</span>';
-        return;
-      }
-      items.sort((a,b) => (b.urgent - a.urgent));
-      cont.innerHTML = items.map(i => `<span class="pill ${i.urgent ? 'pill-urgent' : 'pill-normal'}">${i.tekst}</span>`).join('');
-    }
-
-    // ==================== HURTIGNOTATER ====================
-    let saveTimeout;
-    document.getElementById('quickNote').addEventListener('input', function() {
+    let t_lagre;
+    noteArea.addEventListener('input', () => {
+      oppdaterTegn();
       document.getElementById('saveStatus').textContent = 'Lagrer...';
-      document.getElementById('charCount').textContent = `${this.value.length} tegn`;
-      clearTimeout(saveTimeout);
-      saveTimeout = setTimeout(lagreNotat, 500);
+      clearTimeout(t_lagre);
+      t_lagre = setTimeout(async () => {
+        await dbPut('notater', { id: 'quickNote', text: noteArea.value });
+        document.getElementById('saveStatus').textContent = 'Lagret automatisk';
+      }, 800);
     });
 
-    function lagreNotat() {
-      dbPut('notater', { id: 'quickNote', tekst: document.getElementById('quickNote').value, oppdatert: new Date().toISOString() });
-      document.getElementById('saveStatus').textContent = 'Lagret ✓';
-      setTimeout(() => document.getElementById('saveStatus').textContent = 'Lagres automatisk', 2000);
-    }
-
-    async function lastNotat() {
-      const notat = await dbGet('notater', 'quickNote');
-      if (notat) {
-        document.getElementById('quickNote').value = notat.tekst;
-        document.getElementById('charCount').textContent = `${notat.tekst.length} tegn`;
-      }
+    function oppdaterTegn() {
+      document.getElementById('charCount').textContent = `${noteArea.value.length} tegn`;
     }
 
     async function slettNotat() {
@@ -1119,7 +635,7 @@
       document.getElementById('charCount').textContent = '0 tegn';
     }
 
-    // ==================== EVENT LISTENERS ====================
+    // ==================== EVENT LISTENERS ====================\
     document.getElementById('tingInput').addEventListener('keypress', (e) => {
       if (e.key === 'Enter') leggTilVare();
     });
@@ -1129,6 +645,597 @@
         lukkDateModal(); lukkICloudModal(); lukkSoppelModal(); lukkManedModal(); lukkNyHendelseModal();
       }
     });
+
+    // ==================== SØPPELTØMMING LOGIKK ====================
+    async function initSoppel() {
+      for (const t of SOPPEL_TYPER) {
+        const eksisterer = await dbGet('soppel', t.id);
+        if (!eksisterer) {
+          await dbPut('soppel', { id: t.id, dato: '' });
+        }
+      }
+      await visSoppelWidget();
+    }
+
+    async function visSoppelWidget() {
+      const container = document.getElementById('soppelListe');
+      container.innerHTML = '';
+      const alle = await dbGetAll('soppel');
+      
+      const sortert = alle.map(item => {
+        const typeInfo = SOPPEL_TYPER.find(t => t.id === item.id);
+        let dagerIgjen = Infinity;
+        let datoTxt = 'Ikke satt';
+        if (item.dato) {
+          const d = new Date(item.dato);
+          d.setHours(0,0,0,0);
+          const i dag = new Date();
+          i dag.setHours(0,0,0,0);
+          const diff = d.getTime() - i dag.getTime();
+          dagerIgjen = Math.ceil(diff / (1000 * 60 * 60 * 24));
+          datoTxt = d.toLocaleDateString('no-NO', { day: 'numeric', month: 'short' });
+        }
+        return { ...item, typeInfo, dagerIgjen, datoTxt };
+      }).sort((a, b) => a.dagerIgjen - b.dagerIgjen);
+
+      sortert.forEach(s => {
+        const div = document.createElement('div');
+        div.className = 'animate-fade-in flex items-center justify-between p-1.5 rounded-lg bg-white/[0.02] border border-white/5';
+        
+        let label = s.datoTxt;
+        let alertClass = '';
+        if (s.dagerIgjen === 0) { label = 'I DAG 🚨'; alertClass = 'alert-soon bg-rose-500/10 border-rose-500/20'; }
+        else if (s.dagerIgjen === 1) { label = 'I morgen ⏳'; alertClass = 'alert-soon bg-amber-500/10 border-amber-500/20'; }
+        else if (s.dagerIgjen > 1 && s.dagerIgjen <= 3) { label = `${s.dagerIgjen} dager`; }
+        else if (s.dagerIgjen < 0) { alertClass = 'opacity-30'; }
+
+        if (alertClass) div.className += ` ${alertClass}`;
+
+        div.innerHTML = `
+          <div class="flex items-center gap-1.5 min-w-0">
+            <span style="font-size:0.8rem;">${s.typeInfo?.emoji}</span>
+            <span class="truncate font-medium text-zinc-300" style="font-size:0.65rem;">${s.typeInfo?.navn}</span>
+          </div>
+          <span class="font-bold text-zinc-400" style="font-size:0.6rem;">${label}</span>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    async function apneSoppelModal() {
+      const form = document.getElementById('soppelAdminForm');
+      form.innerHTML = '';
+      const alle = await dbGetAll('soppel');
+      
+      SOPPEL_TYPER.forEach(t => {
+        const lagret = alle.find(a => a.id === t.id);
+        const div = document.createElement('div');
+        div.style.display = 'flex'; div.style.alignItems = 'center'; div.style.justifyContent = 'space-between'; div.style.gap = '0.5rem';
+        div.innerHTML = `
+          <span style="font-size:0.75rem; color:#e4e4e7; width:45%;" class="truncate">${t.emoji} ${t.navn}</span>
+          <input type="date" id="adminSoppel_${t.id}" value="${lagret?.dato || ''}" 
+                 style="flex:1; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:0.4rem; padding:0.3rem; font-size:0.7rem; color:#e4e4e7; outline:none;">
+        `;
+        form.appendChild(div);
+      });
+      document.getElementById('soppelModal').classList.add('active');
+    }
+
+    async function lukkSoppelModal() {
+      for (const t of SOPPEL_TYPER) {
+        const val = document.getElementById(`adminSoppel_${t.id}`).value;
+        await dbPut('soppel', { id: t.id, dato: val });
+      }
+      document.getElementById('soppelModal').classList.remove('active');
+      await visSoppelWidget();
+      await oppdaterKalender();
+    }
+
+    // ==================== VÆRMELDING LOGIKK ====================
+    async function hentVeerdata() {
+      const iconMap = {
+        'clearsky': '☀️', 'fair': '🌤️', 'partlycloudy': '⛅', 'cloudy': '☁️',
+        'rainshowers': '🌦️', 'rain': '🌧️', 'heavyrain': '🌧️🌧️', 'heavyrainshowers': '⛈️',
+        'snowshowers': '🌨️', 'snow': '❄️', 'sleet': '🌨️', 'thunder': '⚡'
+      };
+      try {
+        const lat = 59.2081, lon = 9.6056; 
+        const url = `https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=${lat}&lon=${lon}`;
+        
+        const res = await fetch(url, { headers: { 'User-Agent': 'SmarthjemDashboard/2.0 github.com' } });
+        if (!res.ok) throw new Error('Feil ved henting fra MET');
+        const data = await res.json();
+        
+        document.getElementById('weatherLocation').textContent = 'Skien';
+
+        const cur = data.properties.timeseries[0].data;
+        const temp = data.properties.timeseries[0].data.instant.details.air_temperature;
+        const hum = data.properties.timeseries[0].data.instant.details.relative_humidity;
+        const wind = data.properties.timeseries[0].data.instant.details.wind_speed;
+        const symbol = cur.next_1_hours?.summary?.symbol_code || 'clearsky';
+        
+        document.getElementById('weatherTemp').textContent = `${Math.round(temp)}°`;
+        document.getElementById('weatherHumidity').innerHTML = `<i class="fa-solid fa-droplet text-blue-400"></i> ${Math.round(hum)}%`;
+        document.getElementById('weatherWind').innerHTML = `<i class="fa-solid fa-wind text-zinc-400"></i> ${Math.round(wind)} m/s`;
+        
+        const cleanSymbol = symbol.split('_')[0];
+        document.getElementById('weatherIcon').textContent = iconMap[cleanSymbol] || '☀️';
+        document.getElementById('weatherDesc').textContent = cleanSymbol.toUpperCase();
+
+        const hourlyContainer = document.getElementById('hourlyForecast');
+        hourlyContainer.innerHTML = '';
+        
+        let tell = 0;
+        for (let i = 2; i < 14; i += 2) {
+          const ts = data.properties.timeseries[i];
+          if (!ts) break;
+          const fTime = new Date(ts.time).getHours().toString().padStart(2, '0');
+          const fTemp = Math.round(ts.data.instant.details.air_temperature);
+          const fSym = ts.data.next_1_hours?.summary?.symbol_code || 'clearsky';
+          const fCleanSym = fSym.split('_')[0];
+          const emoji = iconMap[fCleanSym] || '☀️';
+
+          const slot = document.createElement('div');
+          slot.className = 'hour-slot';
+          slot.innerHTML = `
+            <span style="font-size:0.55rem; color:#a1a1aa; font-weight:500;">${fTime}</span>
+            <span style="font-size:0.75rem; margin:0.05rem 0;">${emoji}</span>
+            <span style="font-size:0.6rem; font-bold text-zinc-200">${fTemp}°</span>
+          `;
+          hourlyContainer.appendChild(slot);
+        }
+      } catch (err) {
+        console.error(err);
+        document.getElementById('weatherDesc').textContent = 'Feil ved synk';
+      }
+    }
+
+    // ==================== ICAL / ICLOUD INTEGRASJON ====================
+    async function apneICloudModal() {
+      const stored = await dbGet('innstillinger', 'icalUrl');
+      if (stored) document.getElementById('icalUrlInput').value = stored.value;
+      document.getElementById('iCloudModal').classList.add('active');
+    }
+    function lukkICloudModal() { document.getElementById('iCloudModal').classList.remove('active'); }
+
+    async function lagreICalUrl() {
+      const val = document.getElementById('icalUrlInput').value.trim();
+      await dbPut('innstillinger', { id: 'icalUrl', value: val });
+      icalUrl = val;
+      document.getElementById('iCloudDebug').textContent = 'URL lagret lokalt!';
+      await hentICalManuelt();
+    }
+
+    async function hentICalManuelt() {
+      const statusSpan = document.getElementById('iCloudStatus');
+      const debugDiv = document.getElementById('iCloudDebug');
+      
+      const stored = await dbGet('innstillinger', 'icalUrl');
+      if (!stored || !stored.value) {
+        statusSpan.textContent = '🔴';
+        if(debugDiv) debugDiv.textContent = 'Mangler URL. Klikk på iCal for å konfigurere.';
+        return;
+      }
+      icalUrl = stored.value;
+      statusSpan.textContent = '🟡';
+      if(debugDiv) debugDiv.textContent = 'Henter kalenderdata...';
+
+      try {
+        const res = await fetch(icalUrl);
+        if (!res.ok) throw new Error(`HTTP feil! Status: ${res.status}`);
+        const icalText = await res.text();
+        
+        parseICal(icalText);
+        
+        statusSpan.textContent = '🟢';
+        if(debugDiv) debugDiv.textContent = `Vellykket! Hentet ${icalHendelser.length} hendelser.`;
+        await oppdaterKalender();
+        await visNesteHendelserOgViktig();
+      } catch (err) {
+        console.error('iCal synk feilet:', err);
+        statusSpan.textContent = '🔴';
+        if(debugDiv) debugDiv.textContent = 'Feil: Kunne ikke hente eller tolke iCal-strømmen.';
+      }
+    }
+
+    function parseICal(text) {
+      icalHendelser = [];
+      const lines = text.split(/\r?\n/);
+      let ev = null;
+      let inEvent = false;
+
+      for (let line of lines) {
+        if (line.startsWith('BEGIN:VEVENT')) { ev = {}; inEvent = true; continue; }
+        if (line.startsWith('END:VEVENT')) {
+          if (ev && ev.summary && ev.start) { icalHendelser.push(ev); }
+          ev = null; inEvent = false; continue;
+        }
+        if (!inEvent || !ev) continue;
+
+        if (line.startsWith('SUMMARY:')) ev.summary = line.replace('SUMMARY:', '').trim();
+        else if (line.startsWith('DESCRIPTION:')) ev.description = line.replace('DESCRIPTION:', '').trim();
+        else if (line.startsWith('DTSTART:')) ev.start = parseICalDate(line.replace('DTSTART:', '').trim());
+        else if (line.startsWith('DTSTART;VALUE=DATE:')) { ev.start = parseICalDate(line.replace('DTSTART;VALUE=DATE:', '').trim()); ev.allDay = true; }
+        else if (line.startsWith('DTEND:')) ev.end = parseICalDate(line.replace('DTEND:', '').trim());
+        else if (line.startsWith('DTEND;VALUE=DATE:')) ev.end = parseICalDate(line.replace('DTEND;VALUE=DATE:', '').trim());
+      }
+    }
+
+    function parseICalDate(str) {
+      const parts = str.split(':');
+      const val = parts[parts.length - 1];
+      const y = parseInt(val.substring(0, 4));
+      const m = parseInt(val.substring(4, 6)) - 1;
+      const d = parseInt(val.substring(6, 8));
+      
+      if (val.includes('T')) {
+        const h = parseInt(val.substring(9, 11));
+        const min = parseInt(val.substring(11, 13));
+        return new Date(y, m, d, h, min, 0);
+      }
+      return new Date(y, m, d, 0, 0, 0);
+    }
+
+    // ==================== EGNE HENDELSER LOGIKK ====================
+    async function lastEgneHendelser() {
+      egneHendelser = await dbGetAll('egneHendelser');
+      await visNesteHendelserOgViktig();
+      await oppdaterKalender();
+    }
+
+    function apneNyHendelseModal() {
+      document.getElementById('nyHendelseDato').value = new Date().toISOString().split('T')[0];
+      document.getElementById('nyHendelseModal').classList.add('active');
+    }
+    function lukkNyHendelseModal() { document.getElementById('nyHendelseModal').classList.remove('active'); }
+
+    function apneNyHendelseForDato() {
+      const y = gjeldendeAar;
+      const m = (gjeldendeManed + 1).toString().padStart(2, '0');
+      const d = valgtDato.getDate().toString().padStart(2, '0');
+      document.getElementById('nyHendelseDato').value = `${y}-${m}-${d}`;
+      lukkDateModal();
+      document.getElementById('nyHendelseModal').classList.add('active');
+    }
+
+    async function lagreNyHendelse() {
+      const tittel = document.getElementById('nyHendelseTittel').value.trim();
+      const datoVal = document.getElementById('nyHendelseDato').value;
+      const tidVal = document.getElementById('nyHendelseTid').value;
+
+      if (!tittel || !datoVal) return;
+
+      const id = 'egen_' + Date.now();
+      const hObj = { id, tittel, dato: datoVal, tid: tidVal };
+      
+      await dbPut('egneHendelser', hObj);
+      document.getElementById('nyHendelseTittel').value = '';
+      lukkNyHendelseModal();
+      await lastEgneHendelser();
+    }
+
+    async function slettEgenHendelse(id) {
+      await dbDelete('egneHendelser', id);
+      await lastEgneHendelser();
+      lukkDateModal();
+    }
+
+    // ==================== DASHBOARD DISPLAY (HENDELSER + VIKTIG) ====================
+    async function visNesteHendelserOgViktig() {
+      const hendelserDiv = document.getElementById('nesteHendelser');
+      const viktigDiv = document.getElementById('viktigIDagListe');
+      
+      hendelserDiv.innerHTML = '';
+      viktigDiv.innerHTML = '';
+
+      const i dag = new Date(); i dag.setHours(0,0,0,0);
+      const na = new Date();
+
+      let samlet = [];
+
+      icalHendelser.forEach(h => {
+        if (!h.start) return;
+        const d = new Date(h.start);
+        d.setHours(h.allDay ? 0 : d.getHours(), h.allDay ? 0 : d.getMinutes(), 0, 0);
+        if (d >= i dag) {
+          samlet.push({ type: 'ical', tittel: h.summary, datoObj: d, allDay: h.allDay, id: null });
+        }
+      });
+
+      egneHendelser.forEach(h => {
+        const parts = h.dato.split('-');
+        const tParts = h.tid ? h.tid.split(':') : [12,0];
+        const d = new Date(parseInt(parts[0]), parseInt(parts[1])-1, parseInt(parts[2]), parseInt(tParts[0]), parseInt(tParts[1]), 0);
+        if (d >= i dag) {
+          samlet.push({ type: 'egen', tittel: h.tittel, datoObj: d, allDay: !h.tid, id: h.id });
+        }
+      });
+
+      samlet.sort((a,b) => a.datoObj - b.datoObj);
+
+      const nesteHendelserArray = samlet.filter(h => h.datoObj >= na).slice(0, 7);
+      
+      if(nesteHendelserArray.length === 0) {
+        hendelserDiv.innerHTML = '<p class="text-zinc-500 text-center py-4" style="font-size:0.65rem;">Ingen kommende hendelser</p>';
+      } else {
+        nesteHendelserArray.forEach(h => {
+          const div = document.createElement('div');
+          div.className = 'calendar-event flex flex-col p-1.5 rounded-lg bg-white/[0.02] border border-white/5';
+          
+          const dTxt = h.datoObj.toLocaleDateString('no-NO', { day: 'numeric', month: 'short' });
+          const tTxt = h.allDay ? 'Hele dagen' : h.datoObj.toLocaleTimeString('no-NO', { hour: '2-digit', minute: '2-digit' });
+          const fargeKlasse = h.type === 'ical' ? 'border-l-2 border-l-amber-400' : 'border-l-2 border-l-blue-400';
+
+          div.className += ` ${fargeKlasse}`;
+          div.innerHTML = `
+            <div class="flex justify-between items-start gap-1 min-w-0">
+              <span class="font-semibold text-zinc-200 truncate" style="font-size:0.65rem;">${h.tittel}</span>
+              <span class="text-zinc-400 font-bold shrink-0" style="font-size:0.6rem;">${dTxt}</span>
+            </div>
+            <span class="text-zinc-500 font-medium" style="font-size:0.55rem; margin-top:0.05rem;">${tTxt}</span>
+          `;
+          hendelserDiv.appendChild(div);
+        });
+      }
+
+      const viktigeIDag = samlet.filter(h => {
+        const d = new Date(h.datoObj); d.setHours(0,0,0,0);
+        return d.getTime() === i dag.getTime();
+      });
+
+      if(viktigeIDag.length === 0) {
+        viktigDiv.innerHTML = '<span class="text-zinc-500 font-medium" style="font-size:0.65rem;">Ingen spesielle hendelser i dag.</span>';
+      } else {
+        viktigeIDag.forEach(h => {
+          const span = document.createElement('span');
+          const pillType = h.type === 'ical' ? 'pill-urgent' : 'pill-normal';
+          span.className = `pill ${pillType} font-semibold`;
+          const tTxt = h.allDay ? '' : ` (${h.datoObj.toLocaleTimeString('no-NO', { hour: '2-digit', minute: '2-digit' })})`;
+          span.textContent = `${h.tittel}${tTxt}`;
+          viktigDiv.appendChild(span);
+        });
+      }
+    }
+
+    // ==================== KALENDER MATRISE WIDGET ====================
+    async function oppdaterKalender() {
+      const widget = document.getElementById('calendarWidget');
+      widget.innerHTML = '';
+      document.getElementById('manedTittel').textContent = `${MAANEDSNAVN[gjeldendeManed]} ${gjeldendeAar}`;
+
+      const grid = document.createElement('div');
+      grid.style.display = 'grid'; grid.style.gridTemplateColumns = 'repeat(7, 1fr)';
+      grid.style.gap = '2px'; grid.style.flex = '1';
+
+      DAGER_KORT.forEach(d => {
+        const header = document.createElement('div');
+        header.style.textAlign = 'center'; header.style.fontWeight = '700'; header.style.color = '#71717a';
+        header.style.paddingBottom = '2px'; header.style.fontSize = '0.55rem';
+        header.textContent = d;
+        grid.appendChild(header);
+      });
+
+      const forsteDagIManed = new Date(gjeldendeAar, gjeldendeManed, 1);
+      let startDagsIndex = forsteDagIManed.getDay() - 1; 
+      if (startDagsIndex === -1) startDagsIndex = 6; 
+
+      const antallDagerIMnd = new Date(gjeldendeAar, gjeldendeManed + 1, 0).getDate();
+      const antallDagerIForrigeMnd = new Date(gjeldendeAar, gjeldendeManed, 0).getDate();
+
+      const i dag = new Date(); i dag.setHours(0,0,0,0);
+      const soppelListe = await dbGetAll('soppel');
+
+      // Forrige måned tomrom
+      for (let i = startDagsIndex - 1; i >= 0; i--) {
+        const dagNr = antallDagerIForrigeMnd - i;
+        const cell = lagKalenderCelle(dagNr, false, false, [], false);
+        grid.appendChild(cell);
+      }
+
+      // Gjeldende måned dager
+      for (let dag = 1; dag <= antallDagerIMnd; dag++) {
+        const sjekkDato = new Date(gjeldendeAar, gjeldendeManed, dag);
+        const erIDag = sjekkDato.getTime() === i dag.getTime();
+
+        let indikatorer = [];
+
+        const harICal = icalHendelser.some(h => {
+          if (!h.start) return false;
+          const d = new Date(h.start);
+          return d.getDate() === dag && d.getMonth() === gjeldendeManed && d.getFullYear() === gjeldendeAar;
+        });
+        if (harICal) indikatorer.push('#fbbf24');
+
+        const harEgen = egneHendelser.some(h => {
+          const p = h.dato.split('-');
+          return parseInt(p[2]) === dag && (parseInt(p[1]) - 1) === gjeldendeManed && parseInt(p[0]) === gjeldendeAar;
+        });
+        if (harEgen) indikatorer.push('#60a5fa');
+
+        const dNoteId = `note_${gjeldendeAar}_${gjeldendeManed}_${dag}`;
+        const harNotat = await dbGet('notater', dNoteId);
+        if (harNotat && harNotat.text.trim()) indikatorer.push('#4ade80');
+
+        let harSop = false;
+        soppelListe.forEach(s => {
+          if (s.dato) {
+            const sd = new Date(s.dato);
+            if (sd.getDate() === dag && sd.getMonth() === gjeldendeManed && sd.getFullYear() === gjeldendeAar) harSop = true;
+          }
+        });
+
+        const cell = lagKalenderCelle(dag, true, erIDag, indikatorer, harSop);
+        cell.onclick = () => apneDatoModal(dag);
+        grid.appendChild(cell);
+      }
+
+      // Neste måned tomrom fyller ut rutenettet ut uken
+      const totaltCeller = grid.children.length - 7; 
+      const rest = 42 - totaltCeller; 
+      if (rest > 0 && rest < 42) {
+        for (let i = 1; i <= rest; i++) {
+          const cell = lagKalenderCelle(i, false, false, [], false);
+          grid.appendChild(cell);
+        }
+      }
+
+      widget.appendChild(grid);
+    }
+
+    function lagKalenderCelle(nummer, erAktivMnd, erIDag, fargeIndikatorer, harSoppel) {
+      const cell = document.createElement('div');
+      cell.className = 'rounded-md flex flex-col justify-between p-1 transition-all relative';
+      cell.style.aspectRatio = '1.4';
+      cell.style.cursor = erAktivMnd ? 'pointer' : 'default';
+      
+      if (!erAktivMnd) {
+        cell.style.color = '#3f3f46'; cell.style.background = 'transparent';
+      } else {
+        cell.style.color = '#e4e4e7';
+        cell.style.background = erIDag ? 'rgba(59, 130, 246, 0.25)' : 'rgba(255,255,255,0.02)';
+        if (erIDag) {
+          cell.style.border = '1px solid rgba(59, 130, 246, 0.4)';
+          cell.style.boxShadow = '0 0 12px rgba(59, 130, 246, 0.2)';
+        } else {
+          cell.style.border = '1px solid rgba(255,255,255,0.03)';
+        }
+        cell.className += ' hover:bg-white/5';
+      }
+
+      const numSpan = document.createElement('span');
+      numSpan.style.fontWeight = erIDag ? '800' : '500';
+      numSpan.textContent = nummer;
+      cell.appendChild(numSpan);
+
+      if (harSoppel && erAktivMnd) {
+        const sopInd = document.createElement('span');
+        sopInd.style.position = 'absolute'; sopInd.style.top = '1px'; sopInd.style.right = '3px';
+        sopInd.style.fontSize = '0.5rem'; sopInd.textContent = '♻️';
+        cell.appendChild(sopInd);
+      }
+
+      if (fargeIndikatorer.length > 0 && erAktivMnd) {
+        const indBox = document.createElement('div');
+        indBox.style.display = 'flex'; indBox.style.gap = '2px'; indBox.style.justifyContent = 'center'; indBox.style.marginTop = 'auto';
+        fargeIndikatorer.forEach(f => {
+          const dot = document.createElement('span');
+          dot.style.width = '3px'; dot.style.height = '3px'; dot.style.borderRadius = '50%';
+          dot.style.background = f;
+          indBox.appendChild(dot);
+        });
+        cell.appendChild(indBox);
+      }
+      return cell;
+    }
+
+    function navigerManed(retning) {
+      gjeldendeManed += retning;
+      if (gjeldendeManed > 11) { gjeldendeManed = 0; gjeldendeAar++; }
+      if (gjeldendeManed < 0) { gjeldendeManed = 11; gjeldendeAar--; }
+      oppdaterKalender();
+    }
+
+    function apneManedVelger() {
+      const mSel = document.getElementById('manedSelect');
+      const aSel = document.getElementById('aarSelect');
+      mSel.innerHTML = ''; aSel.innerHTML = '';
+
+      MAANEDSNAVN.forEach((m, idx) => {
+        const o = document.createElement('option'); o.value = idx; o.textContent = m;
+        if(idx === gjeldendeManed) o.selected = true;
+        mSel.appendChild(o);
+      });
+
+      for (let a = 2024; a <= 2030; a++) {
+        const o = document.createElement('option'); o.value = a; o.textContent = a;
+        if(a === gjeldendeAar) o.selected = true;
+        aSel.appendChild(o);
+      }
+      document.getElementById('manedModal').classList.add('active');
+    }
+    function lukkManedModal() { document.getElementById('manedModal').classList.remove('active'); }
+    function bekreftManed() {
+      gjeldendeManed = parseInt(document.getElementById('manedSelect').value);
+      gjeldendeAar = parseInt(document.getElementById('aarSelect').value);
+      lukkManedModal();
+      oppdaterKalender();
+    }
+
+    // ==================== DATO MODAL (NOTATER, ICAL & EGNE DETALJER) ====================
+    async function apneDatoModal(dag) {
+      valgtDato = new Date(gjeldendeAar, gjeldendeManed, dag);
+      const tittelTxt = valgtDato.toLocaleDateString('no-NO', { day: 'numeric', month: 'long', year: 'numeric' });
+      document.getElementById('modalTitle').textContent = tittelTxt;
+
+      const noteId = `note_${gjeldendeAar}_${gjeldendeManed}_${dag}`;
+      const eksisterendeNotat = await dbGet('notater', noteId);
+      document.getElementById('dateNoteInput').value = eksisterendeNotat ? eksisterendeNotat.text : '';
+
+      const icalBox = document.getElementById('iCalEventsInModal');
+      icalBox.innerHTML = '';
+      const dagensICal = icalHendelser.filter(h => {
+        if (!h.start) return false;
+        const d = new Date(h.start);
+        return d.getDate() === dag && d.getMonth() === gjeldendeManed && d.getFullYear() === gjeldendeAar;
+      });
+      if (dagensICal.length === 0) {
+        icalBox.innerHTML = '<p style="font-size:0.65rem; color:#52525b;">Ingen iCal-hendelser</p>';
+      } else {
+        dagensICal.forEach(h => {
+          const tTxt = h.allDay ? 'Hele dagen' : h.start.toLocaleTimeString('no-NO', { hour: '2-digit', minute: '2-digit' });
+          const p = document.createElement('p'); p.style.fontSize = '0.65rem'; p.style.color = '#f59e0b';
+          p.innerHTML = `<i class="fa-solid fa-circle" style="font-size:0.35rem; vertical-align:middle; margin-right:4px;"></i> <b>${tTxt}:</b> ${h.summary}`;
+          icalBox.appendChild(p);
+        });
+      }
+
+      const egenBox = document.getElementById('egneHendelserIModal');
+      egenBox.innerHTML = '';
+      const dagensEgne = egneHendelser.filter(h => {
+        const p = h.dato.split('-');
+        return parseInt(p[2]) === dag && (parseInt(p[1]) - 1) === gjeldendeManed && parseInt(p[0]) === gjeldendeAar;
+      });
+      if (dagensEgne.length === 0) {
+        egenBox.innerHTML = '<p style="font-size:0.65rem; color:#52525b;">Ingen egne hendelser</p>';
+      } else {
+        dagensEgne.forEach(h => {
+          const div = document.createElement('div');
+          div.style.display = 'flex'; div.style.justifyContent = 'space-between'; div.style.alignItems = 'center'; div.style.fontSize = '0.65rem'; div.style.color = '#3b82f6';
+          div.innerHTML = `
+            <span><i class="fa-solid fa-circle text-blue-400" style="font-size:0.35rem; vertical-align:middle; margin-right:4px;"></i> <b>${h.tid || 'Hele dagen'}:</b> ${h.tittel}</span>
+            <button onclick="slettEgenHendelse('${h.id}')" style="background:none; border:none; color:#fb7185; font-size:0.6rem; cursor:pointer;" class="hover:underline"><i class="fa-solid fa-trash-can"></i></button>
+          `;
+          egenBox.appendChild(div);
+        });
+      }
+
+      document.getElementById('dateModal').classList.add('active');
+    }
+
+    function lukkDateModal() { document.getElementById('dateModal').classList.remove('active'); }
+
+    async function lagreDatoNotat() {
+      const txt = document.getElementById('dateNoteInput').value.trim();
+      const dag = valgtDato.getDate();
+      const noteId = `note_${gjeldendeAar}_${gjeldendeManed}_${dag}`;
+      
+      if (txt) {
+        await dbPut('notater', { id: noteId, text: txt });
+      } else {
+        await dbDelete('notater', noteId);
+      }
+      lukkDateModal();
+      await oppdaterKalender();
+    }
+
+    async function slettDatoNotat() {
+      const dag = valgtDato.getDate();
+      const noteId = `note_${gjeldendeAar}_${gjeldendeManed}_${dag}`;
+      await dbDelete('notater', noteId);
+      document.getElementById('dateNoteInput').value = '';
+      lukkDateModal();
+      await oppdaterKalender();
+    }
 
     // ==================== INIT ====================
     async function init() {
@@ -1147,13 +1254,13 @@
       setInterval(async () => { await syncHandlelisteFraKvdb(); await visHandleliste(); }, 30000);
       setInterval(hentVeerdata, 900000);
       setInterval(hentICalManuelt, 1800000);
-      setInterval(renderViktigIDag, 60000);
-      setInterval(renderSoppelListe, 60000);
-
-      window.sisteDato = new Date().toISOString().split('T')[0];
     }
 
-    init();
+    async function apneHandlelisteDb() {
+      await dbOpen();
+    }
+
+    window.onload = init;
   </script>
 </body>
 </html>
