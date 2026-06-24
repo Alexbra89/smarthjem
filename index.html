@@ -24,33 +24,31 @@
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    html, body {
+    html {
       height: 100vh;
       overflow: hidden;
-      color: var(--text-primary);
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
-      position: relative;
-      background-color: #0a0a0a;
     }
 
     body {
+      margin: 0;
+      padding: clamp(0.4rem, 1.2vw, 0.75rem);
+      height: 100vh;
+      max-height: 100vh;
+      overflow: hidden;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      color: var(--text-primary);
       display: flex;
       flex-direction: column;
-      padding: clamp(0.4rem, 1.2vw, 0.75rem);
       gap: clamp(0.3rem, 0.8vw, 0.5rem);
-    }
-
-    .bg-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -2;
-      background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1920&q=80');
+      position: relative;
+      
+      /* Unsplash bakgrunn med mørkt glass-slør */
+      background: linear-gradient(rgba(15, 23, 42, 0.85), rgba(3, 7, 18, 0.95)), 
+                  url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1920&q=80');
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
+      background-attachment: fixed;
     }
 
     .bg-overlay::after {
