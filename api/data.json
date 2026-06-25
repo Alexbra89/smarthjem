@@ -1,0 +1,34 @@
+{
+  "handleliste": [
+    { "id": "1", "tekst": "Melk", "checked": false, "opprettet": "2026-06-25T08:00:00.000Z" },
+    { "id": "2", "tekst": "Brød", "checked": false, "opprettet": "2026-06-25T08:01:00.000Z" },
+    { "id": "3", "tekst": "Egg", "checked": false, "opprettet": "2026-06-25T08:02:00.000Z" },
+    { "id": "4", "tekst": "Smør", "checked": true, "opprettet": "2026-06-24T10:00:00.000Z", "completedAt": "2026-06-24T15:30:00.000Z" }
+  ],
+  "notater": {
+    "quickNote": "Husk å vanne plantene!"
+  },
+  "soppeltomming": [
+    { "id": "restavfall", "navn": "Restavfall", "emoji": "🟢", "dato": "2026-06-28" },
+    { "id": "papir", "navn": "Papir", "emoji": "🔵", "dato": "2026-07-02" },
+    { "id": "matavfall", "navn": "Matavfall", "emoji": "🟤", "dato": "2026-06-27" },
+    { "id": "glassmetall", "navn": "Glass/metall", "emoji": "🟣", "dato": "2026-07-10" }
+  ],
+  "datonotater": {
+    "2026-06-25": { "tekst": "Møte kl 14", "oppdatert": "2026-06-25T09:00:00.000Z" },
+    "2026-06-28": { "tekst": "Søndagstur!", "oppdatert": "2026-06-24T18:00:00.000Z" }
+  },
+  "egneHendelser": [
+    {
+      "id": 1,
+      "title": "Tannlege",
+      "startDate": "2026-06-26T10:00:00",
+      "allDay": false,
+      "location": "Tannlegekontoret",
+      "opprettet": "2026-06-25T08:00:00.000Z"
+    }
+  ],
+  "innstillinger": {
+    "icalUrl": "https://www.officeholidays.com/ics/ics_country.php?tbl_country=Norway"
+  }
+}
