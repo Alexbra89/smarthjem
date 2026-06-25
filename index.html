@@ -1,825 +1,247 @@
 <!DOCTYPE html>
 <html lang="no">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Smarthjem">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="theme-color" content="#0a0f1e">
-  <meta name="description" content="Familien sitt smarte dashbord">
-  <title>Smarthjem Dashboard</title>
+  <!-- [BEHOLD ALLE HEAD-ELEMENTER SOM DE ER] -->
   
-  <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlNtYXJ0aGplbSBEYXNoYm9hcmQiLAogICJzaG9ydF9uYW1lIjogIlNtYXJ0aGplbSIsCiAgInN0YXJ0X3VybCI6ICIuLyIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzBhMGYxZSIsCiAgInRoZW1lX2NvbG9yIjogIiMwYTBmMWUiLAogICJvcmllbnRhdGlvbiI6ICJsYW5kc2NhcGUiLAogICJpY29ucyI6IFtdCn0=">
-  
-  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%230a0f1e' width='100' height='100' rx='20'/><text x='50' y='65' text-anchor='middle' fill='%2360a5fa' font-size='45' font-family='sans-serif'>🏠</text></svg>">
-  
-  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-
-    :root {
-      --bg-card: rgba(24, 24, 27, 0.65);
-      --border-card: rgba(255, 255, 255, 0.08);
-      --text-primary: #fafafa;
-      --text-secondary: #a1a1aa;
-      --accent-blue: #60a5fa;
-      --accent-cyan: #22d3ee;
-      --accent-green: #4ade80;
-      --accent-amber: #fbbf24;
-      --accent-rose: #fb7185;
-      --accent-purple: #c084fc;
-    }
-
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    html {
-      height: 100vh;
-      overflow: hidden;
-      -webkit-overflow-scrolling: none;
-      overscroll-behavior: none;
-    }
-
-    body {
-      margin: 0;
-      padding: clamp(0.3rem, 1vw, 0.6rem);
-      height: 100vh;
-      max-height: 100vh;
-      overflow: hidden;
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
-      color: var(--text-primary);
-      display: flex;
-      flex-direction: column;
-      gap: clamp(0.25rem, 0.6vw, 0.4rem);
-      position: relative;
-      -webkit-overflow-scrolling: none;
-      overscroll-behavior: none;
-      touch-action: manipulation;
-      
-      background: linear-gradient(rgba(15, 23, 42, 0.85), rgba(3, 7, 18, 0.95)), 
-                  url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1920&q=80');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      background-attachment: fixed;
-    }
-
-    .glass-card {
-      background: var(--bg-card);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid var(--border-card);
-      border-radius: 1rem;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-
-    .gradient-text {
-      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .pulse-dot {
-      width: 6px; height: 6px;
-      background: var(--accent-green);
-      border-radius: 50%;
-      animation: pulse 2s infinite;
-      box-shadow: 0 0 8px var(--accent-green);
-    }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(1.3); }
-    }
-
-    /* Større avkrysningsboks for touch */
-    .chk {
-      width: 20px; height: 20px;
-      border-radius: 5px;
-      border: 2px solid rgba(255, 255, 255, 0.25);
-      display: inline-flex; align-items: center; justify-content: center;
-      cursor: pointer; flex-shrink: 0;
-      transition: all 0.2s ease;
-      background: rgba(255, 255, 255, 0.03);
-      min-width: 20px;
-    }
-    .chk.checked {
-      background: var(--accent-green);
-      border-color: var(--accent-green);
-      box-shadow: 0 0 10px rgba(74, 222, 128, 0.5);
-    }
-    .chk.checked::after {
-      content: '\f00c';
-      font-family: 'Font Awesome 6 Free';
-      font-weight: 900;
-      color: #0a0a0a;
-      font-size: 11px;
-    }
-
-    .item-done {
-      color: var(--text-secondary) !important;
-      text-decoration: line-through;
-      opacity: 0.5;
-    }
-
-    .calendar-event {
-      transition: all 0.15s ease;
-    }
-    .calendar-event:hover {
-      background: rgba(255, 255, 255, 0.06);
-      transform: translateX(2px);
-    }
-
-    /* Større kalenderdager for touch */
-    .cal-day-cell {
-      min-width: 2.5rem;
-      min-height: 2.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      cursor: pointer;
-      border-radius: 0.4rem;
-      transition: all 0.15s ease;
-      font-size: 0.8rem;
-      font-weight: 500;
-      -webkit-tap-highlight-color: transparent;
-      user-select: none;
-    }
-    .cal-day-cell:hover {
-      background: rgba(255, 255, 255, 0.08);
-    }
-    .cal-day-cell:active {
-      transform: scale(0.94);
-      background: rgba(255, 255, 255, 0.14);
-    }
-    .cal-day-cell.today {
-      background: var(--accent-blue);
-      color: white;
-      font-weight: 700;
-      box-shadow: 0 0 12px rgba(96, 165, 250, 0.4);
-    }
-    .cal-day-cell .dot-row {
-      position: absolute;
-      bottom: 3px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      gap: 3px;
-    }
-    .cal-day-cell .dot {
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-    }
-    .dot-notat { background: var(--accent-green); box-shadow: 0 0 4px var(--accent-green); }
-    .dot-ical { background: var(--accent-amber); box-shadow: 0 0 4px var(--accent-amber); }
-    .dot-egen { background: var(--accent-blue); box-shadow: 0 0 4px var(--accent-blue); }
-
-    .weather-hourly {
-      display: flex;
-      gap: 0.25rem;
-      overflow-x: auto;
-      padding: 0.25rem 0;
-      flex-shrink: 0;
-    }
-    .weather-hourly::-webkit-scrollbar { height: 2px; }
-    .weather-hourly::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 10px; }
-
-    .hour-slot {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1px;
-      min-width: 44px;
-      padding: 0.3rem 0.2rem;
-      border-radius: 0.5rem;
-      background: rgba(255, 255, 255, 0.03);
-      flex-shrink: 0;
-    }
-
-    .modal {
-      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(12px);
-      display: none; align-items: center; justify-content: center; z-index: 1000;
-    }
-    .modal.active { display: flex; }
-    .modal-content {
-      background: rgba(24, 24, 27, 0.95);
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 1rem;
-      padding: 1.25rem;
-      max-width: 460px;
-      width: 90%;
-      max-height: 80vh;
-      overflow-y: auto;
-    }
-
-    .pill {
-      display: inline-flex; align-items: center; gap: 0.2rem;
-      padding: 0.25rem 0.6rem; border-radius: 9999px;
-      font-size: 0.7rem; white-space: nowrap;
-    }
-    .pill-urgent {
-      background: rgba(248, 113, 113, 0.2);
-      color: var(--accent-rose);
-      border: 1px solid rgba(248, 113, 113, 0.35);
-    }
-    .pill-normal {
-      background: rgba(255,255,255,0.06);
-      color: var(--text-secondary);
-      border: 1px solid rgba(255,255,255,0.1);
-    }
-
-    .scroll-thin {
-      overflow-y: auto;
-      flex: 1;
-      min-height: 0;
-    }
-    .scroll-thin::-webkit-scrollbar { width: 5px; }
-    .scroll-thin::-webkit-scrollbar-track { background: transparent; }
-    .scroll-thin::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.12); border-radius: 10px; }
-
-    .error-state {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 0.4rem;
-      padding: 0.75rem;
-      text-align: center;
-      flex: 1;
-      min-height: 0;
-    }
-    .error-state i {
-      font-size: 1.5rem;
-      opacity: 0.5;
-    }
-    .error-state p {
-      font-size: 0.65rem;
-      color: var(--text-secondary);
-      max-width: 200px;
-    }
-    .error-state button {
-      margin-top: 0.3rem;
-      padding: 0.35rem 0.85rem;
-      border-radius: 0.5rem;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.12);
-      color: var(--text-secondary);
-      font-size: 0.65rem;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .error-state button:hover {
-      background: rgba(255,255,255,0.14);
-      color: var(--text-primary);
-    }
-
-    /* Større input for touch */
-    .touch-input {
-      min-height: 2.2rem;
-      -webkit-appearance: none;
-      appearance: none;
-    }
-
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .animate-fade-in { animation: fadeInUp 0.3s ease forwards; }
-
-    @keyframes glow-pulse {
-      0%, 100% { box-shadow: 0 0 0 rgba(248, 113, 113, 0); }
-      50% { box-shadow: 0 0 10px rgba(248, 113, 113, 0.5); }
-    }
-    .alert-soon { animation: glow-pulse 2s infinite; }
-  </style>
+  <!-- Legg til denne i <head> for å unngå caching -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
 </head>
 <body>
-
-  <!-- TOPPBAR -->
-  <header class="glass-card flex-shrink-0" style="padding: clamp(0.3rem, 0.7vw, 0.5rem) clamp(0.5rem, 1.2vw, 0.8rem);">
-    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
-      <div style="display: flex; align-items: center; gap: 0.75rem;">
-        <div>
-          <h1 id="liveKlokke" class="gradient-text tracking-tight" style="font-size: clamp(1.4rem, 2.8vw, 2rem); font-weight: 800; line-height: 1;">00:00:00</h1>
-          <p id="liveDato" style="font-size: clamp(0.6rem, 1vw, 0.75rem); color: #a1a1aa; margin-top: 0.1rem; font-weight: 500;">Laster dato...</p>
-        </div>
-      </div>
-      <div style="display: flex; align-items: center; gap: 0.6rem;">
-        <button onclick="apneICloudModal()" style="padding: 0.35rem 0.8rem; border-radius: 9999px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.05); font-size: 0.7rem; color: #a1a1aa; transition: all 0.2s; display: flex; align-items: center; gap: 0.35rem; cursor: pointer; min-height: 2.2rem;">
-          <i class="fa-solid fa-calendar-plus text-blue-400" style="font-size: 0.65rem;"></i> iCal
-          <span id="iCloudStatus" style="font-size: 0.65rem;">⚪</span>
-        </button>
-        <div style="display: flex; align-items: center; gap: 0.35rem;">
-          <span class="pulse-dot"></span>
-          <span style="font-size: 0.7rem; color: #a1a1aa; font-weight: 500;">Aktiv</span>
-        </div>
-      </div>
-    </div>
-  </header>
-
-  <!-- VIKTIG I DAG -->
-  <section class="glass-card flex-shrink-0" style="padding: 0.4rem 0.9rem; flex-direction: row; align-items: center; gap: 0.6rem; overflow-x: auto;">
-    <h3 style="font-size: 0.75rem; font-weight: 600; color: #fbbf24; display: flex; align-items: center; gap: 0.3rem; flex-shrink: 0;">
-      <i class="fa-solid fa-triangle-exclamation" style="font-size: 0.65rem;"></i> Viktig i dag
-    </h3>
-    <div id="viktigIDagListe" style="display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;"></div>
-  </section>
-
-  <!-- HOVEDGRID – Kalender og Notater får MER plass (7+7 kolonner i rad 2) -->
-  <main style="display: grid; grid-template-columns: repeat(12, 1fr); grid-template-rows: 1fr 1.2fr; gap: clamp(0.3rem, 0.7vw, 0.4rem); flex: 1; min-height: 0;">
-
-    <!-- RAD 1 -->
-    
-    <!-- 1. NESTE HENDELSER (3 kol) -->
-    <section class="glass-card" style="grid-column: span 3; grid-row: span 1; padding: clamp(0.4rem, 0.7vw, 0.55rem); gap: 0.3rem;">
-      <div style="display: flex; justify-content: space-between; align-items: center;">
-        <h2 style="font-size: clamp(0.7rem, 1vw, 0.8rem); font-weight: 600; color: #e4e4e7; display: flex; align-items: center; gap: 0.3rem;">
-          <i class="fa-solid fa-list-check text-amber-400" style="font-size: 0.7rem;"></i> Hendelser
-        </h2>
-        <button onclick="apneNyHendelseModal()" style="font-size: 0.7rem; color: #60a5fa; transition: all 0.2s; background: none; border: none; cursor: pointer; min-width: 2rem; min-height: 2rem; display: flex; align-items: center; justify-content: center;" title="Ny hendelse">
-          <i class="fa-solid fa-plus"></i>
-        </button>
-      </div>
-      <div id="nesteHendelser" class="scroll-thin" style="display: flex; flex-direction: column; gap: 0.25rem;"></div>
-    </section>
-
-    <!-- 2. HANDLELISTE (4 kol) -->
-    <section class="glass-card" style="grid-column: span 4; grid-row: span 1; padding: clamp(0.4rem, 0.7vw, 0.55rem); gap: 0.3rem;">
-      <div style="display: flex; justify-content: space-between; align-items: center;">
-        <h2 style="font-size: clamp(0.7rem, 1vw, 0.8rem); font-weight: 600; color: #e4e4e7; display: flex; align-items: center; gap: 0.3rem;">
-          <i class="fa-solid fa-cart-shopping text-emerald-400" style="font-size: 0.7rem;"></i> Handleliste
-        </h2>
-        <span id="listCount" style="font-size: 0.65rem; color: #a1a1aa; background: rgba(255,255,255,0.05); padding: 0.15rem 0.5rem; border-radius: 9999px;">0</span>
-      </div>
-      <div style="display: flex; gap: 0.3rem;">
-        <input type="text" id="tingInput" placeholder="Legg til vare..."
-               class="touch-input"
-               style="flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.5rem; padding: 0.35rem 0.6rem; font-size: 0.7rem; color: #e4e4e7; outline: none;">
-        <button onclick="leggTilVare()" style="background: #3b82f6; color: white; font-weight: 600; padding: 0.35rem 0.7rem; border-radius: 0.5rem; font-size: 0.7rem; border: none; cursor: pointer; transition: all 0.15s; min-width: 2.5rem; min-height: 2.2rem; display: flex; align-items: center; justify-content: center;">
-          <i class="fa-solid fa-plus"></i>
-        </button>
-      </div>
-      <ul id="handleListe" class="scroll-thin" style="display: flex; flex-direction: column; gap: 0.2rem;"></ul>
-    </section>
-
-    <!-- 3. SØPPELTØMMING (2 kol) -->
-    <section class="glass-card" style="grid-column: span 2; grid-row: span 1; padding: clamp(0.4rem, 0.7vw, 0.55rem); gap: 0.3rem;">
-      <div style="display: flex; justify-content: space-between; align-items: center;">
-        <h2 style="font-size: clamp(0.7rem, 1vw, 0.8rem); font-weight: 600; color: #e4e4e7; display: flex; align-items: center; gap: 0.3rem;">
-          <i class="fa-solid fa-trash-can text-green-400" style="font-size: 0.7rem;"></i> Tømming
-        </h2>
-        <button onclick="apneSoppelModal()" style="font-size: 0.65rem; color: #a1a1aa; background: none; border: none; cursor: pointer; transition: all 0.2s; min-width: 2rem; min-height: 2rem; display: flex; align-items: center; justify-content: center;">
-          <i class="fa-solid fa-pen-to-square"></i>
-        </button>
-      </div>
-      <div id="soppelListe" class="scroll-thin" style="display: flex; flex-direction: column; gap: 0.2rem;"></div>
-    </section>
-
-    <!-- 4. VÆRMELDING (3 kol) -->
-    <section class="glass-card" style="grid-column: span 3; grid-row: span 1; padding: clamp(0.4rem, 0.7vw, 0.55rem); gap: 0.25rem;">
-      <h2 style="font-size: clamp(0.7rem, 1vw, 0.8rem); font-weight: 600; color: #e4e4e7; display: flex; align-items: center; gap: 0.3rem;">
-        <i class="fa-solid fa-cloud-sun text-cyan-400" style="font-size: 0.7rem;"></i> Været
-      </h2>
-      <div id="weatherContent">
-        <div style="display: flex; align-items: center; gap: 0.5rem;">
-          <span id="weatherIcon" style="font-size: clamp(1.8rem, 2.5vw, 2.2rem);">☀️</span>
-          <div style="flex: 1;">
-            <p id="weatherTemp" style="font-size: clamp(1.2rem, 1.8vw, 1.6rem); font-weight: 700; line-height: 1;">--°</p>
-            <p id="weatherDesc" style="font-size: 0.6rem; color: #a1a1aa;">Laster...</p>
-          </div>
-          <div style="text-align: right; font-size: 0.6rem; color: #a1a1aa;">
-            <p id="weatherHumidity"><i class="fa-solid fa-droplet"></i> --%</p>
-            <p id="weatherWind"><i class="fa-solid fa-wind"></i> -- m/s</p>
-          </div>
-        </div>
-        <div id="hourlyForecast" class="weather-hourly" style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 0.25rem;"></div>
-        <p id="weatherLocation" style="font-size: 0.55rem; color: #a1a1aa; text-align: center; flex-shrink: 0;">Henter posisjon...</p>
-      </div>
-    </section>
-
-    <!-- RAD 2: Kalender (7 kol) + Notater (5 kol) – Kalender får mer plass -->
-    
-    <!-- 5. KALENDER (7 kol – ØKT fra 6) -->
-    <section class="glass-card" style="grid-column: span 7; grid-row: span 1; padding: clamp(0.4rem, 0.8vw, 0.6rem); gap: 0.3rem;">
-      <div style="display: flex; justify-content: space-between; align-items: center;">
-        <h2 style="font-size: clamp(0.75rem, 1.1vw, 0.9rem); font-weight: 600; color: #e4e4e7; display: flex; align-items: center; gap: 0.3rem;">
-          <i class="fa-regular fa-calendar text-blue-400" style="font-size: 0.75rem;"></i> Kalender
-        </h2>
-        <div style="display: flex; gap: 0.2rem;">
-          <button onclick="navigerManed(-1)" style="color: #a1a1aa; background: none; border: none; cursor: pointer; padding: 0.2rem; font-size: 0.65rem; min-width: 2rem; min-height: 2rem;">
-            <i class="fa-solid fa-chevron-left"></i>
-          </button>
-          <button onclick="apneManedVelger()" style="font-size: 0.8rem; font-weight: 500; color: #d4d4d8; background: none; border: none; cursor: pointer; padding: 0 0.4rem;">
-            <span id="manedTittel">Juni 2026</span>
-          </button>
-          <button onclick="navigerManed(1)" style="color: #a1a1aa; background: none; border: none; cursor: pointer; padding: 0.2rem; font-size: 0.65rem; min-width: 2rem; min-height: 2rem;">
-            <i class="fa-solid fa-chevron-right"></i>
-          </button>
-        </div>
-      </div>
-      <div id="calendarWidget" style="flex: 1; display: flex; flex-direction: column; justify-content: center;"></div>
-      <div style="display: flex; gap: 0.8rem; font-size: 0.55rem; color: #a1a1aa; justify-content: center; flex-shrink: 0; padding-top: 0.15rem;">
-        <span style="display: flex; align-items: center; gap: 0.15rem;"><span style="width: 0.4rem; height: 0.4rem; border-radius: 50%; background: #4ade80;"></span> Notater</span>
-        <span style="display: flex; align-items: center; gap: 0.15rem;"><span style="width: 0.4rem; height: 0.4rem; border-radius: 50%; background: #fbbf24;"></span> iCal</span>
-        <span style="display: flex; align-items: center; gap: 0.15rem;"><span style="width: 0.4rem; height: 0.4rem; border-radius: 50%; background: #60a5fa;"></span> Egne</span>
-      </div>
-    </section>
-
-    <!-- 6. HURTIGNOTATER (5 kol) -->
-    <section class="glass-card" style="grid-column: span 5; grid-row: span 1; padding: clamp(0.4rem, 0.8vw, 0.6rem); gap: 0.3rem;">
-      <div style="display: flex; justify-content: space-between; align-items: center;">
-        <h2 style="font-size: clamp(0.75rem, 1.1vw, 0.9rem); font-weight: 600; color: #e4e4e7; display: flex; align-items: center; gap: 0.3rem;">
-          <i class="fa-solid fa-note-sticky text-yellow-400" style="font-size: 0.75rem;"></i> Notater
-        </h2>
-        <button onclick="slettNotat()" style="font-size: 0.6rem; color: #fb7185; background: none; border: none; cursor: pointer; transition: all 0.2s; min-width: 2rem; min-height: 2rem; display: flex; align-items: center; justify-content: center;">
-          <i class="fa-solid fa-trash-can"></i> Tøm
-        </button>
-      </div>
-      <textarea id="quickNote"
-                class="touch-input"
-                style="flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.5rem; padding: 0.6rem; font-size: 0.8rem; color: #e4e4e7; resize: none; outline: none; min-height: 0; line-height: 1.5;"
-                placeholder="Skriv et raskt notat her..."></textarea>
-      <div style="display: flex; justify-content: space-between; font-size: 0.55rem; color: #a1a1aa; flex-shrink: 0;">
-        <span id="saveStatus">Lagres automatisk</span>
-        <span id="charCount">0 tegn</span>
-      </div>
-    </section>
-
-  </main>
-
-  <!-- MODALER – også touch-optimalisert -->
-  <div id="dateModal" class="modal">
-    <div class="modal-content">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-        <h3 id="modalTitle" style="font-size: 1.1rem; font-weight: 600;">Notater for dato</h3>
-        <button onclick="lukkDateModal()" style="color: #a1a1aa; background: none; border: none; font-size: 1.3rem; cursor: pointer; min-width: 2.5rem; min-height: 2.5rem;">&times;</button>
-      </div>
-      <div style="margin-bottom: 0.75rem;">
-        <h4 style="font-size: 0.75rem; color: #a1a1aa; margin-bottom: 0.3rem;">📝 Lokalt notat:</h4>
-        <textarea id="dateNoteInput" class="touch-input" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.5rem; padding: 0.6rem; font-size: 0.8rem; color: #e4e4e7; resize: none; outline: none;" rows="3" placeholder="Skriv notat..."></textarea>
-        <div style="display: flex; gap: 0.4rem; margin-top: 0.4rem;">
-          <button onclick="lagreDatoNotat()" style="background: #3b82f6; color: white; padding: 0.5rem 0.8rem; border-radius: 0.5rem; font-size: 0.8rem; border: none; cursor: pointer; flex: 1; min-height: 2.5rem;">Lagre</button>
-          <button onclick="slettDatoNotat()" style="background: rgba(251,113,133,0.2); color: #fb7185; padding: 0.5rem 0.8rem; border-radius: 0.5rem; font-size: 0.8rem; border: none; cursor: pointer; min-height: 2.5rem;">Slett</button>
-        </div>
-      </div>
-      <div style="margin-bottom: 0.75rem;">
-        <h4 style="font-size: 0.75rem; color: #a1a1aa; margin-bottom: 0.3rem;">📅 iCal-hendelser:</h4>
-        <div id="iCalEventsInModal" style="display: flex; flex-direction: column; gap: 0.3rem;"></div>
-      </div>
-      <div>
-        <h4 style="font-size: 0.75rem; color: #a1a1aa; margin-bottom: 0.3rem;">✨ Egne hendelser:</h4>
-        <div id="egneHendelserIModal" style="display: flex; flex-direction: column; gap: 0.3rem;"></div>
-        <button onclick="apneNyHendelseForDato()" style="width: 100%; background: rgba(59,130,246,0.2); color: #60a5fa; padding: 0.5rem; border-radius: 0.5rem; font-size: 0.8rem; border: none; cursor: pointer; margin-top: 0.4rem; min-height: 2.5rem;">
-          <i class="fa-solid fa-plus"></i> Ny hendelse denne dagen
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <div id="nyHendelseModal" class="modal">
-    <div class="modal-content">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-        <h3 style="font-size: 1.1rem; font-weight: 600;">✨ Ny hendelse</h3>
-        <button onclick="lukkNyHendelseModal()" style="color: #a1a1aa; background: none; border: none; font-size: 1.3rem; cursor: pointer; min-width: 2.5rem; min-height: 2.5rem;">&times;</button>
-      </div>
-      <div style="display: flex; flex-direction: column; gap: 0.6rem;">
-        <div>
-          <label style="display: block; font-size: 0.75rem; color: #a1a1aa; margin-bottom: 0.2rem;">Tittel:</label>
-          <input type="text" id="nyHendelseTittel" class="touch-input" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.5rem; padding: 0.5rem; font-size: 0.8rem; color: #e4e4e7; outline: none;" placeholder="Hva skal skje?">
-        </div>
-        <div>
-          <label style="display: block; font-size: 0.75rem; color: #a1a1aa; margin-bottom: 0.2rem;">Dato:</label>
-          <input type="date" id="nyHendelseDato" class="touch-input" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.5rem; padding: 0.5rem; font-size: 0.8rem; color: #e4e4e7; outline: none;">
-        </div>
-        <div>
-          <label style="display: block; font-size: 0.75rem; color: #a1a1aa; margin-bottom: 0.2rem;">Klokkeslett:</label>
-          <input type="time" id="nyHendelseTid" value="12:00" class="touch-input" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.5rem; padding: 0.5rem; font-size: 0.8rem; color: #e4e4e7; outline: none;">
-        </div>
-        <button onclick="lagreNyHendelse()" style="width: 100%; background: #3b82f6; color: white; padding: 0.6rem; border-radius: 0.5rem; font-size: 0.85rem; border: none; cursor: pointer; min-height: 2.8rem;">Lagre hendelse</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="iCloudModal" class="modal">
-    <div class="modal-content">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-        <h3 style="font-size: 1.1rem; font-weight: 600;">⚙️ iCal Kalender</h3>
-        <button onclick="lukkICloudModal()" style="color: #a1a1aa; background: none; border: none; font-size: 1.3rem; cursor: pointer; min-width: 2.5rem; min-height: 2.5rem;">&times;</button>
-      </div>
-      <div style="display: flex; flex-direction: column; gap: 0.6rem;">
-        <div>
-          <label style="display: block; font-size: 0.75rem; color: #a1a1aa; margin-bottom: 0.2rem;">iCal URL:</label>
-          <input type="text" id="icalUrlInput" class="touch-input" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.5rem; padding: 0.5rem; font-size: 0.75rem; color: #e4e4e7; outline: none;" placeholder="https://...">
-        </div>
-        <div style="display: flex; gap: 0.4rem;">
-          <button onclick="lagreICalUrl()" style="background: #3b82f6; color: white; padding: 0.5rem; border-radius: 0.5rem; font-size: 0.8rem; border: none; cursor: pointer; flex: 1; min-height: 2.5rem;">Lagre og hent</button>
-          <button onclick="hentICalManuelt()" style="background: rgba(74,222,128,0.2); color: #4ade80; padding: 0.5rem; border-radius: 0.5rem; font-size: 0.8rem; border: none; cursor: pointer; min-height: 2.5rem;">Hent nå</button>
-        </div>
-        <div id="iCloudDebug" style="font-size: 0.65rem; color: #a1a1aa;"></div>
-      </div>
-    </div>
-  </div>
-
-  <div id="soppelModal" class="modal">
-    <div class="modal-content">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-        <h3 style="font-size: 1.1rem; font-weight: 600;">♻️ Rediger tømmedatoer</h3>
-        <button onclick="lukkSoppelModal()" style="color: #a1a1aa; background: none; border: none; font-size: 1.3rem; cursor: pointer; min-width: 2.5rem; min-height: 2.5rem;">&times;</button>
-      </div>
-      <div id="soppelAdminForm" style="display: flex; flex-direction: column; gap: 0.6rem;"></div>
-      <button onclick="lukkSoppelModal()" style="width: 100%; background: #3b82f6; color: white; padding: 0.6rem; border-radius: 0.5rem; font-size: 0.85rem; border: none; cursor: pointer; margin-top: 0.75rem; min-height: 2.8rem;">Lagre og lukk</button>
-    </div>
-  </div>
-
-  <div id="manedModal" class="modal">
-    <div class="modal-content" style="max-width: 320px;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-        <h3 style="font-size: 1rem; font-weight: 600;">Velg måned og år</h3>
-        <button onclick="lukkManedModal()" style="color: #a1a1aa; background: none; border: none; font-size: 1.3rem; cursor: pointer; min-width: 2.5rem; min-height: 2.5rem;">&times;</button>
-      </div>
-      <div style="display: flex; gap: 0.4rem;">
-        <select id="manedSelect" class="touch-input" style="flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.5rem; padding: 0.4rem; font-size: 0.8rem; color: #e4e4e7; outline: none;"></select>
-        <select id="aarSelect" class="touch-input" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.5rem; padding: 0.4rem; font-size: 0.8rem; color: #e4e4e7; outline: none;"></select>
-      </div>
-      <button onclick="bekreftManed()" style="width: 100%; background: #3b82f6; color: white; padding: 0.6rem; border-radius: 0.5rem; font-size: 0.85rem; border: none; cursor: pointer; margin-top: 0.75rem; min-height: 2.8rem;">Gå til</button>
-    </div>
-  </div>
+  <!-- [BEHOLD ALL HTML STRUKTUR SOM DEN ER] -->
 
   <script>
-    // ==================== CORS-PROXY HJELPER ====================
-    const CORS_PROXY = 'https://corsproxy.io/?';
-    
-    async function fetchMedProxy(url, options = {}) {
-      try {
-        const direkteResp = await fetch(url, options);
-        if (direkteResp.ok) return direkteResp;
-        throw new Error('Direkte kall feilet med status ' + direkteResp.status);
-      } catch (direkteFeil) {
-        console.warn('Direkte fetch feilet, prøver CORS-proxy:', direkteFeil.message);
-        try {
-          const proxyUrl = CORS_PROXY + encodeURIComponent(url);
-          const proxyResp = await fetch(proxyUrl, options);
-          if (!proxyResp.ok) throw new Error('Proxy-status ' + proxyResp.status);
-          return proxyResp;
-        } catch (proxyFeil) {
-          console.error('CORS-proxy feilet også:', proxyFeil.message);
-          throw new Error('Både direkte og proxy-kall feilet: ' + proxyFeil.message);
-        }
-      }
-    }
-
-    // ==================== PWA REGISTRERING ====================
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        if (!navigator.serviceWorker.controller) {
-          navigator.serviceWorker.register('data:application/javascript,self.addEventListener("fetch",e=>{e.respondWith(fetch(e.request).catch(()=>new Response("Offline")))})')
-            .catch(() => console.log('SW registration optional'));
-        }
-      });
-    }
-
     // ==================== KONFIGURASJON ====================
-    const KVDB_BUCKET = 'familien-smarthjem-tavle-2026';
-    const KVDB_URL = `https://kvdb.io/${KVDB_BUCKET}/handleliste`;
+    // Erstatt eksisterende KVDB-konfigurasjon med dette:
+    const DATA_URL = '/data.json';
     
-    const MAANEDSNAVN = ['Januar','Februar','Mars','April','Mai','Juni','Juli','August','September','Oktober','November','Desember'];
-    const DAGER_KORT = ['Man','Tir','Ons','Tor','Fre','Lør','Søn'];
-    
-    const SOPPEL_TYPER = [
-      { id: 'restavfall', navn: 'Restavfall', emoji: '🟢', farge: '#4ade80' },
-      { id: 'papir', navn: 'Papir', emoji: '🔵', farge: '#60a5fa' },
-      { id: 'matavfall', navn: 'Matavfall', emoji: '🟤', farge: '#b08968' },
-      { id: 'glassmetall', navn: 'Glass/metall', emoji: '🟣', farge: '#c084fc' }
-    ];
+    // Cache for å unngå for mange kall
+    let cachedData = null;
+    let lastFetchTime = 0;
+    const CACHE_DURATION = 2000; // 2 sekunder cache
 
-    let dbPromise = null;
-    let handlelisteDb = null;
-    
-    let valgtDato = null;
-    let kalenderHendelser = [];
-    let egneHendelser = [];
-    let icalUrl = 'https://www.officeholidays.com/ics/ics_country.php?tbl_country=Norway';
-    let visAar = new Date().getFullYear();
-    let visManed = new Date().getMonth();
-    let pendingHendelseDato = null;
+    // ==================== DATA-HENTING ====================
+    async function fetchData(forceRefresh = false) {
+      const now = Date.now();
+      if (!forceRefresh && cachedData && (now - lastFetchTime) < CACHE_DURATION) {
+        return cachedData;
+      }
 
-    function visFeil(elementId, melding, onRetry = null) {
-      const el = document.getElementById(elementId);
-      if (!el) return;
-      el.innerHTML = `<div class="error-state">
-        <i class="fa-solid fa-circle-exclamation" style="color: var(--accent-rose);"></i>
-        <p>${melding}</p>
-        ${onRetry ? `<button onclick="(${onRetry.toString()})()">Prøv igjen <i class="fa-solid fa-rotate-right"></i></button>` : ''}
-      </div>`;
-    }
-
-    function oppdaterKlokke() {
-      const naa = new Date();
-      document.getElementById('liveKlokke').innerText = naa.toLocaleTimeString('no-NO', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
-      const alt = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-      const datoStreng = naa.toLocaleDateString('no-NO', alt);
-      document.getElementById('liveDato').innerText = datoStreng.charAt(0).toUpperCase() + datoStreng.slice(1);
-
-      const idag = naa.toISOString().split('T')[0];
-      if (window.sisteDato !== idag) {
-        window.sisteDato = idag;
-        if (handlelisteDb) {
-          byggKalender().catch(e => console.warn('Kalender-oppdatering feilet:', e));
-          visNesteHendelser();
-          renderViktigIDag().catch(e => console.warn('Viktig-i-dag feilet:', e));
-          renderSoppelListe().catch(e => console.warn('Søppel-rendring feilet:', e));
-        }
+      try {
+        const response = await fetch(DATA_URL + '?t=' + now);
+        if (!response.ok) throw new Error('Kunne ikke hente data');
+        const data = await response.json();
+        cachedData = data;
+        lastFetchTime = now;
+        return data;
+      } catch (error) {
+        console.error('Feil ved henting av data:', error);
+        // Returner cached data hvis tilgjengelig
+        return cachedData || getDefaultData();
       }
     }
-    setInterval(oppdaterKlokke, 1000);
-    oppdaterKlokke();
 
-    function apneHandlelisteDb() {
-      if (dbPromise) return dbPromise;
-      dbPromise = new Promise((resolve, reject) => {
-        const req = indexedDB.open('SmarthjemDashboard', 4);
-        req.onupgradeneeded = (e) => {
-          const db = e.target.result;
-          if (!db.objectStoreNames.contains('handleliste')) db.createObjectStore('handleliste', { keyPath: 'id', autoIncrement: true });
-          if (!db.objectStoreNames.contains('notater')) db.createObjectStore('notater', { keyPath: 'id' });
-          if (!db.objectStoreNames.contains('datonotater')) db.createObjectStore('datonotater', { keyPath: 'id' });
-          if (!db.objectStoreNames.contains('innstillinger')) db.createObjectStore('innstillinger', { keyPath: 'id' });
-          if (!db.objectStoreNames.contains('soppeltomming')) db.createObjectStore('soppeltomming', { keyPath: 'id' });
-          if (!db.objectStoreNames.contains('egneHendelser')) db.createObjectStore('egneHendelser', { keyPath: 'id', autoIncrement: true });
-        };
-        req.onsuccess = (e) => { handlelisteDb = e.target.result; resolve(handlelisteDb); };
-        req.onerror = (e) => reject(e.target.error);
-      });
-      return dbPromise;
-    }
-
-    function sikreDb() {
-      if (!handlelisteDb) throw new Error('Database ikke initialisert enda');
-      return handlelisteDb;
-    }
-
-    function dbGet(storeName, id) {
-      return new Promise((resolve, reject) => {
-        try {
-          const db = sikreDb();
-          const tx = db.transaction(storeName, 'readonly');
-          tx.objectStore(storeName).get(id).onsuccess = (e) => resolve(e.target.result);
-        } catch (e) { reject(e); }
-      });
-    }
-    function dbGetAll(storeName) {
-      return new Promise((resolve, reject) => {
-        try {
-          const db = sikreDb();
-          const tx = db.transaction(storeName, 'readonly');
-          tx.objectStore(storeName).getAll().onsuccess = (e) => resolve(e.target.result);
-        } catch (e) { reject(e); }
-      });
-    }
-    function dbPut(storeName, data) {
-      return new Promise((resolve, reject) => {
-        try {
-          const db = sikreDb();
-          const tx = db.transaction(storeName, 'readwrite');
-          tx.objectStore(storeName).put(data).onsuccess = resolve;
-        } catch (e) { reject(e); }
-      });
-    }
-    function dbDelete(storeName, id) {
-      return new Promise((resolve, reject) => {
-        try {
-          const db = sikreDb();
-          const tx = db.transaction(storeName, 'readwrite');
-          tx.objectStore(storeName).delete(id).onsuccess = resolve;
-        } catch (e) { reject(e); }
-      });
-    }
-
-    // ==================== HANDLELISTE ====================
-    async function syncHandlelisteFraKvdb() {
-      try {
-        const resp = await fetchMedProxy(KVDB_URL);
-        if (!resp.ok) throw new Error('Status ' + resp.status);
-        const skyData = await resp.json();
-        if (Array.isArray(skyData) && skyData.length > 0) {
-          const tx = handlelisteDb.transaction('handleliste', 'readwrite');
-          const store = tx.objectStore('handleliste');
-          await new Promise((res) => { store.clear().onsuccess = res; });
-          for (const v of skyData) await new Promise((res) => { store.add(v).onsuccess = res; });
+    function getDefaultData() {
+      return {
+        handleliste: [
+          { id: 1, tekst: "Melk", checked: false },
+          { id: 2, tekst: "Brød", checked: false },
+          { id: 3, tekst: "Egg", checked: false }
+        ],
+        notater: { quickNote: "" },
+        soppeltomming: [
+          { id: "restavfall", navn: "Restavfall", emoji: "🟢", dato: "2026-06-28" },
+          { id: "papir", navn: "Papir", emoji: "🔵", dato: "2026-07-02" },
+          { id: "matavfall", navn: "Matavfall", emoji: "🟤", dato: "2026-06-27" },
+          { id: "glassmetall", navn: "Glass/metall", emoji: "🟣", dato: "2026-07-10" }
+        ],
+        datonotater: {},
+        egneHendelser: [],
+        innstillinger: {
+          icalUrl: "https://www.officeholidays.com/ics/ics_country.php?tbl_country=Norway"
         }
-        document.getElementById('listCount').style.color = '#a1a1aa';
+      };
+    }
+
+    // ==================== OPPDATERTE FUNKSJONER ====================
+    
+    // Erstatt syncHandlelisteFraKvdb() med:
+    async function lastHandlelisteFraJson() {
+      try {
+        const data = await fetchData();
+        return data.handleliste || [];
       } catch (e) {
-        console.warn('KVDB-lesing feilet:', e.message);
-        document.getElementById('listCount').style.color = '#fb923c';
+        console.warn('Kunne ikke laste handleliste:', e);
+        return [];
       }
     }
 
-    async function syncHandlelisteTilKvdb() {
+    // Erstatt syncHandlelisteTilKvdb() med:
+    async function lagreHandlelisteTilJson(handleliste) {
       try {
-        const varer = await dbGetAll('handleliste');
-        await fetchMedProxy(KVDB_URL, { method: 'POST', body: JSON.stringify(varer) });
-      } catch (e) { console.warn('KVDB-skriving feilet:', e.message); }
+        const data = await fetchData(true);
+        data.handleliste = handleliste;
+        
+        // Send til API for lagring
+        const response = await fetch('/api/update', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            type: 'handleliste',
+            data: handleliste
+          })
+        });
+        
+        if (!response.ok) throw new Error('Kunne ikke lagre data');
+        cachedData = data;
+        lastFetchTime = Date.now();
+      } catch (error) {
+        console.error('Feil ved lagring:', error);
+      }
     }
 
-    async function leggTilVare() {
-      try {
-        const tekst = document.getElementById('tingInput').value.trim();
-        if (!tekst) return;
-        const tx = handlelisteDb.transaction('handleliste', 'readwrite');
-        tx.objectStore('handleliste').add({ tekst, checked: false, opprettet: new Date().toISOString() });
-        tx.oncomplete = async () => {
-          document.getElementById('tingInput').value = '';
-          await visHandleliste();
-          syncHandlelisteTilKvdb().catch(e => console.warn('Synk feilet:', e));
-          renderViktigIDag().catch(e => console.warn('Viktig-i-dag feilet:', e));
-        };
-      } catch (e) { console.warn('Legg til vare feilet:', e); }
-    }
-
-    async function veksleVare(id, checked) {
-      try {
-        const tx = handlelisteDb.transaction('handleliste', 'readwrite');
-        const store = tx.objectStore('handleliste');
-        const req = store.get(id);
-        req.onsuccess = () => {
-          const v = req.result;
-          v.checked = checked;
-          v.completedAt = checked ? new Date().toISOString() : null;
-          store.put(v);
-        };
-        tx.oncomplete = async () => {
-          await visHandleliste();
-          syncHandlelisteTilKvdb().catch(e => console.warn('Synk feilet:', e));
-          renderViktigIDag().catch(e => console.warn('Viktig-i-dag feilet:', e));
-        };
-      } catch (e) { console.warn('Veksle vare feilet:', e); }
-    }
-
-    async function slettVare(id) {
-      try {
-        const tx = handlelisteDb.transaction('handleliste', 'readwrite');
-        tx.objectStore('handleliste').delete(id);
-        tx.oncomplete = async () => {
-          await visHandleliste();
-          syncHandlelisteTilKvdb().catch(e => console.warn('Synk feilet:', e));
-          renderViktigIDag().catch(e => console.warn('Viktig-i-dag feilet:', e));
-        };
-      } catch (e) { console.warn('Slett vare feilet:', e); }
-    }
-
+    // Oppdatert visHandleliste()
     async function visHandleliste() {
       try {
-        const varer = await dbGetAll('handleliste');
+        const varer = await lastHandlelisteFraJson();
         const aktive = varer.filter(v => !v.checked);
         const fullforte = varer.filter(v => v.checked);
         document.getElementById('listCount').textContent = aktive.length;
 
         const lagVare = (v) => `
-          <li style="display: flex; align-items: center; gap: 0.4rem; padding: 0.3rem 0.4rem; border-radius: 0.5rem; background: rgba(255,255,255,0.02); transition: all 0.15s; font-size: 0.7rem;">
-            <span class="chk ${v.checked ? 'checked' : ''}" onclick="veksleVare(${v.id}, ${!v.checked})"></span>
+          <li style="display: flex; align-items: center; gap: 0.35rem; padding: 0.2rem 0.35rem; border-radius: 0.4rem; background: rgba(255,255,255,0.02); transition: all 0.15s; font-size: 0.6rem;">
+            <span class="chk ${v.checked ? 'checked' : ''}" onclick="veksleVare('${v.id}', ${!v.checked})"></span>
             <span style="flex: 1; ${v.checked ? 'color: #a1a1aa; text-decoration: line-through; opacity: 0.5;' : 'color: #e4e4e7;'}">${v.tekst}</span>
-            <button onclick="slettVare(${v.id})" style="color: #71717a; background: none; border: none; font-size: 0.65rem; cursor: pointer; min-width: 1.8rem; min-height: 1.8rem;">
+            <button onclick="slettVare('${v.id}')" style="color: #71717a; background: none; border: none; font-size: 0.55rem; cursor: pointer;">
               <i class="fa-solid fa-xmark"></i>
             </button>
           </li>`;
 
         document.getElementById('handleListe').innerHTML = aktive.map(lagVare).join('') + fullforte.map(lagVare).join('');
-      } catch (e) { console.warn('Vis handleliste feilet:', e); }
+      } catch (e) { 
+        console.warn('Vis handleliste feilet:', e); 
+      }
     }
 
-    // ==================== SØPPELTØMMING ====================
+    // Oppdatert leggTilVare()
+    async function leggTilVare() {
+      try {
+        const tekst = document.getElementById('tingInput').value.trim();
+        if (!tekst) return;
+        
+        const varer = await lastHandlelisteFraJson();
+        const nyVare = {
+          id: Date.now().toString(),
+          tekst: tekst,
+          checked: false,
+          opprettet: new Date().toISOString()
+        };
+        varer.push(nyVare);
+        
+        await lagreHandlelisteTilJson(varer);
+        document.getElementById('tingInput').value = '';
+        await visHandleliste();
+        renderViktigIDag().catch(e => console.warn('Viktig-i-dag feilet:', e));
+      } catch (e) { console.warn('Legg til vare feilet:', e); }
+    }
+
+    // Oppdatert veksleVare()
+    async function veksleVare(id, checked) {
+      try {
+        const varer = await lastHandlelisteFraJson();
+        const vare = varer.find(v => v.id === id);
+        if (vare) {
+          vare.checked = checked;
+          vare.completedAt = checked ? new Date().toISOString() : null;
+        }
+        
+        await lagreHandlelisteTilJson(varer);
+        await visHandleliste();
+        renderViktigIDag().catch(e => console.warn('Viktig-i-dag feilet:', e));
+      } catch (e) { console.warn('Veksle vare feilet:', e); }
+    }
+
+    // Oppdatert slettVare()
+    async function slettVare(id) {
+      try {
+        let varer = await lastHandlelisteFraJson();
+        varer = varer.filter(v => v.id !== id);
+        
+        await lagreHandlelisteTilJson(varer);
+        await visHandleliste();
+        renderViktigIDag().catch(e => console.warn('Viktig-i-dag feilet:', e));
+      } catch (e) { console.warn('Slett vare feilet:', e); }
+    }
+
+    // Oppdatert lastNotat()
+    async function lastNotat() {
+      try {
+        const data = await fetchData();
+        if (data.notater && data.notater.quickNote) {
+          document.getElementById('quickNote').value = data.notater.quickNote;
+          document.getElementById('charCount').textContent = `${data.notater.quickNote.length} tegn`;
+        }
+      } catch (e) { console.warn('Last notat feilet:', e); }
+    }
+
+    // Oppdatert lagreNotat()
+    async function lagreNotat() {
+      try {
+        const data = await fetchData(true);
+        const noteText = document.getElementById('quickNote').value;
+        data.notater = data.notater || {};
+        data.notater.quickNote = noteText;
+        
+        await fetch('/api/update', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            type: 'notater',
+            data: data.notater
+          })
+        });
+        
+        document.getElementById('saveStatus').textContent = 'Lagret ✓';
+        setTimeout(() => document.getElementById('saveStatus').textContent = 'Lagres automatisk', 2000);
+      } catch (e) { 
+        console.warn('Lagre notat feilet:', e);
+        document.getElementById('saveStatus').textContent = 'Feil ved lagring';
+      }
+    }
+
+    // Oppdatert initSoppel()
     async function initSoppel() {
       try {
-        for (const type of SOPPEL_TYPER) {
-          const eks = await dbGet('soppeltomming', type.id);
-          if (!eks) {
-            const dato = new Date();
-            dato.setDate(dato.getDate() + 3);
-            await dbPut('soppeltomming', { id: type.id, dato: dato.toISOString().split('T')[0] });
-          }
+        const data = await fetchData();
+        if (!data.soppeltomming || data.soppeltomming.length === 0) {
+          data.soppeltomming = getDefaultData().soppeltomming;
+          await fetch('/api/update', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              type: 'soppeltomming',
+              data: data.soppeltomming
+            })
+          });
         }
         renderSoppelListe().catch(e => console.warn('Søppel-rendring feilet:', e));
       } catch (e) { console.warn('Init søppel feilet:', e); }
     }
 
+    // Oppdatert renderSoppelListe()
     async function renderSoppelListe() {
       try {
         const cont = document.getElementById('soppelListe');
+        const data = await fetchData();
+        const soppelData = data.soppeltomming || [];
+        
         const naa = new Date(); naa.setHours(0,0,0,0);
         let html = '';
-        for (const type of SOPPEL_TYPER) {
-          const rad = await dbGet('soppeltomming', type.id);
-          if (!rad) continue;
-          const dato = new Date(rad.dato);
+        
+        for (const type of soppelData) {
+          if (!type.dato) continue;
+          const dato = new Date(type.dato);
           const dager = Math.round((dato - naa) / 86400000);
           const innen24t = dager <= 1;
           let tekst;
@@ -828,482 +250,88 @@
           else if (dager === 1) tekst = 'I morgen';
           else tekst = `${dager}d`;
 
-          html += `<div style="display: flex; justify-content: space-between; align-items: center; padding: 0.3rem 0.4rem; border-radius: 0.5rem; background: rgba(255,255,255,0.02); ${innen24t ? 'animation: glow-pulse 2s infinite; border: 1px solid rgba(251,113,133,0.3);' : ''}">
-            <span style="font-size: 0.7rem;">${type.emoji} ${type.navn}</span>
-            <span style="font-size: 0.65rem; font-weight: 600; ${innen24t ? 'color: #fb7185;' : 'color: #d4d4d8;'}">${tekst}</span>
+          html += `<div style="display: flex; justify-content: space-between; align-items: center; padding: 0.2rem 0.35rem; border-radius: 0.4rem; background: rgba(255,255,255,0.02); ${innen24t ? 'animation: glow-pulse 2s infinite; border: 1px solid rgba(251,113,133,0.3);' : ''}">
+            <span style="font-size: 0.6rem;">${type.emoji || '📅'} ${type.navn}</span>
+            <span style="font-size: 0.55rem; font-weight: 600; ${innen24t ? 'color: #fb7185;' : 'color: #d4d4d8;'}">${tekst}</span>
           </div>`;
         }
         cont.innerHTML = html;
       } catch (e) { console.warn('Render søppel feilet:', e); }
     }
 
-    async function apneSoppelModal() {
-      try {
-        const form = document.getElementById('soppelAdminForm');
-        let html = '';
-        for (const type of SOPPEL_TYPER) {
-          const rad = await dbGet('soppeltomming', type.id);
-          html += `<div>
-            <label style="display: block; font-size: 0.75rem; color: #a1a1aa; margin-bottom: 0.2rem;">${type.emoji} ${type.navn}</label>
-            <input type="date" id="soppel-${type.id}" value="${rad ? rad.dato : ''}" class="touch-input"
-                   style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.5rem; padding: 0.5rem; font-size: 0.8rem; color: #e4e4e7; outline: none;">
-          </div>`;
-        }
-        form.innerHTML = html;
-        document.getElementById('soppelModal').classList.add('active');
-      } catch (e) { console.warn('Åpne søppel-modal feilet:', e); }
-    }
-
-    async function lukkSoppelModal() {
-      try {
-        for (const type of SOPPEL_TYPER) {
-          const el = document.getElementById(`soppel-${type.id}`);
-          if (el && el.value) await dbPut('soppeltomming', { id: type.id, dato: el.value });
-        }
-        document.getElementById('soppelModal').classList.remove('active');
-        renderSoppelListe().catch(e => console.warn('Søppel-rendring feilet:', e));
-        renderViktigIDag().catch(e => console.warn('Viktig-i-dag feilet:', e));
-      } catch (e) { console.warn('Lukk søppel-modal feilet:', e); }
-    }
-
-    // ==================== EGNE HENDELSER ====================
+    // Oppdatert lastEgneHendelser()
     async function lastEgneHendelser() {
-      try { egneHendelser = await dbGetAll('egneHendelser'); } 
-      catch (e) { console.warn('Last egne hendelser feilet:', e); }
-    }
-
-    function apneNyHendelseModal(dato) {
-      pendingHendelseDato = dato || new Date().toISOString().split('T')[0];
-      document.getElementById('nyHendelseDato').value = pendingHendelseDato;
-      document.getElementById('nyHendelseTittel').value = '';
-      document.getElementById('nyHendelseTid').value = '12:00';
-      document.getElementById('nyHendelseModal').classList.add('active');
-    }
-
-    function apneNyHendelseForDato() {
-      if (valgtDato) {
-        lukkDateModal();
-        apneNyHendelseModal(valgtDato);
+      try { 
+        const data = await fetchData();
+        egneHendelser = data.egneHendelser || []; 
+      } catch (e) { 
+        console.warn('Last egne hendelser feilet:', e); 
+        egneHendelser = []; 
       }
     }
 
-    function lukkNyHendelseModal() {
-      document.getElementById('nyHendelseModal').classList.remove('active');
-      pendingHendelseDato = null;
-    }
-
-    async function lagreNyHendelse() {
-      try {
-        const tittel = document.getElementById('nyHendelseTittel').value.trim();
-        const dato = document.getElementById('nyHendelseDato').value;
-        const tid = document.getElementById('nyHendelseTid').value || '12:00';
-        if (!tittel || !dato) { alert('Fyll ut tittel og dato.'); return; }
-        await dbPut('egneHendelser', { title: tittel, startDate: `${dato}T${tid}:00`, allDay: false, location: '', opprettet: new Date().toISOString() });
-        await lastEgneHendelser();
-        await byggKalender();
-        visNesteHendelser();
-        renderViktigIDag().catch(e => console.warn('Viktig-i-dag feilet:', e));
-        lukkNyHendelseModal();
-      } catch (e) { console.warn('Lagre hendelse feilet:', e); }
-    }
-
-    async function slettEgenHendelse(id) {
-      try {
-        await dbDelete('egneHendelser', id);
-        await lastEgneHendelser();
-        await byggKalender();
-        visNesteHendelser();
-        renderViktigIDag().catch(e => console.warn('Viktig-i-dag feilet:', e));
-        if (valgtDato) await apneDatoModal(valgtDato);
-      } catch (e) { console.warn('Slett hendelse feilet:', e); }
-    }
-
-    // ==================== KALENDER (STØRRE DAGER) ====================
-    async function byggKalender() {
-      try {
-        const aar = visAar, maaned = visManed;
-        const naa = new Date();
-        const erDenneManeden = (aar === naa.getFullYear() && maaned === naa.getMonth());
-        const iDag = naa.getDate();
-
-        document.getElementById('manedTittel').textContent = `${MAANEDSNAVN[maaned]} ${aar}`;
-
-        const forsteDag = (new Date(aar, maaned, 1).getDay() || 7);
-        const sisteDato = new Date(aar, maaned + 1, 0).getDate();
-
-        const alleNotater = await dbGetAll('datonotater');
-        await lastEgneHendelser();
-        
-        const notatDatoer = new Set();
-        alleNotater.forEach(n => {
-          const nd = new Date(n.id);
-          if (nd.getFullYear() === aar && nd.getMonth() === maaned) notatDatoer.add(n.id);
-        });
-
-        const icalDatoer = new Set();
-        kalenderHendelser.forEach(e => {
-          if (e.startDate) {
-            const ed = new Date(e.startDate);
-            if (ed.getFullYear() === aar && ed.getMonth() === maaned) icalDatoer.add(e.startDate.split('T')[0]);
-          }
-        });
-
-        const egneDatoer = new Set();
-        egneHendelser.forEach(e => {
-          if (e.startDate) {
-            const ed = new Date(e.startDate);
-            if (ed.getFullYear() === aar && ed.getMonth() === maaned) egneDatoer.add(e.startDate.split('T')[0]);
-          }
-        });
-
-        // Dagnavn-rad
-        let html = `<div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.2rem; margin-bottom: 0.2rem;">`;
-        DAGER_KORT.forEach(d => html += `<div style="color: #a1a1aa; text-align: center; font-weight: 500; padding: 0.2rem 0; font-size: 0.65rem;">${d}</div>`);
-        html += `</div><div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.2rem;">`;
-
-        // Tomme celler før første dag
-        for (let i = 1; i < forsteDag; i++) html += '<div></div>';
-
-        // Dag-celler med cal-day-cell klassen
-        for (let dag = 1; dag <= sisteDato; dag++) {
-          const erIdag = (erDenneManeden && dag === iDag);
-          const datoStr = `${aar}-${String(maaned+1).padStart(2,'0')}-${String(dag).padStart(2,'0')}`;
-          
-          let dots = '';
-          if (notatDatoer.has(datoStr)) dots += '<span class="dot dot-notat"></span>';
-          if (icalDatoer.has(datoStr)) dots += '<span class="dot dot-ical"></span>';
-          if (egneDatoer.has(datoStr)) dots += '<span class="dot dot-egen"></span>';
-
-          const todayClass = erIdag ? ' today' : '';
-          html += `<div class="cal-day-cell${todayClass}" data-dato="${datoStr}" onclick="apneDatoModal('${datoStr}')">
-            ${dag}
-            ${dots ? `<div class="dot-row">${dots}</div>` : ''}
-          </div>`;
-        }
-        html += '</div>';
-        document.getElementById('calendarWidget').innerHTML = html;
-      } catch (e) { console.warn('Bygg kalender feilet:', e); }
-    }
-
-    function navigerManed(delta) {
-      visManed += delta;
-      if (visManed < 0) { visManed = 11; visAar--; }
-      if (visManed > 11) { visManed = 0; visAar++; }
-      byggKalender().catch(e => console.warn('Naviger måned feilet:', e));
-    }
-
-    function apneManedVelger() {
-      const ms = document.getElementById('manedSelect');
-      const as = document.getElementById('aarSelect');
-      ms.innerHTML = MAANEDSNAVN.map((m,i) => `<option value="${i}" ${i===visManed?'selected':''}>${m}</option>`).join('');
-      const aarNaa = new Date().getFullYear();
-      let o = '';
-      for (let a = aarNaa - 5; a <= aarNaa + 5; a++) o += `<option value="${a}" ${a===visAar?'selected':''}>${a}</option>`;
-      as.innerHTML = o;
-      document.getElementById('manedModal').classList.add('active');
-    }
-    function lukkManedModal() { document.getElementById('manedModal').classList.remove('active'); }
-    function bekreftManed() {
-      visManed = parseInt(document.getElementById('manedSelect').value);
-      visAar = parseInt(document.getElementById('aarSelect').value);
-      byggKalender().catch(e => console.warn('Bekreft måned feilet:', e));
-      lukkManedModal();
-    }
-
-    function visNesteHendelser() {
-      try {
-        const naa = new Date();
-        const startAvDag = new Date(naa.getFullYear(), naa.getMonth(), naa.getDate(), 0, 0, 0, 0);
-        const alle = [...kalenderHendelser.map(e => ({ ...e, type: 'ical' })), ...egneHendelser.map(e => ({ ...e, type: 'egen' }))];
-        const sorterte = alle.filter(e => new Date(e.startDate) >= startAvDag).sort((a,b) => new Date(a.startDate) - new Date(b.startDate)).slice(0, 4);
-        const container = document.getElementById('nesteHendelser');
-        if (!sorterte.length) { container.innerHTML = '<p style="font-size:0.6rem; color:#a1a1aa; font-style:italic;">Ingen hendelser</p>'; return; }
-        container.innerHTML = sorterte.map(e => {
-          const d = new Date(e.startDate);
-          const dagLabel = formaterRelativDag(d);
-          const tid = e.allDay ? 'Hele dagen' : d.toLocaleTimeString('no-NO', { hour:'2-digit', minute:'2-digit' });
-          return `<div style="display:flex; align-items:center; gap:0.35rem; padding:0.3rem 0.4rem; border-radius:0.5rem; background:rgba(255,255,255,0.02); cursor:pointer; font-size:0.7rem;" onclick="apneDatoModal('${e.startDate.split('T')[0]}')">
-            <div style="text-align:center; min-width:38px; flex-shrink:0;">
-              <p style="font-size:0.5rem; color:#fbbf24; font-weight:500;">${dagLabel}</p>
-              <p style="font-size:0.55rem; color:#d4d4d8; font-weight:600;">${tid}</p>
-            </div>
-            <p style="flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${e.title}</p>
-          </div>`;
-        }).join('');
-      } catch (e) { console.warn('Vis neste hendelser feilet:', e); }
-    }
-
-    function formaterRelativDag(d) {
-      const naa = new Date();
-      const dStart = new Date(d.getFullYear(), d.getMonth(), d.getDate());
-      const naaStart = new Date(naa.getFullYear(), naa.getMonth(), naa.getDate());
-      const diff = Math.round((dStart - naaStart) / 86400000);
-      if (diff === 0) return 'I dag';
-      if (diff === 1) return 'I morgen';
-      if (diff < 7) return d.toLocaleDateString('no-NO', { weekday: 'long' });
-      return d.toLocaleDateString('no-NO', { day:'numeric', month:'short' });
-    }
-
-    async function apneDatoModal(datoStr) {
-      try {
-        valgtDato = datoStr;
-        const dato = new Date(datoStr);
-        const alt = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        document.getElementById('modalTitle').textContent = '📅 ' + dato.toLocaleDateString('no-NO', alt).charAt(0).toUpperCase() + dato.toLocaleDateString('no-NO', alt).slice(1);
-        const notat = await dbGet('datonotater', datoStr);
-        document.getElementById('dateNoteInput').value = notat ? notat.tekst : '';
-        const icalEvents = kalenderHendelser.filter(e => e.startDate && e.startDate.split('T')[0] === datoStr);
-        document.getElementById('iCalEventsInModal').innerHTML = icalEvents.length ? icalEvents.map(e => {
-          const tid = e.allDay ? 'Hele dagen' : new Date(e.startDate).toLocaleTimeString('no-NO', { hour:'2-digit', minute:'2-digit' });
-          return `<div style="background:rgba(255,255,255,0.02); border-radius:0.5rem; padding:0.4rem; border:1px solid rgba(255,255,255,0.05); font-size:0.7rem;"><p style="font-weight:500;">${e.title}</p><p style="color:#a1a1aa; font-size:0.6rem;">🕐 ${tid}</p></div>`;
-        }).join('') : '<p style="font-size:0.65rem; color:#a1a1aa;">Ingen iCal-hendelser</p>';
-        const egneEvents = egneHendelser.filter(e => e.startDate && e.startDate.split('T')[0] === datoStr);
-        document.getElementById('egneHendelserIModal').innerHTML = egneEvents.length ? egneEvents.map(e => {
-          const tid = e.allDay ? 'Hele dagen' : new Date(e.startDate).toLocaleTimeString('no-NO', { hour:'2-digit', minute:'2-digit' });
-          return `<div style="background:rgba(255,255,255,0.02); border-radius:0.5rem; padding:0.4rem; border:1px solid rgba(255,255,255,0.05); display:flex; justify-content:space-between; align-items:center; font-size:0.7rem;"><div><p style="font-weight:500;">${e.title}</p><p style="color:#a1a1aa; font-size:0.6rem;">🕐 ${tid}</p></div><button onclick="slettEgenHendelse(${e.id})" style="color:#fb7185; background:none; border:none; font-size:0.65rem; cursor:pointer; min-width:2rem; min-height:2rem;">🗑️</button></div>`;
-        }).join('') : '<p style="font-size:0.65rem; color:#a1a1aa;">Ingen egne hendelser</p>';
-        document.getElementById('dateModal').classList.add('active');
-      } catch (e) { console.warn('Åpne dato-modal feilet:', e); }
-    }
-
-    function lukkDateModal() { document.getElementById('dateModal').classList.remove('active'); valgtDato = null; }
-
-    async function lagreDatoNotat() {
-      try {
-        if (!valgtDato) return;
-        const tekst = document.getElementById('dateNoteInput').value.trim();
-        if (tekst) await dbPut('datonotater', { id: valgtDato, tekst, oppdatert: new Date().toISOString() });
-        else await dbDelete('datonotater', valgtDato);
-        await byggKalender();
-      } catch (e) { console.warn('Lagre dato-notat feilet:', e); }
-    }
-
-    async function slettDatoNotat() {
-      try {
-        if (!valgtDato) return;
-        await dbDelete('datonotater', valgtDato);
-        document.getElementById('dateNoteInput').value = '';
-        await byggKalender();
-      } catch (e) { console.warn('Slett dato-notat feilet:', e); }
-    }
-
-    // ==================== iCal ====================
-    function apneICloudModal() { document.getElementById('icalUrlInput').value = icalUrl; document.getElementById('iCloudModal').classList.add('active'); }
-    function lukkICloudModal() { document.getElementById('iCloudModal').classList.remove('active'); }
-
-    async function lagreICalUrl() {
-      try {
-        const ny = document.getElementById('icalUrlInput').value.trim();
-        if (ny) { icalUrl = ny; await dbPut('innstillinger', { id: 'icalUrl', value: icalUrl }); document.getElementById('iCloudStatus').textContent = '🟡'; await hentICalManuelt(); }
-      } catch (e) { console.warn('Lagre iCal-URL feilet:', e); }
-    }
-
-    async function hentICalManuelt() {
-      document.getElementById('iCloudStatus').textContent = '🔄';
-      document.getElementById('iCloudDebug').textContent = 'Henter...';
-      try {
-        const resp = await fetchMedProxy(icalUrl);
-        if (!resp.ok) throw new Error('Status ' + resp.status);
-        kalenderHendelser = parseICal(await resp.text());
-        document.getElementById('iCloudStatus').textContent = '🟢';
-        document.getElementById('iCloudDebug').textContent = `${kalenderHendelser.length} hendelser`;
-      } catch (feil) {
-        console.warn('iCal feilet:', feil.message);
-        kalenderHendelser = [];
-        document.getElementById('iCloudStatus').textContent = '🔴';
-        document.getElementById('iCloudDebug').textContent = 'Kunne ikke hente kalender';
-        visFeil('nesteHendelser', 'Kalender utilgjengelig', hentICalManuelt);
-      }
-      await byggKalender();
-      visNesteHendelser();
-      renderViktigIDag().catch(e => console.warn('Viktig-i-dag feilet:', e));
-      lukkICloudModal();
-    }
-
-    function parseICal(data) {
-      const events = [];
-      const lines = data.split('\n');
-      let current = null;
-      for (const line of lines) {
-        const t = line.trim();
-        if (t === 'BEGIN:VEVENT') current = {};
-        else if (t === 'END:VEVENT' && current) {
-          if (current.title && current.startDate) events.push(current);
-          current = null;
-        } else if (current) {
-          if (t.startsWith('SUMMARY:')) current.title = t.substring(8).replace(/\\,/g, ',');
-          else if (t.startsWith('DTSTART')) {
-            const allDay = t.includes('VALUE=DATE') && !t.includes('VALUE=DATE-TIME');
-            const raw = t.split(':')[1] || '';
-            current.startDate = formatICalDato(raw);
-            current.allDay = allDay || !raw.includes('T');
-          }
-        }
-      }
-      return events;
-    }
-
-    function formatICalDato(str) {
-      if (str.includes('T')) {
-        const y=str.substring(0,4), m=str.substring(4,6), d=str.substring(6,8);
-        const h=str.substring(9,11)||'00', min=str.substring(11,13)||'00';
-        return `${y}-${m}-${d}T${h}:${min}:00`;
-      }
-      const y=str.substring(0,4), m=str.substring(4,6), d=str.substring(6,8);
-      return `${y}-${m}-${d}T00:00:00`;
-    }
-
-    // ==================== VÆRDATA ====================
-    const VEER_IKONER = { 0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',48:'🌫️',51:'🌧️',53:'🌧️',55:'🌧️',61:'🌧️',63:'🌧️',65:'🌧️',71:'❄️',73:'❄️',75:'❄️',77:'❄️',80:'🌧️',81:'🌧️',82:'🌧️',85:'🌨️',86:'🌨️',95:'⛈️',96:'⛈️',99:'⛈️' };
-    const VEER_TEKST = { 0:'Klart',1:'Delvis skyet',2:'Skyet',3:'Overskyet',45:'Tåke',48:'Rimtåke',51:'Lett yr',53:'Yr',55:'Kraftig yr',61:'Lett regn',63:'Regn',65:'Kraftig regn',71:'Lett snø',73:'Snø',75:'Kraftig snø',77:'Snøkorn',80:'Regnbyger',81:'Kraftige byger',82:'Voldsomme byger',85:'Snøbyger',86:'Kraftige snøbyger',95:'Torden',96:'Torden m/hagl',99:'Kraftig torden' };
-
-    async function hentVeerdata() {
-      let lat = 59.2097, lon = 9.6094;
-      document.getElementById('weatherLocation').textContent = 'Henter...';
-      try {
-        const pos = await new Promise((res, rej) => navigator.geolocation.getCurrentPosition(res, rej, { timeout: 4000, maximumAge: 600000 }));
-        lat = pos.coords.latitude; lon = pos.coords.longitude;
-        document.getElementById('weatherLocation').textContent = 'Din posisjon';
-      } catch { document.getElementById('weatherLocation').textContent = 'Skien'; }
-
-      try {
-        const veerUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code&hourly=temperature_2m,weather_code&forecast_days=2&timezone=auto`;
-        const resp = await fetchMedProxy(veerUrl);
-        if (!resp.ok) throw new Error('Status ' + resp.status);
-        visVeerdata(await resp.json());
-      } catch (feil) {
-        console.warn('Vær-API feilet:', feil.message);
-        visFeil('weatherContent', 'Værdata utilgjengelig', hentVeerdata);
-      }
-    }
-
-    function visVeerdata(data) {
-      const c = data.current;
-      document.getElementById('weatherIcon').textContent = VEER_IKONER[c.weather_code] || '🌡️';
-      document.getElementById('weatherTemp').textContent = `${Math.round(c.temperature_2m)}°C`;
-      document.getElementById('weatherDesc').textContent = VEER_TEKST[c.weather_code] || 'Ukjent';
-      document.getElementById('weatherHumidity').innerHTML = `<i class="fa-solid fa-droplet"></i> ${c.relative_humidity_2m}%`;
-      document.getElementById('weatherWind').innerHTML = `<i class="fa-solid fa-wind"></i> ${c.wind_speed_10m} m/s`;
-
-      const naa = new Date();
-      const times = data.hourly.time;
-      let start = times.findIndex(t => new Date(t) > naa);
-      if (start < 0) start = 0;
-      const slots = [];
-      for (let i = start; i < Math.min(start + 5, times.length); i++) {
-        slots.push({ time: new Date(times[i]), temp: Math.round(data.hourly.temperature_2m[i]), code: data.hourly.weather_code[i] });
-      }
-      tegnTimeprognose(slots);
-    }
-
-    function tegnTimeprognose(slots) {
-      document.getElementById('hourlyForecast').innerHTML = slots.map((s, i) => `
-        <div class="hour-slot">
-          <span style="font-size:0.5rem; color:#a1a1aa;">${i===0?'Nå':s.time.toLocaleTimeString('no-NO',{hour:'2-digit'})}</span>
-          <span style="font-size:1rem;">${VEER_IKONER[s.code]||'🌡️'}</span>
-          <span style="font-size:0.6rem; font-weight:600;">${s.temp}°</span>
-        </div>
-      `).join('');
-    }
-
-    // ==================== VIKTIG I DAG ====================
-    async function renderViktigIDag() {
-      try {
-        const cont = document.getElementById('viktigIDagListe');
-        const naa = new Date();
-        const idag = naa.toISOString().split('T')[0];
-        const items = [];
-        const alle = [...kalenderHendelser.filter(e => e.startDate && e.startDate.split('T')[0] === idag), ...egneHendelser.filter(e => e.startDate && e.startDate.split('T')[0] === idag)];
-        alle.forEach(e => {
-          const tid = e.allDay ? '' : new Date(e.startDate).toLocaleTimeString('no-NO',{hour:'2-digit',minute:'2-digit'}) + ' ';
-          const erSnart = !e.allDay && (new Date(e.startDate) - naa) < 2*3600000 && (new Date(e.startDate) - naa) > -1800000;
-          items.push({ tekst: `${tid}${e.title}`, urgent: erSnart });
-        });
-        const varer = await dbGetAll('handleliste');
-        const aktive = varer.filter(v => !v.checked);
-        if (aktive.length) items.push({ tekst: `🛒 ${aktive.length} varer`, urgent: false });
-        const naaStart = new Date(); naaStart.setHours(0,0,0,0);
-        for (const type of SOPPEL_TYPER) {
-          const rad = await dbGet('soppeltomming', type.id);
-          if (!rad) continue;
-          const dager = Math.round((new Date(rad.dato) - naaStart) / 86400000);
-          if (dager >= 0 && dager <= 2) {
-            const label = dager === 0 ? 'i dag' : (dager === 1 ? 'i morgen' : `om ${dager}d`);
-            items.push({ tekst: `♻️ ${type.navn} ${label}`, urgent: dager <= 1 });
-          }
-        }
-        if (!items.length) { cont.innerHTML = '<span style="font-size:0.65rem; color:#a1a1aa;">Ingenting spesielt i dag 🎉</span>'; return; }
-        items.sort((a,b) => (b.urgent - a.urgent));
-        cont.innerHTML = items.map(i => `<span class="pill ${i.urgent ? 'pill-urgent' : 'pill-normal'}">${i.tekst}</span>`).join('');
-      } catch (e) { console.warn('Render viktig-i-dag feilet:', e); }
-    }
-
-    // ==================== HURTIGNOTATER ====================
-    let saveTimeout;
-    document.getElementById('quickNote').addEventListener('input', function() {
-      document.getElementById('saveStatus').textContent = 'Lagrer...';
-      document.getElementById('charCount').textContent = `${this.value.length} tegn`;
-      clearTimeout(saveTimeout);
-      saveTimeout = setTimeout(lagreNotat, 500);
-    });
-
-    function lagreNotat() {
-      dbPut('notater', { id: 'quickNote', tekst: document.getElementById('quickNote').value, oppdatert: new Date().toISOString() })
-        .then(() => {
-          document.getElementById('saveStatus').textContent = 'Lagret ✓';
-          setTimeout(() => document.getElementById('saveStatus').textContent = 'Lagres automatisk', 2000);
-        }).catch(e => console.warn('Lagre notat feilet:', e));
-    }
-
-    async function lastNotat() {
-      try {
-        const notat = await dbGet('notater', 'quickNote');
-        if (notat) {
-          document.getElementById('quickNote').value = notat.tekst;
-          document.getElementById('charCount').textContent = `${notat.tekst.length} tegn`;
-        }
-      } catch (e) { console.warn('Last notat feilet:', e); }
-    }
-
-    async function slettNotat() {
-      try {
-        await dbDelete('notater', 'quickNote');
-        document.getElementById('quickNote').value = '';
-        document.getElementById('charCount').textContent = '0 tegn';
-      } catch (e) { console.warn('Slett notat feilet:', e); }
-    }
-
-    document.getElementById('tingInput').addEventListener('keypress', (e) => { if (e.key === 'Enter') leggTilVare(); });
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') { lukkDateModal(); lukkICloudModal(); lukkSoppelModal(); lukkManedModal(); lukkNyHendelseModal(); }
-    });
-    document.addEventListener('dblclick', (e) => { if (e.target.tagName === 'BUTTON' || e.target.closest('button')) e.preventDefault(); }, { passive: false });
-
-    // ==================== INIT ====================
+    // Fjern alle IndexedDB-funksjoner og erstatt init() med:
     async function init() {
       try {
-        await apneHandlelisteDb();
-        console.log('✅ IndexedDB er klar');
+        // Initialiser data.json hvis den ikke finnes
+        try {
+          const response = await fetch(DATA_URL);
+          if (!response.ok) {
+            await initializeDataJson();
+          }
+        } catch {
+          await initializeDataJson();
+        }
+
+        // Last inn data
+        const initialData = await fetchData(true);
+        
+        // Last inn iCal-url
+        if (initialData.innstillinger && initialData.innstillinger.icalUrl) {
+          icalUrl = initialData.innstillinger.icalUrl;
+        }
+
+        // Start alle async-operasjoner
+        visHandleliste().catch(e => console.warn('Handleliste-visning feilet:', e));
+        initSoppel().catch(e => console.warn('Søppel-init feilet:', e));
+        lastNotat().catch(e => console.warn('Notat-lasting feilet:', e));
+        lastEgneHendelser().catch(e => console.warn('Hendelse-lasting feilet:', e));
+        hentICalManuelt().catch(e => console.warn('iCal-henting feilet:', e));
+        hentVeerdata().catch(e => console.warn('Vær-henting feilet:', e));
+
+        // Periodiske oppdateringer
+        setInterval(() => {
+          fetchData(true).then(() => visHandleliste()).catch(e => console.warn('Periodisk oppdatering feilet:', e));
+        }, 30000);
+        
+        setInterval(() => hentVeerdata().catch(e => console.warn('Periodisk vær feilet:', e)), 900000);
+        setInterval(() => hentICalManuelt().catch(e => console.warn('Periodisk iCal feilet:', e)), 1800000);
+        setInterval(() => renderViktigIDag().catch(e => console.warn('Periodisk viktig-i-dag feilet:', e)), 60000);
+        setInterval(() => renderSoppelListe().catch(e => console.warn('Periodisk søppel feilet:', e)), 60000);
+
+        window.sisteDato = new Date().toISOString().split('T')[0];
+        console.log('✅ Dashboard initialisert med data.json');
       } catch (e) {
-        console.error('❌ IndexedDB utilgjengelig:', e);
-        document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;color:#fafafa;font-family:Inter,sans-serif;text-align:center;padding:2rem;"><div><h1 style="font-size:1.5rem;margin-bottom:0.5rem;">⚠️ Database utilgjengelig</h1><p style="color:#a1a1aa;">Dashbordet krever IndexedDB.</p></div></div>';
-        return;
+        console.error('❌ Initialisering feilet:', e);
       }
-      try { const storedIcal = await dbGet('innstillinger', 'icalUrl'); if (storedIcal) icalUrl = storedIcal.value; } catch (e) {}
-      syncHandlelisteFraKvdb().then(() => visHandleliste()).catch(e => console.warn('Synk feilet:', e));
-      initSoppel().catch(e => console.warn('Søppel feilet:', e));
-      lastNotat().catch(e => console.warn('Notat feilet:', e));
-      lastEgneHendelser().catch(e => console.warn('Hendelser feilet:', e));
-      hentICalManuelt().catch(e => console.warn('iCal feilet:', e));
-      hentVeerdata().catch(e => console.warn('Vær feilet:', e));
-      setInterval(() => { syncHandlelisteFraKvdb().then(() => visHandleliste()).catch(e => {}); }, 30000);
-      setInterval(() => hentVeerdata().catch(e => {}), 900000);
-      setInterval(() => hentICalManuelt().catch(e => {}), 1800000);
-      setInterval(() => renderViktigIDag().catch(e => {}), 60000);
-      setInterval(() => renderSoppelListe().catch(e => {}), 60000);
-      window.sisteDato = new Date().toISOString().split('T')[0];
-      console.log('✅ Dashboard initialisert');
     }
+
+    async function initializeDataJson() {
+      const defaultData = getDefaultData();
+      try {
+        await fetch('/api/update', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            type: 'initialize',
+            data: defaultData
+          })
+        });
+      } catch (error) {
+        console.error('Kunne ikke initialisere data.json:', error);
+      }
+    }
+
     init();
   </script>
 </body>
