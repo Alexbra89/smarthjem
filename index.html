@@ -45,7 +45,7 @@
 
     body {
       margin: 0;
-      padding: clamp(0.4rem, 1.2vw, 0.75rem);
+      padding: clamp(0.3rem, 1vw, 0.6rem);
       height: 100vh;
       max-height: 100vh;
       overflow: hidden;
@@ -53,7 +53,7 @@
       color: var(--text-primary);
       display: flex;
       flex-direction: column;
-      gap: clamp(0.3rem, 0.8vw, 0.5rem);
+      gap: clamp(0.25rem, 0.6vw, 0.4rem);
       position: relative;
       -webkit-overflow-scrolling: none;
       overscroll-behavior: none;
@@ -98,14 +98,16 @@
       50% { opacity: 0.4; transform: scale(1.3); }
     }
 
+    /* Større avkrysningsboks for touch */
     .chk {
-      width: 16px; height: 16px;
-      border-radius: 4px;
+      width: 20px; height: 20px;
+      border-radius: 5px;
       border: 2px solid rgba(255, 255, 255, 0.25);
       display: inline-flex; align-items: center; justify-content: center;
       cursor: pointer; flex-shrink: 0;
       transition: all 0.2s ease;
       background: rgba(255, 255, 255, 0.03);
+      min-width: 20px;
     }
     .chk.checked {
       background: var(--accent-green);
@@ -117,7 +119,7 @@
       font-family: 'Font Awesome 6 Free';
       font-weight: 900;
       color: #0a0a0a;
-      font-size: 9px;
+      font-size: 11px;
     }
 
     .item-done {
@@ -134,6 +136,52 @@
       transform: translateX(2px);
     }
 
+    /* Større kalenderdager for touch */
+    .cal-day-cell {
+      min-width: 2.5rem;
+      min-height: 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      cursor: pointer;
+      border-radius: 0.4rem;
+      transition: all 0.15s ease;
+      font-size: 0.8rem;
+      font-weight: 500;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    .cal-day-cell:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+    .cal-day-cell:active {
+      transform: scale(0.94);
+      background: rgba(255, 255, 255, 0.14);
+    }
+    .cal-day-cell.today {
+      background: var(--accent-blue);
+      color: white;
+      font-weight: 700;
+      box-shadow: 0 0 12px rgba(96, 165, 250, 0.4);
+    }
+    .cal-day-cell .dot-row {
+      position: absolute;
+      bottom: 3px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 3px;
+    }
+    .cal-day-cell .dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+    }
+    .dot-notat { background: var(--accent-green); box-shadow: 0 0 4px var(--accent-green); }
+    .dot-ical { background: var(--accent-amber); box-shadow: 0 0 4px var(--accent-amber); }
+    .dot-egen { background: var(--accent-blue); box-shadow: 0 0 4px var(--accent-blue); }
+
     .weather-hourly {
       display: flex;
       gap: 0.25rem;
@@ -149,8 +197,8 @@
       flex-direction: column;
       align-items: center;
       gap: 1px;
-      min-width: 40px;
-      padding: 0.25rem 0.15rem;
+      min-width: 44px;
+      padding: 0.3rem 0.2rem;
       border-radius: 0.5rem;
       background: rgba(255, 255, 255, 0.03);
       flex-shrink: 0;
@@ -174,9 +222,9 @@
     }
 
     .pill {
-      display: inline-flex; align-items: center; gap: 0.15rem;
-      padding: 0.2rem 0.5rem; border-radius: 9999px;
-      font-size: 0.65rem; white-space: nowrap;
+      display: inline-flex; align-items: center; gap: 0.2rem;
+      padding: 0.25rem 0.6rem; border-radius: 9999px;
+      font-size: 0.7rem; white-space: nowrap;
     }
     .pill-urgent {
       background: rgba(248, 113, 113, 0.2);
@@ -194,9 +242,9 @@
       flex: 1;
       min-height: 0;
     }
-    .scroll-thin::-webkit-scrollbar { width: 4px; }
+    .scroll-thin::-webkit-scrollbar { width: 5px; }
     .scroll-thin::-webkit-scrollbar-track { background: transparent; }
-    .scroll-thin::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+    .scroll-thin::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.12); border-radius: 10px; }
 
     .error-state {
       display: flex;
@@ -214,24 +262,31 @@
       opacity: 0.5;
     }
     .error-state p {
-      font-size: 0.6rem;
+      font-size: 0.65rem;
       color: var(--text-secondary);
-      max-width: 180px;
+      max-width: 200px;
     }
     .error-state button {
       margin-top: 0.3rem;
-      padding: 0.25rem 0.75rem;
+      padding: 0.35rem 0.85rem;
       border-radius: 0.5rem;
       background: rgba(255,255,255,0.08);
       border: 1px solid rgba(255,255,255,0.12);
       color: var(--text-secondary);
-      font-size: 0.6rem;
+      font-size: 0.65rem;
       cursor: pointer;
       transition: all 0.2s;
     }
     .error-state button:hover {
       background: rgba(255,255,255,0.14);
       color: var(--text-primary);
+    }
+
+    /* Større input for touch */
+    .touch-input {
+      min-height: 2.2rem;
+      -webkit-appearance: none;
+      appearance: none;
     }
 
     @keyframes fadeInUp {
@@ -250,144 +305,150 @@
 <body>
 
   <!-- TOPPBAR -->
-  <header class="glass-card flex-shrink-0" style="padding: clamp(0.3rem, 0.8vw, 0.6rem) clamp(0.6rem, 1.5vw, 1rem);">
+  <header class="glass-card flex-shrink-0" style="padding: clamp(0.3rem, 0.7vw, 0.5rem) clamp(0.5rem, 1.2vw, 0.8rem);">
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
       <div style="display: flex; align-items: center; gap: 0.75rem;">
         <div>
-          <h1 id="liveKlokke" class="gradient-text tracking-tight" style="font-size: clamp(1.5rem, 3vw, 2.2rem); font-weight: 800; line-height: 1;">00:00:00</h1>
+          <h1 id="liveKlokke" class="gradient-text tracking-tight" style="font-size: clamp(1.4rem, 2.8vw, 2rem); font-weight: 800; line-height: 1;">00:00:00</h1>
           <p id="liveDato" style="font-size: clamp(0.6rem, 1vw, 0.75rem); color: #a1a1aa; margin-top: 0.1rem; font-weight: 500;">Laster dato...</p>
         </div>
       </div>
       <div style="display: flex; align-items: center; gap: 0.6rem;">
-        <button onclick="apneICloudModal()" style="padding: 0.3rem 0.7rem; border-radius: 9999px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.05); font-size: 0.65rem; color: #a1a1aa; transition: all 0.2s; display: flex; align-items: center; gap: 0.35rem; cursor: pointer;">
-          <i class="fa-solid fa-calendar-plus text-blue-400" style="font-size: 0.6rem;"></i> iCal
-          <span id="iCloudStatus" style="font-size: 0.6rem;">⚪</span>
+        <button onclick="apneICloudModal()" style="padding: 0.35rem 0.8rem; border-radius: 9999px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.05); font-size: 0.7rem; color: #a1a1aa; transition: all 0.2s; display: flex; align-items: center; gap: 0.35rem; cursor: pointer; min-height: 2.2rem;">
+          <i class="fa-solid fa-calendar-plus text-blue-400" style="font-size: 0.65rem;"></i> iCal
+          <span id="iCloudStatus" style="font-size: 0.65rem;">⚪</span>
         </button>
         <div style="display: flex; align-items: center; gap: 0.35rem;">
           <span class="pulse-dot"></span>
-          <span style="font-size: 0.65rem; color: #a1a1aa; font-weight: 500;">Aktiv</span>
+          <span style="font-size: 0.7rem; color: #a1a1aa; font-weight: 500;">Aktiv</span>
         </div>
       </div>
     </div>
   </header>
 
   <!-- VIKTIG I DAG -->
-  <section class="glass-card flex-shrink-0" style="padding: 0.35rem 0.8rem; flex-direction: row; align-items: center; gap: 0.6rem; overflow-x: auto;">
-    <h3 style="font-size: 0.7rem; font-weight: 600; color: #fbbf24; display: flex; align-items: center; gap: 0.3rem; flex-shrink: 0;">
-      <i class="fa-solid fa-triangle-exclamation" style="font-size: 0.6rem;"></i> Viktig i dag
+  <section class="glass-card flex-shrink-0" style="padding: 0.4rem 0.9rem; flex-direction: row; align-items: center; gap: 0.6rem; overflow-x: auto;">
+    <h3 style="font-size: 0.75rem; font-weight: 600; color: #fbbf24; display: flex; align-items: center; gap: 0.3rem; flex-shrink: 0;">
+      <i class="fa-solid fa-triangle-exclamation" style="font-size: 0.65rem;"></i> Viktig i dag
     </h3>
-    <div id="viktigIDagListe" style="display: flex; align-items: center; gap: 0.35rem; flex-wrap: wrap;"></div>
+    <div id="viktigIDagListe" style="display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;"></div>
   </section>
 
-  <!-- HOVEDGRID -->
-  <main style="display: grid; grid-template-columns: repeat(12, 1fr); grid-template-rows: 1fr 1fr; gap: clamp(0.3rem, 0.8vw, 0.5rem); flex: 1; min-height: 0;">
+  <!-- HOVEDGRID – Kalender og Notater får MER plass (7+7 kolonner i rad 2) -->
+  <main style="display: grid; grid-template-columns: repeat(12, 1fr); grid-template-rows: 1fr 1.2fr; gap: clamp(0.3rem, 0.7vw, 0.4rem); flex: 1; min-height: 0;">
 
+    <!-- RAD 1 -->
+    
     <!-- 1. NESTE HENDELSER (3 kol) -->
-    <section class="glass-card" style="grid-column: span 3; grid-row: span 1; padding: clamp(0.4rem, 0.8vw, 0.6rem); gap: 0.3rem;">
+    <section class="glass-card" style="grid-column: span 3; grid-row: span 1; padding: clamp(0.4rem, 0.7vw, 0.55rem); gap: 0.3rem;">
       <div style="display: flex; justify-content: space-between; align-items: center;">
-        <h2 style="font-size: clamp(0.7rem, 1.1vw, 0.85rem); font-weight: 600; color: #e4e4e7; display: flex; align-items: center; gap: 0.3rem;">
-          <i class="fa-solid fa-list-check text-amber-400" style="font-size: 0.65rem;"></i> Hendelser
+        <h2 style="font-size: clamp(0.7rem, 1vw, 0.8rem); font-weight: 600; color: #e4e4e7; display: flex; align-items: center; gap: 0.3rem;">
+          <i class="fa-solid fa-list-check text-amber-400" style="font-size: 0.7rem;"></i> Hendelser
         </h2>
-        <button onclick="apneNyHendelseModal()" style="font-size: 0.65rem; color: #60a5fa; transition: all 0.2s; background: none; border: none; cursor: pointer;" title="Ny hendelse">
+        <button onclick="apneNyHendelseModal()" style="font-size: 0.7rem; color: #60a5fa; transition: all 0.2s; background: none; border: none; cursor: pointer; min-width: 2rem; min-height: 2rem; display: flex; align-items: center; justify-content: center;" title="Ny hendelse">
           <i class="fa-solid fa-plus"></i>
         </button>
       </div>
-      <div id="nesteHendelser" class="scroll-thin" style="display: flex; flex-direction: column; gap: 0.2rem;"></div>
+      <div id="nesteHendelser" class="scroll-thin" style="display: flex; flex-direction: column; gap: 0.25rem;"></div>
     </section>
 
     <!-- 2. HANDLELISTE (4 kol) -->
-    <section class="glass-card" style="grid-column: span 4; grid-row: span 1; padding: clamp(0.4rem, 0.8vw, 0.6rem); gap: 0.3rem;">
+    <section class="glass-card" style="grid-column: span 4; grid-row: span 1; padding: clamp(0.4rem, 0.7vw, 0.55rem); gap: 0.3rem;">
       <div style="display: flex; justify-content: space-between; align-items: center;">
-        <h2 style="font-size: clamp(0.7rem, 1.1vw, 0.85rem); font-weight: 600; color: #e4e4e7; display: flex; align-items: center; gap: 0.3rem;">
-          <i class="fa-solid fa-cart-shopping text-emerald-400" style="font-size: 0.65rem;"></i> Handleliste
+        <h2 style="font-size: clamp(0.7rem, 1vw, 0.8rem); font-weight: 600; color: #e4e4e7; display: flex; align-items: center; gap: 0.3rem;">
+          <i class="fa-solid fa-cart-shopping text-emerald-400" style="font-size: 0.7rem;"></i> Handleliste
         </h2>
-        <span id="listCount" style="font-size: 0.6rem; color: #a1a1aa; background: rgba(255,255,255,0.05); padding: 0.1rem 0.4rem; border-radius: 9999px;">0</span>
+        <span id="listCount" style="font-size: 0.65rem; color: #a1a1aa; background: rgba(255,255,255,0.05); padding: 0.15rem 0.5rem; border-radius: 9999px;">0</span>
       </div>
       <div style="display: flex; gap: 0.3rem;">
         <input type="text" id="tingInput" placeholder="Legg til vare..."
-               style="flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.4rem; padding: 0.25rem 0.5rem; font-size: 0.65rem; color: #e4e4e7; outline: none;">
-        <button onclick="leggTilVare()" style="background: #3b82f6; color: white; font-weight: 600; padding: 0.25rem 0.5rem; border-radius: 0.4rem; font-size: 0.65rem; border: none; cursor: pointer; transition: all 0.15s;">
+               class="touch-input"
+               style="flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.5rem; padding: 0.35rem 0.6rem; font-size: 0.7rem; color: #e4e4e7; outline: none;">
+        <button onclick="leggTilVare()" style="background: #3b82f6; color: white; font-weight: 600; padding: 0.35rem 0.7rem; border-radius: 0.5rem; font-size: 0.7rem; border: none; cursor: pointer; transition: all 0.15s; min-width: 2.5rem; min-height: 2.2rem; display: flex; align-items: center; justify-content: center;">
           <i class="fa-solid fa-plus"></i>
         </button>
       </div>
-      <ul id="handleListe" class="scroll-thin" style="display: flex; flex-direction: column; gap: 0.15rem;"></ul>
+      <ul id="handleListe" class="scroll-thin" style="display: flex; flex-direction: column; gap: 0.2rem;"></ul>
     </section>
 
     <!-- 3. SØPPELTØMMING (2 kol) -->
-    <section class="glass-card" style="grid-column: span 2; grid-row: span 1; padding: clamp(0.4rem, 0.8vw, 0.6rem); gap: 0.3rem;">
+    <section class="glass-card" style="grid-column: span 2; grid-row: span 1; padding: clamp(0.4rem, 0.7vw, 0.55rem); gap: 0.3rem;">
       <div style="display: flex; justify-content: space-between; align-items: center;">
-        <h2 style="font-size: clamp(0.7rem, 1.1vw, 0.85rem); font-weight: 600; color: #e4e4e7; display: flex; align-items: center; gap: 0.3rem;">
-          <i class="fa-solid fa-trash-can text-green-400" style="font-size: 0.65rem;"></i> Tømming
+        <h2 style="font-size: clamp(0.7rem, 1vw, 0.8rem); font-weight: 600; color: #e4e4e7; display: flex; align-items: center; gap: 0.3rem;">
+          <i class="fa-solid fa-trash-can text-green-400" style="font-size: 0.7rem;"></i> Tømming
         </h2>
-        <button onclick="apneSoppelModal()" style="font-size: 0.6rem; color: #a1a1aa; background: none; border: none; cursor: pointer; transition: all 0.2s;">
+        <button onclick="apneSoppelModal()" style="font-size: 0.65rem; color: #a1a1aa; background: none; border: none; cursor: pointer; transition: all 0.2s; min-width: 2rem; min-height: 2rem; display: flex; align-items: center; justify-content: center;">
           <i class="fa-solid fa-pen-to-square"></i>
         </button>
       </div>
-      <div id="soppelListe" class="scroll-thin" style="display: flex; flex-direction: column; gap: 0.15rem;"></div>
+      <div id="soppelListe" class="scroll-thin" style="display: flex; flex-direction: column; gap: 0.2rem;"></div>
     </section>
 
     <!-- 4. VÆRMELDING (3 kol) -->
-    <section class="glass-card" style="grid-column: span 3; grid-row: span 1; padding: clamp(0.4rem, 0.8vw, 0.6rem); gap: 0.25rem;">
-      <h2 style="font-size: clamp(0.7rem, 1.1vw, 0.85rem); font-weight: 600; color: #e4e4e7; display: flex; align-items: center; gap: 0.3rem;">
-        <i class="fa-solid fa-cloud-sun text-cyan-400" style="font-size: 0.65rem;"></i> Været
+    <section class="glass-card" style="grid-column: span 3; grid-row: span 1; padding: clamp(0.4rem, 0.7vw, 0.55rem); gap: 0.25rem;">
+      <h2 style="font-size: clamp(0.7rem, 1vw, 0.8rem); font-weight: 600; color: #e4e4e7; display: flex; align-items: center; gap: 0.3rem;">
+        <i class="fa-solid fa-cloud-sun text-cyan-400" style="font-size: 0.7rem;"></i> Været
       </h2>
       <div id="weatherContent">
         <div style="display: flex; align-items: center; gap: 0.5rem;">
           <span id="weatherIcon" style="font-size: clamp(1.8rem, 2.5vw, 2.2rem);">☀️</span>
           <div style="flex: 1;">
             <p id="weatherTemp" style="font-size: clamp(1.2rem, 1.8vw, 1.6rem); font-weight: 700; line-height: 1;">--°</p>
-            <p id="weatherDesc" style="font-size: 0.55rem; color: #a1a1aa;">Laster...</p>
+            <p id="weatherDesc" style="font-size: 0.6rem; color: #a1a1aa;">Laster...</p>
           </div>
-          <div style="text-align: right; font-size: 0.55rem; color: #a1a1aa;">
+          <div style="text-align: right; font-size: 0.6rem; color: #a1a1aa;">
             <p id="weatherHumidity"><i class="fa-solid fa-droplet"></i> --%</p>
             <p id="weatherWind"><i class="fa-solid fa-wind"></i> -- m/s</p>
           </div>
         </div>
         <div id="hourlyForecast" class="weather-hourly" style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 0.25rem;"></div>
-        <p id="weatherLocation" style="font-size: 0.5rem; color: #a1a1aa; text-align: center; flex-shrink: 0;">Henter posisjon...</p>
+        <p id="weatherLocation" style="font-size: 0.55rem; color: #a1a1aa; text-align: center; flex-shrink: 0;">Henter posisjon...</p>
       </div>
     </section>
 
-    <!-- 5. KALENDER (6 kol) -->
-    <section class="glass-card" style="grid-column: span 6; grid-row: span 1; padding: clamp(0.4rem, 0.8vw, 0.6rem); gap: 0.25rem;">
+    <!-- RAD 2: Kalender (7 kol) + Notater (5 kol) – Kalender får mer plass -->
+    
+    <!-- 5. KALENDER (7 kol – ØKT fra 6) -->
+    <section class="glass-card" style="grid-column: span 7; grid-row: span 1; padding: clamp(0.4rem, 0.8vw, 0.6rem); gap: 0.3rem;">
       <div style="display: flex; justify-content: space-between; align-items: center;">
-        <h2 style="font-size: clamp(0.7rem, 1.1vw, 0.85rem); font-weight: 600; color: #e4e4e7; display: flex; align-items: center; gap: 0.3rem;">
-          <i class="fa-regular fa-calendar text-blue-400" style="font-size: 0.65rem;"></i> Kalender
+        <h2 style="font-size: clamp(0.75rem, 1.1vw, 0.9rem); font-weight: 600; color: #e4e4e7; display: flex; align-items: center; gap: 0.3rem;">
+          <i class="fa-regular fa-calendar text-blue-400" style="font-size: 0.75rem;"></i> Kalender
         </h2>
-        <div style="display: flex; gap: 0.15rem;">
-          <button onclick="navigerManed(-1)" style="color: #a1a1aa; background: none; border: none; cursor: pointer; padding: 0.15rem; font-size: 0.55rem;">
+        <div style="display: flex; gap: 0.2rem;">
+          <button onclick="navigerManed(-1)" style="color: #a1a1aa; background: none; border: none; cursor: pointer; padding: 0.2rem; font-size: 0.65rem; min-width: 2rem; min-height: 2rem;">
             <i class="fa-solid fa-chevron-left"></i>
           </button>
-          <button onclick="apneManedVelger()" style="font-size: 0.7rem; font-weight: 500; color: #d4d4d8; background: none; border: none; cursor: pointer; padding: 0 0.3rem;">
+          <button onclick="apneManedVelger()" style="font-size: 0.8rem; font-weight: 500; color: #d4d4d8; background: none; border: none; cursor: pointer; padding: 0 0.4rem;">
             <span id="manedTittel">Juni 2026</span>
           </button>
-          <button onclick="navigerManed(1)" style="color: #a1a1aa; background: none; border: none; cursor: pointer; padding: 0.15rem; font-size: 0.55rem;">
+          <button onclick="navigerManed(1)" style="color: #a1a1aa; background: none; border: none; cursor: pointer; padding: 0.2rem; font-size: 0.65rem; min-width: 2rem; min-height: 2rem;">
             <i class="fa-solid fa-chevron-right"></i>
           </button>
         </div>
       </div>
-      <div id="calendarWidget" style="font-size: clamp(0.5rem, 0.8vw, 0.65rem); flex: 1; display: flex; flex-direction: column; justify-content: center;"></div>
-      <div style="display: flex; gap: 0.6rem; font-size: 0.5rem; color: #a1a1aa; justify-content: center; flex-shrink: 0;">
-        <span style="display: flex; align-items: center; gap: 0.1rem;"><span style="width: 0.35rem; height: 0.35rem; border-radius: 50%; background: #4ade80;"></span> Notater</span>
-        <span style="display: flex; align-items: center; gap: 0.1rem;"><span style="width: 0.35rem; height: 0.35rem; border-radius: 50%; background: #fbbf24;"></span> iCal</span>
-        <span style="display: flex; align-items: center; gap: 0.1rem;"><span style="width: 0.35rem; height: 0.35rem; border-radius: 50%; background: #60a5fa;"></span> Egne</span>
+      <div id="calendarWidget" style="flex: 1; display: flex; flex-direction: column; justify-content: center;"></div>
+      <div style="display: flex; gap: 0.8rem; font-size: 0.55rem; color: #a1a1aa; justify-content: center; flex-shrink: 0; padding-top: 0.15rem;">
+        <span style="display: flex; align-items: center; gap: 0.15rem;"><span style="width: 0.4rem; height: 0.4rem; border-radius: 50%; background: #4ade80;"></span> Notater</span>
+        <span style="display: flex; align-items: center; gap: 0.15rem;"><span style="width: 0.4rem; height: 0.4rem; border-radius: 50%; background: #fbbf24;"></span> iCal</span>
+        <span style="display: flex; align-items: center; gap: 0.15rem;"><span style="width: 0.4rem; height: 0.4rem; border-radius: 50%; background: #60a5fa;"></span> Egne</span>
       </div>
     </section>
 
-    <!-- 6. HURTIGNOTATER (6 kol) -->
-    <section class="glass-card" style="grid-column: span 6; grid-row: span 1; padding: clamp(0.4rem, 0.8vw, 0.6rem); gap: 0.25rem;">
+    <!-- 6. HURTIGNOTATER (5 kol) -->
+    <section class="glass-card" style="grid-column: span 5; grid-row: span 1; padding: clamp(0.4rem, 0.8vw, 0.6rem); gap: 0.3rem;">
       <div style="display: flex; justify-content: space-between; align-items: center;">
-        <h2 style="font-size: clamp(0.7rem, 1.1vw, 0.85rem); font-weight: 600; color: #e4e4e7; display: flex; align-items: center; gap: 0.3rem;">
-          <i class="fa-solid fa-note-sticky text-yellow-400" style="font-size: 0.65rem;"></i> Notater
+        <h2 style="font-size: clamp(0.75rem, 1.1vw, 0.9rem); font-weight: 600; color: #e4e4e7; display: flex; align-items: center; gap: 0.3rem;">
+          <i class="fa-solid fa-note-sticky text-yellow-400" style="font-size: 0.75rem;"></i> Notater
         </h2>
-        <button onclick="slettNotat()" style="font-size: 0.55rem; color: #fb7185; background: none; border: none; cursor: pointer; transition: all 0.2s;">
+        <button onclick="slettNotat()" style="font-size: 0.6rem; color: #fb7185; background: none; border: none; cursor: pointer; transition: all 0.2s; min-width: 2rem; min-height: 2rem; display: flex; align-items: center; justify-content: center;">
           <i class="fa-solid fa-trash-can"></i> Tøm
         </button>
       </div>
       <textarea id="quickNote"
-                style="flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.4rem; padding: 0.4rem; font-size: 0.65rem; color: #e4e4e7; resize: none; outline: none; min-height: 0;"
+                class="touch-input"
+                style="flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.5rem; padding: 0.6rem; font-size: 0.8rem; color: #e4e4e7; resize: none; outline: none; min-height: 0; line-height: 1.5;"
                 placeholder="Skriv et raskt notat her..."></textarea>
-      <div style="display: flex; justify-content: space-between; font-size: 0.5rem; color: #a1a1aa; flex-shrink: 0;">
+      <div style="display: flex; justify-content: space-between; font-size: 0.55rem; color: #a1a1aa; flex-shrink: 0;">
         <span id="saveStatus">Lagres automatisk</span>
         <span id="charCount">0 tegn</span>
       </div>
@@ -395,29 +456,29 @@
 
   </main>
 
-  <!-- MODALER -->
+  <!-- MODALER – også touch-optimalisert -->
   <div id="dateModal" class="modal">
     <div class="modal-content">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-        <h3 id="modalTitle" style="font-size: 1rem; font-weight: 600;">Notater for dato</h3>
-        <button onclick="lukkDateModal()" style="color: #a1a1aa; background: none; border: none; font-size: 1.1rem; cursor: pointer;">&times;</button>
+        <h3 id="modalTitle" style="font-size: 1.1rem; font-weight: 600;">Notater for dato</h3>
+        <button onclick="lukkDateModal()" style="color: #a1a1aa; background: none; border: none; font-size: 1.3rem; cursor: pointer; min-width: 2.5rem; min-height: 2.5rem;">&times;</button>
       </div>
       <div style="margin-bottom: 0.75rem;">
-        <h4 style="font-size: 0.7rem; color: #a1a1aa; margin-bottom: 0.3rem;">📝 Lokalt notat:</h4>
-        <textarea id="dateNoteInput" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.4rem; padding: 0.5rem; font-size: 0.7rem; color: #e4e4e7; resize: none; outline: none;" rows="2" placeholder="Skriv notat..."></textarea>
+        <h4 style="font-size: 0.75rem; color: #a1a1aa; margin-bottom: 0.3rem;">📝 Lokalt notat:</h4>
+        <textarea id="dateNoteInput" class="touch-input" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.5rem; padding: 0.6rem; font-size: 0.8rem; color: #e4e4e7; resize: none; outline: none;" rows="3" placeholder="Skriv notat..."></textarea>
         <div style="display: flex; gap: 0.4rem; margin-top: 0.4rem;">
-          <button onclick="lagreDatoNotat()" style="background: #3b82f6; color: white; padding: 0.3rem 0.6rem; border-radius: 0.4rem; font-size: 0.7rem; border: none; cursor: pointer; flex: 1;">Lagre</button>
-          <button onclick="slettDatoNotat()" style="background: rgba(251,113,133,0.2); color: #fb7185; padding: 0.3rem 0.6rem; border-radius: 0.4rem; font-size: 0.7rem; border: none; cursor: pointer;">Slett</button>
+          <button onclick="lagreDatoNotat()" style="background: #3b82f6; color: white; padding: 0.5rem 0.8rem; border-radius: 0.5rem; font-size: 0.8rem; border: none; cursor: pointer; flex: 1; min-height: 2.5rem;">Lagre</button>
+          <button onclick="slettDatoNotat()" style="background: rgba(251,113,133,0.2); color: #fb7185; padding: 0.5rem 0.8rem; border-radius: 0.5rem; font-size: 0.8rem; border: none; cursor: pointer; min-height: 2.5rem;">Slett</button>
         </div>
       </div>
       <div style="margin-bottom: 0.75rem;">
-        <h4 style="font-size: 0.7rem; color: #a1a1aa; margin-bottom: 0.3rem;">📅 iCal-hendelser:</h4>
+        <h4 style="font-size: 0.75rem; color: #a1a1aa; margin-bottom: 0.3rem;">📅 iCal-hendelser:</h4>
         <div id="iCalEventsInModal" style="display: flex; flex-direction: column; gap: 0.3rem;"></div>
       </div>
       <div>
-        <h4 style="font-size: 0.7rem; color: #a1a1aa; margin-bottom: 0.3rem;">✨ Egne hendelser:</h4>
+        <h4 style="font-size: 0.75rem; color: #a1a1aa; margin-bottom: 0.3rem;">✨ Egne hendelser:</h4>
         <div id="egneHendelserIModal" style="display: flex; flex-direction: column; gap: 0.3rem;"></div>
-        <button onclick="apneNyHendelseForDato()" style="width: 100%; background: rgba(59,130,246,0.2); color: #60a5fa; padding: 0.3rem; border-radius: 0.4rem; font-size: 0.7rem; border: none; cursor: pointer; margin-top: 0.4rem;">
+        <button onclick="apneNyHendelseForDato()" style="width: 100%; background: rgba(59,130,246,0.2); color: #60a5fa; padding: 0.5rem; border-radius: 0.5rem; font-size: 0.8rem; border: none; cursor: pointer; margin-top: 0.4rem; min-height: 2.5rem;">
           <i class="fa-solid fa-plus"></i> Ny hendelse denne dagen
         </button>
       </div>
@@ -427,23 +488,23 @@
   <div id="nyHendelseModal" class="modal">
     <div class="modal-content">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-        <h3 style="font-size: 1rem; font-weight: 600;">✨ Ny hendelse</h3>
-        <button onclick="lukkNyHendelseModal()" style="color: #a1a1aa; background: none; border: none; font-size: 1.1rem; cursor: pointer;">&times;</button>
+        <h3 style="font-size: 1.1rem; font-weight: 600;">✨ Ny hendelse</h3>
+        <button onclick="lukkNyHendelseModal()" style="color: #a1a1aa; background: none; border: none; font-size: 1.3rem; cursor: pointer; min-width: 2.5rem; min-height: 2.5rem;">&times;</button>
       </div>
       <div style="display: flex; flex-direction: column; gap: 0.6rem;">
         <div>
-          <label style="display: block; font-size: 0.7rem; color: #a1a1aa; margin-bottom: 0.2rem;">Tittel:</label>
-          <input type="text" id="nyHendelseTittel" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.4rem; padding: 0.4rem; font-size: 0.7rem; color: #e4e4e7; outline: none;" placeholder="Hva skal skje?">
+          <label style="display: block; font-size: 0.75rem; color: #a1a1aa; margin-bottom: 0.2rem;">Tittel:</label>
+          <input type="text" id="nyHendelseTittel" class="touch-input" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.5rem; padding: 0.5rem; font-size: 0.8rem; color: #e4e4e7; outline: none;" placeholder="Hva skal skje?">
         </div>
         <div>
-          <label style="display: block; font-size: 0.7rem; color: #a1a1aa; margin-bottom: 0.2rem;">Dato:</label>
-          <input type="date" id="nyHendelseDato" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.4rem; padding: 0.4rem; font-size: 0.7rem; color: #e4e4e7; outline: none;">
+          <label style="display: block; font-size: 0.75rem; color: #a1a1aa; margin-bottom: 0.2rem;">Dato:</label>
+          <input type="date" id="nyHendelseDato" class="touch-input" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.5rem; padding: 0.5rem; font-size: 0.8rem; color: #e4e4e7; outline: none;">
         </div>
         <div>
-          <label style="display: block; font-size: 0.7rem; color: #a1a1aa; margin-bottom: 0.2rem;">Klokkeslett:</label>
-          <input type="time" id="nyHendelseTid" value="12:00" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.4rem; padding: 0.4rem; font-size: 0.7rem; color: #e4e4e7; outline: none;">
+          <label style="display: block; font-size: 0.75rem; color: #a1a1aa; margin-bottom: 0.2rem;">Klokkeslett:</label>
+          <input type="time" id="nyHendelseTid" value="12:00" class="touch-input" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.5rem; padding: 0.5rem; font-size: 0.8rem; color: #e4e4e7; outline: none;">
         </div>
-        <button onclick="lagreNyHendelse()" style="width: 100%; background: #3b82f6; color: white; padding: 0.5rem; border-radius: 0.4rem; font-size: 0.8rem; border: none; cursor: pointer;">Lagre hendelse</button>
+        <button onclick="lagreNyHendelse()" style="width: 100%; background: #3b82f6; color: white; padding: 0.6rem; border-radius: 0.5rem; font-size: 0.85rem; border: none; cursor: pointer; min-height: 2.8rem;">Lagre hendelse</button>
       </div>
     </div>
   </div>
@@ -451,19 +512,19 @@
   <div id="iCloudModal" class="modal">
     <div class="modal-content">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-        <h3 style="font-size: 1rem; font-weight: 600;">⚙️ iCal Kalender</h3>
-        <button onclick="lukkICloudModal()" style="color: #a1a1aa; background: none; border: none; font-size: 1.1rem; cursor: pointer;">&times;</button>
+        <h3 style="font-size: 1.1rem; font-weight: 600;">⚙️ iCal Kalender</h3>
+        <button onclick="lukkICloudModal()" style="color: #a1a1aa; background: none; border: none; font-size: 1.3rem; cursor: pointer; min-width: 2.5rem; min-height: 2.5rem;">&times;</button>
       </div>
       <div style="display: flex; flex-direction: column; gap: 0.6rem;">
         <div>
-          <label style="display: block; font-size: 0.7rem; color: #a1a1aa; margin-bottom: 0.2rem;">iCal URL:</label>
-          <input type="text" id="icalUrlInput" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.4rem; padding: 0.4rem; font-size: 0.7rem; color: #e4e4e7; outline: none;" placeholder="https://...">
+          <label style="display: block; font-size: 0.75rem; color: #a1a1aa; margin-bottom: 0.2rem;">iCal URL:</label>
+          <input type="text" id="icalUrlInput" class="touch-input" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.5rem; padding: 0.5rem; font-size: 0.75rem; color: #e4e4e7; outline: none;" placeholder="https://...">
         </div>
         <div style="display: flex; gap: 0.4rem;">
-          <button onclick="lagreICalUrl()" style="background: #3b82f6; color: white; padding: 0.4rem; border-radius: 0.4rem; font-size: 0.7rem; border: none; cursor: pointer; flex: 1;">Lagre og hent</button>
-          <button onclick="hentICalManuelt()" style="background: rgba(74,222,128,0.2); color: #4ade80; padding: 0.4rem; border-radius: 0.4rem; font-size: 0.7rem; border: none; cursor: pointer;">Hent nå</button>
+          <button onclick="lagreICalUrl()" style="background: #3b82f6; color: white; padding: 0.5rem; border-radius: 0.5rem; font-size: 0.8rem; border: none; cursor: pointer; flex: 1; min-height: 2.5rem;">Lagre og hent</button>
+          <button onclick="hentICalManuelt()" style="background: rgba(74,222,128,0.2); color: #4ade80; padding: 0.5rem; border-radius: 0.5rem; font-size: 0.8rem; border: none; cursor: pointer; min-height: 2.5rem;">Hent nå</button>
         </div>
-        <div id="iCloudDebug" style="font-size: 0.6rem; color: #a1a1aa;"></div>
+        <div id="iCloudDebug" style="font-size: 0.65rem; color: #a1a1aa;"></div>
       </div>
     </div>
   </div>
@@ -471,25 +532,25 @@
   <div id="soppelModal" class="modal">
     <div class="modal-content">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-        <h3 style="font-size: 1rem; font-weight: 600;">♻️ Rediger tømmedatoer</h3>
-        <button onclick="lukkSoppelModal()" style="color: #a1a1aa; background: none; border: none; font-size: 1.1rem; cursor: pointer;">&times;</button>
+        <h3 style="font-size: 1.1rem; font-weight: 600;">♻️ Rediger tømmedatoer</h3>
+        <button onclick="lukkSoppelModal()" style="color: #a1a1aa; background: none; border: none; font-size: 1.3rem; cursor: pointer; min-width: 2.5rem; min-height: 2.5rem;">&times;</button>
       </div>
       <div id="soppelAdminForm" style="display: flex; flex-direction: column; gap: 0.6rem;"></div>
-      <button onclick="lukkSoppelModal()" style="width: 100%; background: #3b82f6; color: white; padding: 0.5rem; border-radius: 0.4rem; font-size: 0.8rem; border: none; cursor: pointer; margin-top: 0.75rem;">Lagre og lukk</button>
+      <button onclick="lukkSoppelModal()" style="width: 100%; background: #3b82f6; color: white; padding: 0.6rem; border-radius: 0.5rem; font-size: 0.85rem; border: none; cursor: pointer; margin-top: 0.75rem; min-height: 2.8rem;">Lagre og lukk</button>
     </div>
   </div>
 
   <div id="manedModal" class="modal">
-    <div class="modal-content" style="max-width: 280px;">
+    <div class="modal-content" style="max-width: 320px;">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-        <h3 style="font-size: 0.9rem; font-weight: 600;">Velg måned og år</h3>
-        <button onclick="lukkManedModal()" style="color: #a1a1aa; background: none; border: none; font-size: 1.1rem; cursor: pointer;">&times;</button>
+        <h3 style="font-size: 1rem; font-weight: 600;">Velg måned og år</h3>
+        <button onclick="lukkManedModal()" style="color: #a1a1aa; background: none; border: none; font-size: 1.3rem; cursor: pointer; min-width: 2.5rem; min-height: 2.5rem;">&times;</button>
       </div>
       <div style="display: flex; gap: 0.4rem;">
-        <select id="manedSelect" style="flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.4rem; padding: 0.3rem; font-size: 0.7rem; color: #e4e4e7; outline: none;"></select>
-        <select id="aarSelect" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.4rem; padding: 0.3rem; font-size: 0.7rem; color: #e4e4e7; outline: none;"></select>
+        <select id="manedSelect" class="touch-input" style="flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.5rem; padding: 0.4rem; font-size: 0.8rem; color: #e4e4e7; outline: none;"></select>
+        <select id="aarSelect" class="touch-input" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.5rem; padding: 0.4rem; font-size: 0.8rem; color: #e4e4e7; outline: none;"></select>
       </div>
-      <button onclick="bekreftManed()" style="width: 100%; background: #3b82f6; color: white; padding: 0.5rem; border-radius: 0.4rem; font-size: 0.8rem; border: none; cursor: pointer; margin-top: 0.75rem;">Gå til</button>
+      <button onclick="bekreftManed()" style="width: 100%; background: #3b82f6; color: white; padding: 0.6rem; border-radius: 0.5rem; font-size: 0.85rem; border: none; cursor: pointer; margin-top: 0.75rem; min-height: 2.8rem;">Gå til</button>
     </div>
   </div>
 
@@ -499,7 +560,6 @@
     
     async function fetchMedProxy(url, options = {}) {
       try {
-        // Prøv direkte først
         const direkteResp = await fetch(url, options);
         if (direkteResp.ok) return direkteResp;
         throw new Error('Direkte kall feilet med status ' + direkteResp.status);
@@ -541,7 +601,6 @@
       { id: 'glassmetall', navn: 'Glass/metall', emoji: '🟣', farge: '#c084fc' }
     ];
 
-    // ==================== GLOBAL DB-PROMISE (løser database-krasj) ====================
     let dbPromise = null;
     let handlelisteDb = null;
     
@@ -553,7 +612,6 @@
     let visManed = new Date().getMonth();
     let pendingHendelseDato = null;
 
-    // ==================== FEILHJELPER ====================
     function visFeil(elementId, melding, onRetry = null) {
       const el = document.getElementById(elementId);
       if (!el) return;
@@ -564,7 +622,6 @@
       </div>`;
     }
 
-    // ==================== KLOKKE OG DATO ====================
     function oppdaterKlokke() {
       const naa = new Date();
       document.getElementById('liveKlokke').innerText = naa.toLocaleTimeString('no-NO', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
@@ -575,7 +632,6 @@
       const idag = naa.toISOString().split('T')[0];
       if (window.sisteDato !== idag) {
         window.sisteDato = idag;
-        // Sjekk om db er klar før vi kaller database-funksjoner
         if (handlelisteDb) {
           byggKalender().catch(e => console.warn('Kalender-oppdatering feilet:', e));
           visNesteHendelser();
@@ -587,10 +643,8 @@
     setInterval(oppdaterKlokke, 1000);
     oppdaterKlokke();
 
-    // ==================== INDEXEDDB (returnerer promise) ====================
     function apneHandlelisteDb() {
       if (dbPromise) return dbPromise;
-      
       dbPromise = new Promise((resolve, reject) => {
         const req = indexedDB.open('SmarthjemDashboard', 4);
         req.onupgradeneeded = (e) => {
@@ -602,13 +656,9 @@
           if (!db.objectStoreNames.contains('soppeltomming')) db.createObjectStore('soppeltomming', { keyPath: 'id' });
           if (!db.objectStoreNames.contains('egneHendelser')) db.createObjectStore('egneHendelser', { keyPath: 'id', autoIncrement: true });
         };
-        req.onsuccess = (e) => {
-          handlelisteDb = e.target.result;
-          resolve(handlelisteDb);
-        };
+        req.onsuccess = (e) => { handlelisteDb = e.target.result; resolve(handlelisteDb); };
         req.onerror = (e) => reject(e.target.error);
       });
-      
       return dbPromise;
     }
 
@@ -654,7 +704,7 @@
       });
     }
 
-    // ==================== HANDLELISTE MED ROBUST ERROR-HANDLING ====================
+    // ==================== HANDLELISTE ====================
     async function syncHandlelisteFraKvdb() {
       try {
         const resp = await fetchMedProxy(KVDB_URL);
@@ -668,10 +718,8 @@
         }
         document.getElementById('listCount').style.color = '#a1a1aa';
       } catch (e) {
-        console.warn('KVDB-lesing feilet, bruker lokal IndexedDB:', e.message);
+        console.warn('KVDB-lesing feilet:', e.message);
         document.getElementById('listCount').style.color = '#fb923c';
-        const countEl = document.getElementById('listCount');
-        if (countEl) countEl.title = 'Jobber lokalt – sky-synk utilgjengelig';
       }
     }
 
@@ -736,10 +784,10 @@
         document.getElementById('listCount').textContent = aktive.length;
 
         const lagVare = (v) => `
-          <li style="display: flex; align-items: center; gap: 0.35rem; padding: 0.2rem 0.35rem; border-radius: 0.4rem; background: rgba(255,255,255,0.02); transition: all 0.15s; font-size: 0.6rem;">
+          <li style="display: flex; align-items: center; gap: 0.4rem; padding: 0.3rem 0.4rem; border-radius: 0.5rem; background: rgba(255,255,255,0.02); transition: all 0.15s; font-size: 0.7rem;">
             <span class="chk ${v.checked ? 'checked' : ''}" onclick="veksleVare(${v.id}, ${!v.checked})"></span>
             <span style="flex: 1; ${v.checked ? 'color: #a1a1aa; text-decoration: line-through; opacity: 0.5;' : 'color: #e4e4e7;'}">${v.tekst}</span>
-            <button onclick="slettVare(${v.id})" style="color: #71717a; background: none; border: none; font-size: 0.55rem; cursor: pointer;">
+            <button onclick="slettVare(${v.id})" style="color: #71717a; background: none; border: none; font-size: 0.65rem; cursor: pointer; min-width: 1.8rem; min-height: 1.8rem;">
               <i class="fa-solid fa-xmark"></i>
             </button>
           </li>`;
@@ -780,9 +828,9 @@
           else if (dager === 1) tekst = 'I morgen';
           else tekst = `${dager}d`;
 
-          html += `<div style="display: flex; justify-content: space-between; align-items: center; padding: 0.2rem 0.35rem; border-radius: 0.4rem; background: rgba(255,255,255,0.02); ${innen24t ? 'animation: glow-pulse 2s infinite; border: 1px solid rgba(251,113,133,0.3);' : ''}">
-            <span style="font-size: 0.6rem;">${type.emoji} ${type.navn}</span>
-            <span style="font-size: 0.55rem; font-weight: 600; ${innen24t ? 'color: #fb7185;' : 'color: #d4d4d8;'}">${tekst}</span>
+          html += `<div style="display: flex; justify-content: space-between; align-items: center; padding: 0.3rem 0.4rem; border-radius: 0.5rem; background: rgba(255,255,255,0.02); ${innen24t ? 'animation: glow-pulse 2s infinite; border: 1px solid rgba(251,113,133,0.3);' : ''}">
+            <span style="font-size: 0.7rem;">${type.emoji} ${type.navn}</span>
+            <span style="font-size: 0.65rem; font-weight: 600; ${innen24t ? 'color: #fb7185;' : 'color: #d4d4d8;'}">${tekst}</span>
           </div>`;
         }
         cont.innerHTML = html;
@@ -796,9 +844,9 @@
         for (const type of SOPPEL_TYPER) {
           const rad = await dbGet('soppeltomming', type.id);
           html += `<div>
-            <label style="display: block; font-size: 0.7rem; color: #a1a1aa; margin-bottom: 0.2rem;">${type.emoji} ${type.navn}</label>
-            <input type="date" id="soppel-${type.id}" value="${rad ? rad.dato : ''}" 
-                   style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.4rem; padding: 0.4rem; font-size: 0.7rem; color: #e4e4e7; outline: none;">
+            <label style="display: block; font-size: 0.75rem; color: #a1a1aa; margin-bottom: 0.2rem;">${type.emoji} ${type.navn}</label>
+            <input type="date" id="soppel-${type.id}" value="${rad ? rad.dato : ''}" class="touch-input"
+                   style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.5rem; padding: 0.5rem; font-size: 0.8rem; color: #e4e4e7; outline: none;">
           </div>`;
         }
         form.innerHTML = html;
@@ -849,20 +897,8 @@
         const tittel = document.getElementById('nyHendelseTittel').value.trim();
         const dato = document.getElementById('nyHendelseDato').value;
         const tid = document.getElementById('nyHendelseTid').value || '12:00';
-
-        if (!tittel || !dato) {
-          alert('Fyll ut tittel og dato.');
-          return;
-        }
-
-        await dbPut('egneHendelser', {
-          title: tittel,
-          startDate: `${dato}T${tid}:00`,
-          allDay: false,
-          location: '',
-          opprettet: new Date().toISOString()
-        });
-
+        if (!tittel || !dato) { alert('Fyll ut tittel og dato.'); return; }
+        await dbPut('egneHendelser', { title: tittel, startDate: `${dato}T${tid}:00`, allDay: false, location: '', opprettet: new Date().toISOString() });
         await lastEgneHendelser();
         await byggKalender();
         visNesteHendelser();
@@ -882,7 +918,7 @@
       } catch (e) { console.warn('Slett hendelse feilet:', e); }
     }
 
-    // ==================== KALENDER ====================
+    // ==================== KALENDER (STØRRE DAGER) ====================
     async function byggKalender() {
       try {
         const aar = visAar, maaned = visManed;
@@ -920,23 +956,29 @@
           }
         });
 
-        let html = `<div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.15rem; margin-bottom: 0.15rem;">`;
-        DAGER_KORT.forEach(d => html += `<div style="color: #a1a1aa; text-align: center; font-weight: 500; padding: 0.15rem 0;">${d}</div>`);
-        html += `</div><div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.15rem;">`;
+        // Dagnavn-rad
+        let html = `<div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.2rem; margin-bottom: 0.2rem;">`;
+        DAGER_KORT.forEach(d => html += `<div style="color: #a1a1aa; text-align: center; font-weight: 500; padding: 0.2rem 0; font-size: 0.65rem;">${d}</div>`);
+        html += `</div><div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.2rem;">`;
 
+        // Tomme celler før første dag
         for (let i = 1; i < forsteDag; i++) html += '<div></div>';
 
+        // Dag-celler med cal-day-cell klassen
         for (let dag = 1; dag <= sisteDato; dag++) {
           const erIdag = (erDenneManeden && dag === iDag);
           const datoStr = `${aar}-${String(maaned+1).padStart(2,'0')}-${String(dag).padStart(2,'0')}`;
           
           let dots = '';
-          if (notatDatoer.has(datoStr)) dots += '<span style="position:absolute; bottom:1px; left:25%; transform:translateX(-50%); width:3px; height:3px; border-radius:50%; background:#4ade80;"></span>';
-          if (icalDatoer.has(datoStr)) dots += '<span style="position:absolute; bottom:1px; left:50%; transform:translateX(-50%); width:3px; height:3px; border-radius:50%; background:#fbbf24;"></span>';
-          if (egneDatoer.has(datoStr)) dots += '<span style="position:absolute; bottom:1px; left:75%; transform:translateX(-50%); width:3px; height:3px; border-radius:50%; background:#60a5fa;"></span>';
+          if (notatDatoer.has(datoStr)) dots += '<span class="dot dot-notat"></span>';
+          if (icalDatoer.has(datoStr)) dots += '<span class="dot dot-ical"></span>';
+          if (egneDatoer.has(datoStr)) dots += '<span class="dot dot-egen"></span>';
 
-          const bg = erIdag ? 'background:#3b82f6; color:white; font-weight:700; box-shadow:0 0 8px rgba(59,130,246,0.3);' : '';
-          html += `<div style="position:relative; text-align:center; padding:0.2rem 0; border-radius:0.25rem; cursor:pointer; transition:all 0.15s; font-size:0.55rem; ${bg}" data-dato="${datoStr}" onclick="apneDatoModal('${datoStr}')">${dag}${dots}</div>`;
+          const todayClass = erIdag ? ' today' : '';
+          html += `<div class="cal-day-cell${todayClass}" data-dato="${datoStr}" onclick="apneDatoModal('${datoStr}')">
+            ${dag}
+            ${dots ? `<div class="dot-row">${dots}</div>` : ''}
+          </div>`;
         }
         html += '</div>';
         document.getElementById('calendarWidget').innerHTML = html;
@@ -972,34 +1014,20 @@
       try {
         const naa = new Date();
         const startAvDag = new Date(naa.getFullYear(), naa.getMonth(), naa.getDate(), 0, 0, 0, 0);
-        
-        const alle = [
-          ...kalenderHendelser.map(e => ({ ...e, type: 'ical' })),
-          ...egneHendelser.map(e => ({ ...e, type: 'egen' }))
-        ];
-
-        const sorterte = alle
-          .filter(e => new Date(e.startDate) >= startAvDag)
-          .sort((a,b) => new Date(a.startDate) - new Date(b.startDate))
-          .slice(0, 4);
-
+        const alle = [...kalenderHendelser.map(e => ({ ...e, type: 'ical' })), ...egneHendelser.map(e => ({ ...e, type: 'egen' }))];
+        const sorterte = alle.filter(e => new Date(e.startDate) >= startAvDag).sort((a,b) => new Date(a.startDate) - new Date(b.startDate)).slice(0, 4);
         const container = document.getElementById('nesteHendelser');
-        if (!sorterte.length) {
-          container.innerHTML = '<p style="font-size:0.55rem; color:#a1a1aa; font-style:italic;">Ingen hendelser</p>';
-          return;
-        }
-
+        if (!sorterte.length) { container.innerHTML = '<p style="font-size:0.6rem; color:#a1a1aa; font-style:italic;">Ingen hendelser</p>'; return; }
         container.innerHTML = sorterte.map(e => {
           const d = new Date(e.startDate);
           const dagLabel = formaterRelativDag(d);
           const tid = e.allDay ? 'Hele dagen' : d.toLocaleTimeString('no-NO', { hour:'2-digit', minute:'2-digit' });
-          const ikon = e.type === 'egen' ? '<i class="fa-solid fa-star" style="color:#60a5fa; font-size:0.45rem;"></i>' : '';
-          return `<div style="display:flex; align-items:center; gap:0.3rem; padding:0.2rem 0.35rem; border-radius:0.4rem; background:rgba(255,255,255,0.02); cursor:pointer; transition:all 0.15s;" onclick="apneDatoModal('${e.startDate.split('T')[0]}')">
-            <div style="text-align:center; min-width:34px; flex-shrink:0;">
-              <p style="font-size:0.45rem; color:#fbbf24; font-weight:500; text-transform:uppercase;">${dagLabel}</p>
-              <p style="font-size:0.5rem; color:#d4d4d8; font-weight:600;">${tid}</p>
+          return `<div style="display:flex; align-items:center; gap:0.35rem; padding:0.3rem 0.4rem; border-radius:0.5rem; background:rgba(255,255,255,0.02); cursor:pointer; font-size:0.7rem;" onclick="apneDatoModal('${e.startDate.split('T')[0]}')">
+            <div style="text-align:center; min-width:38px; flex-shrink:0;">
+              <p style="font-size:0.5rem; color:#fbbf24; font-weight:500;">${dagLabel}</p>
+              <p style="font-size:0.55rem; color:#d4d4d8; font-weight:600;">${tid}</p>
             </div>
-            <p style="font-size:0.6rem; color:#e4e4e7; flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${ikon} ${e.title}</p>
+            <p style="flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${e.title}</p>
           </div>`;
         }).join('');
       } catch (e) { console.warn('Vis neste hendelser feilet:', e); }
@@ -1016,40 +1044,24 @@
       return d.toLocaleDateString('no-NO', { day:'numeric', month:'short' });
     }
 
-    // ==================== DATO MODAL ====================
     async function apneDatoModal(datoStr) {
       try {
         valgtDato = datoStr;
         const dato = new Date(datoStr);
         const alt = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
         document.getElementById('modalTitle').textContent = '📅 ' + dato.toLocaleDateString('no-NO', alt).charAt(0).toUpperCase() + dato.toLocaleDateString('no-NO', alt).slice(1);
-
         const notat = await dbGet('datonotater', datoStr);
         document.getElementById('dateNoteInput').value = notat ? notat.tekst : '';
-
         const icalEvents = kalenderHendelser.filter(e => e.startDate && e.startDate.split('T')[0] === datoStr);
         document.getElementById('iCalEventsInModal').innerHTML = icalEvents.length ? icalEvents.map(e => {
           const tid = e.allDay ? 'Hele dagen' : new Date(e.startDate).toLocaleTimeString('no-NO', { hour:'2-digit', minute:'2-digit' });
-          return `<div style="background:rgba(255,255,255,0.02); border-radius:0.4rem; padding:0.35rem; border:1px solid rgba(255,255,255,0.05);">
-            <p style="font-size:0.65rem; font-weight:500;">${e.title}</p>
-            <p style="font-size:0.55rem; color:#a1a1aa;"><i class="fa-regular fa-clock"></i> ${tid}</p>
-          </div>`;
-        }).join('') : '<p style="font-size:0.6rem; color:#a1a1aa;">Ingen iCal-hendelser</p>';
-
+          return `<div style="background:rgba(255,255,255,0.02); border-radius:0.5rem; padding:0.4rem; border:1px solid rgba(255,255,255,0.05); font-size:0.7rem;"><p style="font-weight:500;">${e.title}</p><p style="color:#a1a1aa; font-size:0.6rem;">🕐 ${tid}</p></div>`;
+        }).join('') : '<p style="font-size:0.65rem; color:#a1a1aa;">Ingen iCal-hendelser</p>';
         const egneEvents = egneHendelser.filter(e => e.startDate && e.startDate.split('T')[0] === datoStr);
         document.getElementById('egneHendelserIModal').innerHTML = egneEvents.length ? egneEvents.map(e => {
           const tid = e.allDay ? 'Hele dagen' : new Date(e.startDate).toLocaleTimeString('no-NO', { hour:'2-digit', minute:'2-digit' });
-          return `<div style="background:rgba(255,255,255,0.02); border-radius:0.4rem; padding:0.35rem; border:1px solid rgba(255,255,255,0.05); display:flex; justify-content:space-between; align-items:center;">
-            <div>
-              <p style="font-size:0.65rem; font-weight:500;">${e.title}</p>
-              <p style="font-size:0.55rem; color:#a1a1aa;"><i class="fa-regular fa-clock"></i> ${tid}</p>
-            </div>
-            <button onclick="slettEgenHendelse(${e.id})" style="color:#fb7185; background:none; border:none; font-size:0.55rem; cursor:pointer;">
-              <i class="fa-solid fa-trash-can"></i>
-            </button>
-          </div>`;
-        }).join('') : '<p style="font-size:0.6rem; color:#a1a1aa;">Ingen egne hendelser</p>';
-
+          return `<div style="background:rgba(255,255,255,0.02); border-radius:0.5rem; padding:0.4rem; border:1px solid rgba(255,255,255,0.05); display:flex; justify-content:space-between; align-items:center; font-size:0.7rem;"><div><p style="font-weight:500;">${e.title}</p><p style="color:#a1a1aa; font-size:0.6rem;">🕐 ${tid}</p></div><button onclick="slettEgenHendelse(${e.id})" style="color:#fb7185; background:none; border:none; font-size:0.65rem; cursor:pointer; min-width:2rem; min-height:2rem;">🗑️</button></div>`;
+        }).join('') : '<p style="font-size:0.65rem; color:#a1a1aa;">Ingen egne hendelser</p>';
         document.getElementById('dateModal').classList.add('active');
       } catch (e) { console.warn('Åpne dato-modal feilet:', e); }
     }
@@ -1075,22 +1087,14 @@
       } catch (e) { console.warn('Slett dato-notat feilet:', e); }
     }
 
-    // ==================== iCal MED PROXY ====================
-    function apneICloudModal() {
-      document.getElementById('icalUrlInput').value = icalUrl;
-      document.getElementById('iCloudModal').classList.add('active');
-    }
+    // ==================== iCal ====================
+    function apneICloudModal() { document.getElementById('icalUrlInput').value = icalUrl; document.getElementById('iCloudModal').classList.add('active'); }
     function lukkICloudModal() { document.getElementById('iCloudModal').classList.remove('active'); }
 
     async function lagreICalUrl() {
       try {
         const ny = document.getElementById('icalUrlInput').value.trim();
-        if (ny) {
-          icalUrl = ny;
-          await dbPut('innstillinger', { id: 'icalUrl', value: icalUrl });
-          document.getElementById('iCloudStatus').textContent = '🟡';
-          await hentICalManuelt();
-        }
+        if (ny) { icalUrl = ny; await dbPut('innstillinger', { id: 'icalUrl', value: icalUrl }); document.getElementById('iCloudStatus').textContent = '🟡'; await hentICalManuelt(); }
       } catch (e) { console.warn('Lagre iCal-URL feilet:', e); }
     }
 
@@ -1101,15 +1105,14 @@
         const resp = await fetchMedProxy(icalUrl);
         if (!resp.ok) throw new Error('Status ' + resp.status);
         kalenderHendelser = parseICal(await resp.text());
-        if (kalenderHendelser.length === 0) throw new Error('Tom kalender');
         document.getElementById('iCloudStatus').textContent = '🟢';
         document.getElementById('iCloudDebug').textContent = `${kalenderHendelser.length} hendelser`;
       } catch (feil) {
         console.warn('iCal feilet:', feil.message);
         kalenderHendelser = [];
         document.getElementById('iCloudStatus').textContent = '🔴';
-        document.getElementById('iCloudDebug').textContent = 'Kunne ikke hente kalender – sjekk URL og nettverk';
-        visFeil('nesteHendelser', 'Kalender utilgjengelig. Sjekk iCal-innstillinger.', hentICalManuelt);
+        document.getElementById('iCloudDebug').textContent = 'Kunne ikke hente kalender';
+        visFeil('nesteHendelser', 'Kalender utilgjengelig', hentICalManuelt);
       }
       await byggKalender();
       visNesteHendelser();
@@ -1150,7 +1153,7 @@
       return `${y}-${m}-${d}T00:00:00`;
     }
 
-    // ==================== VÆRDATA MED PROXY ====================
+    // ==================== VÆRDATA ====================
     const VEER_IKONER = { 0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',48:'🌫️',51:'🌧️',53:'🌧️',55:'🌧️',61:'🌧️',63:'🌧️',65:'🌧️',71:'❄️',73:'❄️',75:'❄️',77:'❄️',80:'🌧️',81:'🌧️',82:'🌧️',85:'🌨️',86:'🌨️',95:'⛈️',96:'⛈️',99:'⛈️' };
     const VEER_TEKST = { 0:'Klart',1:'Delvis skyet',2:'Skyet',3:'Overskyet',45:'Tåke',48:'Rimtåke',51:'Lett yr',53:'Yr',55:'Kraftig yr',61:'Lett regn',63:'Regn',65:'Kraftig regn',71:'Lett snø',73:'Snø',75:'Kraftig snø',77:'Snøkorn',80:'Regnbyger',81:'Kraftige byger',82:'Voldsomme byger',85:'Snøbyger',86:'Kraftige snøbyger',95:'Torden',96:'Torden m/hagl',99:'Kraftig torden' };
 
@@ -1170,7 +1173,7 @@
         visVeerdata(await resp.json());
       } catch (feil) {
         console.warn('Vær-API feilet:', feil.message);
-        visFeil('weatherContent', 'Værdata utilgjengelig – sjekk nettverk', hentVeerdata);
+        visFeil('weatherContent', 'Værdata utilgjengelig', hentVeerdata);
       }
     }
 
@@ -1196,9 +1199,9 @@
     function tegnTimeprognose(slots) {
       document.getElementById('hourlyForecast').innerHTML = slots.map((s, i) => `
         <div class="hour-slot">
-          <span style="font-size:0.45rem; color:#a1a1aa;">${i===0?'Nå':s.time.toLocaleTimeString('no-NO',{hour:'2-digit'})}</span>
-          <span style="font-size:0.9rem;">${VEER_IKONER[s.code]||'🌡️'}</span>
-          <span style="font-size:0.55rem; font-weight:600;">${s.temp}°</span>
+          <span style="font-size:0.5rem; color:#a1a1aa;">${i===0?'Nå':s.time.toLocaleTimeString('no-NO',{hour:'2-digit'})}</span>
+          <span style="font-size:1rem;">${VEER_IKONER[s.code]||'🌡️'}</span>
+          <span style="font-size:0.6rem; font-weight:600;">${s.temp}°</span>
         </div>
       `).join('');
     }
@@ -1210,18 +1213,15 @@
         const naa = new Date();
         const idag = naa.toISOString().split('T')[0];
         const items = [];
-
         const alle = [...kalenderHendelser.filter(e => e.startDate && e.startDate.split('T')[0] === idag), ...egneHendelser.filter(e => e.startDate && e.startDate.split('T')[0] === idag)];
         alle.forEach(e => {
           const tid = e.allDay ? '' : new Date(e.startDate).toLocaleTimeString('no-NO',{hour:'2-digit',minute:'2-digit'}) + ' ';
           const erSnart = !e.allDay && (new Date(e.startDate) - naa) < 2*3600000 && (new Date(e.startDate) - naa) > -1800000;
           items.push({ tekst: `${tid}${e.title}`, urgent: erSnart });
         });
-
         const varer = await dbGetAll('handleliste');
         const aktive = varer.filter(v => !v.checked);
         if (aktive.length) items.push({ tekst: `🛒 ${aktive.length} varer`, urgent: false });
-
         const naaStart = new Date(); naaStart.setHours(0,0,0,0);
         for (const type of SOPPEL_TYPER) {
           const rad = await dbGet('soppeltomming', type.id);
@@ -1232,11 +1232,7 @@
             items.push({ tekst: `♻️ ${type.navn} ${label}`, urgent: dager <= 1 });
           }
         }
-
-        if (!items.length) {
-          cont.innerHTML = '<span style="font-size:0.6rem; color:#a1a1aa;">Ingenting spesielt i dag 🎉</span>';
-          return;
-        }
+        if (!items.length) { cont.innerHTML = '<span style="font-size:0.65rem; color:#a1a1aa;">Ingenting spesielt i dag 🎉</span>'; return; }
         items.sort((a,b) => (b.urgent - a.urgent));
         cont.innerHTML = items.map(i => `<span class="pill ${i.urgent ? 'pill-urgent' : 'pill-normal'}">${i.tekst}</span>`).join('');
       } catch (e) { console.warn('Render viktig-i-dag feilet:', e); }
@@ -1256,8 +1252,7 @@
         .then(() => {
           document.getElementById('saveStatus').textContent = 'Lagret ✓';
           setTimeout(() => document.getElementById('saveStatus').textContent = 'Lagres automatisk', 2000);
-        })
-        .catch(e => console.warn('Lagre notat feilet:', e));
+        }).catch(e => console.warn('Lagre notat feilet:', e));
     }
 
     async function lastNotat() {
@@ -1278,62 +1273,37 @@
       } catch (e) { console.warn('Slett notat feilet:', e); }
     }
 
-    // ==================== EVENT LISTENERS ====================
-    document.getElementById('tingInput').addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') leggTilVare();
-    });
-
+    document.getElementById('tingInput').addEventListener('keypress', (e) => { if (e.key === 'Enter') leggTilVare(); });
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        lukkDateModal(); lukkICloudModal(); lukkSoppelModal(); lukkManedModal(); lukkNyHendelseModal();
-      }
+      if (e.key === 'Escape') { lukkDateModal(); lukkICloudModal(); lukkSoppelModal(); lukkManedModal(); lukkNyHendelseModal(); }
     });
+    document.addEventListener('dblclick', (e) => { if (e.target.tagName === 'BUTTON' || e.target.closest('button')) e.preventDefault(); }, { passive: false });
 
-    document.addEventListener('dblclick', (e) => {
-      if (e.target.tagName === 'BUTTON' || e.target.closest('button')) {
-        e.preventDefault();
-      }
-    }, { passive: false });
-
-    // ==================== INIT (VENTER PÅ DATABASEN FØRST) ====================
+    // ==================== INIT ====================
     async function init() {
       try {
-        // 1. FØRST: Åpne databasen og vent på at den er klar
         await apneHandlelisteDb();
         console.log('✅ IndexedDB er klar');
       } catch (e) {
         console.error('❌ IndexedDB utilgjengelig:', e);
-        document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;color:#fafafa;font-family:Inter,sans-serif;text-align:center;padding:2rem;"><div><h1 style="font-size:1.5rem;margin-bottom:0.5rem;">⚠️ Database utilgjengelig</h1><p style="color:#a1a1aa;">Dashbordet krever IndexedDB for å fungere.</p></div></div>';
+        document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;color:#fafafa;font-family:Inter,sans-serif;text-align:center;padding:2rem;"><div><h1 style="font-size:1.5rem;margin-bottom:0.5rem;">⚠️ Database utilgjengelig</h1><p style="color:#a1a1aa;">Dashbordet krever IndexedDB.</p></div></div>';
         return;
       }
-
-      // 2. SÅ: Last inn lagrede data og start API-kall (alle med try-catch)
-      try {
-        const storedIcal = await dbGet('innstillinger', 'icalUrl');
-        if (storedIcal) icalUrl = storedIcal.value;
-      } catch (e) { console.warn('Kunne ikke laste iCal-innstillinger:', e); }
-
-      // Start alle async-operasjoner – ingen stopper hverandre
-      syncHandlelisteFraKvdb().then(() => visHandleliste()).catch(e => console.warn('Handleliste-synk feilet:', e));
-      initSoppel().catch(e => console.warn('Søppel-init feilet:', e));
-      lastNotat().catch(e => console.warn('Notat-lasting feilet:', e));
-      lastEgneHendelser().catch(e => console.warn('Hendelse-lasting feilet:', e));
-      hentICalManuelt().catch(e => console.warn('iCal-henting feilet:', e));
-      hentVeerdata().catch(e => console.warn('Vær-henting feilet:', e));
-
-      // Periodiske oppdateringer
-      setInterval(() => {
-        syncHandlelisteFraKvdb().then(() => visHandleliste()).catch(e => console.warn('Periodisk handleliste-synk feilet:', e));
-      }, 30000);
-      setInterval(() => hentVeerdata().catch(e => console.warn('Periodisk vær feilet:', e)), 900000);
-      setInterval(() => hentICalManuelt().catch(e => console.warn('Periodisk iCal feilet:', e)), 1800000);
-      setInterval(() => renderViktigIDag().catch(e => console.warn('Periodisk viktig-i-dag feilet:', e)), 60000);
-      setInterval(() => renderSoppelListe().catch(e => console.warn('Periodisk søppel feilet:', e)), 60000);
-
+      try { const storedIcal = await dbGet('innstillinger', 'icalUrl'); if (storedIcal) icalUrl = storedIcal.value; } catch (e) {}
+      syncHandlelisteFraKvdb().then(() => visHandleliste()).catch(e => console.warn('Synk feilet:', e));
+      initSoppel().catch(e => console.warn('Søppel feilet:', e));
+      lastNotat().catch(e => console.warn('Notat feilet:', e));
+      lastEgneHendelser().catch(e => console.warn('Hendelser feilet:', e));
+      hentICalManuelt().catch(e => console.warn('iCal feilet:', e));
+      hentVeerdata().catch(e => console.warn('Vær feilet:', e));
+      setInterval(() => { syncHandlelisteFraKvdb().then(() => visHandleliste()).catch(e => {}); }, 30000);
+      setInterval(() => hentVeerdata().catch(e => {}), 900000);
+      setInterval(() => hentICalManuelt().catch(e => {}), 1800000);
+      setInterval(() => renderViktigIDag().catch(e => {}), 60000);
+      setInterval(() => renderSoppelListe().catch(e => {}), 60000);
       window.sisteDato = new Date().toISOString().split('T')[0];
       console.log('✅ Dashboard initialisert');
     }
-
     init();
   </script>
 </body>
